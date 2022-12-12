@@ -8,7 +8,7 @@ namespace GestaoLivrosApi.Models
 		public int Id { get; set; }
 
 		[Required]
-		public int Isbn { get; set; }
+		public long Isbn { get; set; }
 
 		[Required]
 		public string Name { get; set; } = null!;
