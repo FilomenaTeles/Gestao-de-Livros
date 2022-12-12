@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "mG5hgedRgGMQh6Pf0o2sGpfEeklic3tEBnc3qbOlU7BGFFGvHEBsYQXTN9e08mz92W8KzRzCjtY28PgEmDLb6g==",
+  "dgSpecHash": "iOETBB0sXQ8LqreqYXxCPP3dkTE8dfV96HgDmvg3saaPv5wO09KteLDL3tD9MUIdI4brTz0iNnvz1nuUgviaRQ==",
   "success": true,
   "projectFilePath": "/Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/GestaoLivrosApi.csproj",
   "expectedPackageFiles": [
     "/Users/Filomena/.nuget/packages/azure.core/1.24.0/azure.core.1.24.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/azure.identity/1.6.0/azure.identity.1.6.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
+    "/Users/Filomena/.nuget/packages/jetbrains.annotations/2022.1.0/jetbrains.annotations.2022.1.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/microsoft.aspnetcore.openapi/7.0.0/microsoft.aspnetcore.openapi.7.0.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/microsoft.bcl.asyncinterfaces/1.1.1/microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/microsoft.csharp/4.5.0/microsoft.csharp.4.5.0.nupkg.sha512",
@@ -77,7 +78,9 @@
     "/Users/Filomena/.nuget/packages/system.text.json/7.0.0/system.text.json.7.0.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/system.threading.tasks/4.3.0/system.threading.tasks.4.3.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "/Users/Filomena/.nuget/packages/system.windows.extensions/5.0.0/system.windows.extensions.5.0.0.nupkg.sha512"
+    "/Users/Filomena/.nuget/packages/system.windows.extensions/5.0.0/system.windows.extensions.5.0.0.nupkg.sha512",
+    "/Users/Filomena/.nuget/packages/x.pagedlist/8.4.3/x.pagedlist.8.4.3.nupkg.sha512",
+    "/Users/Filomena/.nuget/packages/x.pagedlist.mvc.core/8.4.3/x.pagedlist.mvc.core.8.4.3.nupkg.sha512"
   ],
   "logs": []
 }
