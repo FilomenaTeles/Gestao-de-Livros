@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Data;
+using X.PagedList;
 
 namespace GestaoLivrosApi.Services
 {
@@ -18,7 +19,8 @@ namespace GestaoLivrosApi.Services
         {
             try
             {
-                return await _context.Books.ToListAsync();
+
+                return await _context.Books.OrderBy(b => b.Name).ToListAsync();
             }
             catch 
             {
