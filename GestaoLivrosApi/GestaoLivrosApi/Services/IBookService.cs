@@ -9,6 +9,8 @@ namespace GestaoLivrosApi.Services
 
 		//Get livros por o Isbn
         Task<IEnumerable<Book>> GetBooksByIsbn(string isbn);
+
+        Task InsertBook(Book book);
     }
 }
 

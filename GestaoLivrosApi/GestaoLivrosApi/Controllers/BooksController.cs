@@ -39,7 +39,7 @@ namespace GestaoLivrosApi.Controllers
             }
         }
 
-        [HttpGet("BooksByIsbn")]
+        [HttpGet("GetBooksByIsbn")]
         public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooksByIsbn([FromQuery] string isbn)
         {
             try
@@ -50,6 +50,20 @@ namespace GestaoLivrosApi.Controllers
                 return Ok(books);
             }
             catch 
+            {
+                return BadRequest("Request inválido");
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Insert(Book book)
+        {
+            try
+            {
+                await _bookService.InsertBook(book);
+                return Ok(book);  //este nameof é o nome do endpoint criado na linha 56
+            }
+            catch
             {
                 return BadRequest("Request inválido");
             }
