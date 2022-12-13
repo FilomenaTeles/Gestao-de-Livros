@@ -33,7 +33,15 @@ namespace GestaoLivrosApi.Services
             // cira enumeravel de livros
             IEnumerable<Book> books;
 
-            if(!string.IsNullOrEmpty(isbn))
+            if (!string.IsNullOrEmpty(isbn))
+            {
+                books = await _context.Books.Where(b => (b.Isbn.ToString()).Contains(isbn)).ToListAsync();
+            }
+            else
+            {
+                books = await GetBooks();
+            }
+            return books;
         }
     }
 }

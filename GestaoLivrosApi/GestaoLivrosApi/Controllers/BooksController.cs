@@ -39,6 +39,22 @@ namespace GestaoLivrosApi.Controllers
             }
         }
 
+        [HttpGet("BooksByIsbn")]
+        public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooksByIsbn([FromQuery] string isbn)
+        {
+            try
+            {
+                var books = await _bookService.GetBooksByIsbn(isbn);
+                if (books?.Any() != true)
+                    return NotFound($"Não existe o livro com isbn: {isbn} neste catálogo");
+                return Ok(books);
+            }
+            catch 
+            {
+                return BadRequest("Request inválido");
+            }
+        }
+
     }
 } 
 
