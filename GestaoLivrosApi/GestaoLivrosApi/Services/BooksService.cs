@@ -27,6 +27,22 @@ namespace GestaoLivrosApi.Services
                 throw;
             }
         }
+
+        public async Task<IEnumerable<Book>> GetBooksByIsbn(string isbn)
+        {
+            // cira enumeravel de livros
+            IEnumerable<Book> books;
+
+            if (!string.IsNullOrEmpty(isbn))
+            {
+                books = await _context.Books.Where(b => (b.Isbn.ToString()).Contains(isbn)).ToListAsync();
+            }
+            else
+            {
+                books = await GetBooks();
+            }
+            return books;
+        }
     }
 }
 

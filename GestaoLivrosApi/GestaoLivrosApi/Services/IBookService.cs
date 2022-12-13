@@ -6,6 +6,9 @@ namespace GestaoLivrosApi.Services
 	{
 		//Get livros
 		Task<IEnumerable<Book>> GetBooks();
-	}
+
+		//Get livros por o Isbn
+        Task<IEnumerable<Book>> GetBooksByIsbn(string isbn);
+    }
 }
 
