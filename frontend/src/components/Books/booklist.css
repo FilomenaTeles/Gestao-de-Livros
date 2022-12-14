@@ -1,4 +1,4 @@
-ul {
+#book-ul {
     display: grid;
     padding: 0 25px;
     grid-template-columns: repeat(3, 1fr);
@@ -6,7 +6,7 @@ ul {
     list-style: none;
 }
 
-ul li{
+#book-li{
     padding: 10px;
     border-radius: 10px;
     position: relative;

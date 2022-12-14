@@ -47,9 +47,9 @@ export function AllBooks(){
           ))}
         </tbody>
       </table> */}
-      <ul>
+      <ul id='book-ul'>
         {books.map((book: {isbn: number;name:string; author:string; price: number}) =>(
-         <li>
+         <li id='book-li'>
              <BookCard 
               name={book.name} 
               author={book.author} 
