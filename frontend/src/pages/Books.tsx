@@ -1,10 +1,10 @@
 import { AllBooks} from "../components/books/BooksList";
-import { Search } from "../components/global/Search";
+import { SearchBook } from "../components/books/Search";
 
 export function Books(){
     return(
         <div className="container">
-            <Search/>
+            <SearchBook/>
            <AllBooks/>
         </div>
     );

@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import api from '../../services/api';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios'; 
 
 export function AllBooks(){
-    const baseUrl = "https://localhost:7124/api/Books";
-  const [data, setData]= useState([]);
+ 
+  const [books, setBooks]= useState([]);
 
-  const requestGet = async()=>{
-    await axios.get(baseUrl)
-    .then(response => {
-      setData(response.data);
+  useEffect(()=>{
+    api.get('api/Books').then(response => {
+      setBooks(response.data);
     }).catch(error =>{
       console.log(error);
     })
-  }
-  useEffect(()=>{
-    requestGet();
-  })
+  });
+
 
   return (
     <div className='container mt-4'>
@@ -33,7 +30,7 @@ export function AllBooks(){
           </tr>
         </thead>
         <tbody>
-          {data.map((book: {id:number; isbn: number;name:string; author:string; price: number}) =>(
+          {books.map((book: {id:number; isbn: number;name:string; author:string; price: number}) =>(
             <tr key={book.id}>
               <td>{book.isbn}</td>
               <td>{book.name}</td>
