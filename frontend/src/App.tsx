@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 import axios from 'axios'; 
 import { Link } from 'react-router-dom';
 
@@ -12,6 +13,7 @@ function App() {
   
   
   return (
+
     <div>
       <nav className="navbar navbar-expand-lg bg-light">
         <div className="container-fluid">
