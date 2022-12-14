@@ -46,14 +46,11 @@ namespace GestaoLivrosApi.Services
 
         public async Task InsertBook(Book book)
         {
-            var hasIsbn = GetBooksByIsbn(book.Isbn.ToString());
-
-            if (hasIsbn == null)
-            {
+            
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
-            }
-           
+            
+              
             
         }
     }

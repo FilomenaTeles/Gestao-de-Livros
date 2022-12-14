@@ -60,8 +60,21 @@ namespace GestaoLivrosApi.Controllers
         {
             try
             {
-                await _bookService.InsertBook(book);
-                return Ok(book);  //este nameof é o nome do endpoint criado na linha 56
+                var hasIsbn = await _bookService.GetBooksByIsbn(book.Isbn.ToString());
+
+                if (hasIsbn.Any() != true && book.Price>0)
+                {
+                    await _bookService.InsertBook(book);
+                    return Ok(book);
+                }
+                else if (hasIsbn.Any() == true)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
+                }
+                else 
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
+                }
             }
             catch
             {
