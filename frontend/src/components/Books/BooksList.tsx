@@ -21,11 +21,11 @@ export function AllBooks(){
   })
 
   return (
-    
+    <div className='container mt-4'>
       <table className='table table-bordered'>
         <thead>
           <tr>
-            <th>Id</th>
+            <th>ISBN</th>
             <th scope="col">Nome</th>
             <th scope="col">Email</th>
             <th scope="col">Idade</th>
@@ -47,5 +47,6 @@ export function AllBooks(){
           ))}
         </tbody>
       </table>
+    </div>
   );
 }
