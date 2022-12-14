@@ -22,10 +22,10 @@ export function AllBooks(){
       <table className='table table-bordered'>
         <thead>
           <tr>
-            <th>ISBN</th>
+            <th scope="col">ISBN</th>
             <th scope="col">Nome</th>
-            <th scope="col">Email</th>
-            <th scope="col">Idade</th>
+            <th scope="col">Autor</th>
+            <th scope="col">Preço</th>
             <th scope="col">Ação</th>
           </tr>
         </thead>
