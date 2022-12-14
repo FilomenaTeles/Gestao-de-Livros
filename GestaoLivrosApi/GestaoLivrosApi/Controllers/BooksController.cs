@@ -39,7 +39,7 @@ namespace GestaoLivrosApi.Controllers
             }
         }
 
-        [HttpGet("BooksByIsbn")]
+        [HttpGet("GetBooksByIsbn")]
         public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooksByIsbn([FromQuery] string isbn)
         {
             try
@@ -50,6 +50,33 @@ namespace GestaoLivrosApi.Controllers
                 return Ok(books);
             }
             catch 
+            {
+                return BadRequest("Request inválido");
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Insert(Book book)
+        {
+            try
+            {
+                var hasIsbn = await _bookService.GetBooksByIsbn(book.Isbn.ToString());
+
+                if (hasIsbn.Any() != true && book.Price>0)
+                {
+                    await _bookService.InsertBook(book);
+                    return Ok(book);
+                }
+                else if (hasIsbn.Any() == true)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
+                }
+                else 
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
+                }
+            }
+            catch
             {
                 return BadRequest("Request inválido");
             }

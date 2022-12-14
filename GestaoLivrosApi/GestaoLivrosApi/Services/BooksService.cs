@@ -43,6 +43,16 @@ namespace GestaoLivrosApi.Services
             }
             return books;
         }
+
+        public async Task InsertBook(Book book)
+        {
+            
+                _context.Books.Add(book);
+                await _context.SaveChangesAsync();
+            
+              
+            
+        }
     }
 }
 
