@@ -2,7 +2,7 @@ import api from "../../services/api";
 import "./styles.css"
 
 import {BsBook} from "react-icons/bs";
-import { Link, useNavigate, redirect } from "react-router-dom";
+import { Link, useNavigate, redirect} from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 
 
@@ -31,13 +31,10 @@ export function AddBook(){
     }catch(error){
             alert('Erro ao adicionar novo livro: '+error);
     }
-    // navigate('/books');
+     navigate('/books');
     redirect('/books');
   }
 
- /*  useEffect(()=>{
-    
-  }); */
     return(
         <div className="add-book-container">
            <div className="container p-3 mt-5">
