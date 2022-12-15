@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
+import { BookCard } from '../global/Card';
+import "./booklist.css"
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,13 +21,14 @@ export function AllBooks(){
 
   return (
     <div className='container mt-4'>
-      <table className='table table-bordered'>
+      
+      {/* <table className='table table-bordered'>
         <thead>
           <tr>
-            <th>ISBN</th>
+            <th scope="col">ISBN</th>
             <th scope="col">Nome</th>
-            <th scope="col">Email</th>
-            <th scope="col">Idade</th>
+            <th scope="col">Autor</th>
+            <th scope="col">Preço</th>
             <th scope="col">Ação</th>
           </tr>
         </thead>
@@ -43,7 +46,22 @@ export function AllBooks(){
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+      <ul id='book-ul'>
+        {books.map((book: {isbn: number;name:string; author:string; price: number}) =>(
+         <li id='book-li'>
+             <BookCard 
+              name={book.name} 
+              author={book.author} 
+              price={book.price}
+              isbn={book.isbn}
+            
+          />
+         </li>
+        
+        ))}
+      </ul>
+      
     </div>
   );
 }

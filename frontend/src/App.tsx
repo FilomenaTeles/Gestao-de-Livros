@@ -26,6 +26,9 @@ function App() {
               <li className="nav-item">
                 <Link className='nav-link' to='/books'>Livros</Link>
               </li>
+              <li className="nav-item">
+                <Link className='nav-link' to='/authors'>Autores</Link>
+              </li>
             </ul>
           
           </div>
