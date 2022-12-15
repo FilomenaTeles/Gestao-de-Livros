@@ -22,7 +22,7 @@ namespace GestaoLivrosApi.Services
 
                 return await _context.Books.OrderBy(b => b.Name).ToListAsync();
             }
-            catch 
+            catch
             {
                 throw;
             }
@@ -46,13 +46,18 @@ namespace GestaoLivrosApi.Services
 
         public async Task InsertBook(Book book)
         {
-            
-                _context.Books.Add(book);
-                await _context.SaveChangesAsync();
-            
-              
-            
+
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
+
         }
+
+        public async Task UpdateBook(Book book)
+        {
+            _context.Entry(book).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+    
     }
 }
 

@@ -82,6 +82,38 @@ namespace GestaoLivrosApi.Controllers
             }
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Edit(int id, [FromBody] Book book)
+        {
+            try
+            {
+                if (book.Id == id)
+                {
+                    var hasIsbn = await _bookService.GetBooksByIsbn(book.Isbn.ToString());
+
+                    if (hasIsbn.Any() != true && book.Price > 0)
+                    {
+                        await _bookService.UpdateBook(book);
+                        return Ok($"Livro com id={id} foi atualizado com sucesso");
+                    }
+                    else if (hasIsbn.Any() == true)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
+                    }
+                }
+                else
+                    return BadRequest("Dados inconsistentes");
+            }
+            catch
+            {
+                return BadRequest("Request inválido");
+            }
+        }
+
     }
 } 
 
