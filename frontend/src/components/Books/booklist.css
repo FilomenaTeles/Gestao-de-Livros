@@ -1,0 +1,13 @@
+#book-ul {
+    display: grid;
+    padding: 0 25px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 35px;
+    list-style: none;
+}
+
+#book-li{
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+}
