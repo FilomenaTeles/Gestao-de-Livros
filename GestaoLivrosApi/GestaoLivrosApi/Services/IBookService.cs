@@ -11,6 +11,10 @@ namespace GestaoLivrosApi.Services
         Task<IEnumerable<Book>> GetBooksByIsbn(string isbn);
 
         Task InsertBook(Book book);
+
+        Task UpdateBook(Book book);
+
+     
     }
 }
 
