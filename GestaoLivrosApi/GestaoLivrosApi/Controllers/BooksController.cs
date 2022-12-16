@@ -83,19 +83,21 @@ namespace GestaoLivrosApi.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Edit(int id, [FromBody] Book book)
+        public async Task<ActionResult> Update(int id, [FromBody] Book book)
         {
             try
             {
                 if (book.Id == id)
                 {
-                    var hasIsbn = await _bookService.GetBooksByIsbn(book.Isbn.ToString());
+                   // var hasIsbn = await _bookService.GetBooksByIsbn(book.Isbn.ToString());
+                   // var isbnLenght = hasIsbn.Count();
+                    
 
-                    if (hasIsbn.Any() != true && book.Price > 0)
-                    {
+                    //if (hasIsbn.Any() != true && book.Price > 0)
+                    //{
                         await _bookService.UpdateBook(book);
                         return Ok($"Livro com id={id} foi atualizado com sucesso");
-                    }
+                    /*}
                     else if (hasIsbn.Any() == true)
                     {
                         return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
@@ -103,7 +105,7 @@ namespace GestaoLivrosApi.Controllers
                     else
                     {
                         return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
-                    }
+                    }*/
                 }
                 else
                     return BadRequest("Dados inconsistentes");
