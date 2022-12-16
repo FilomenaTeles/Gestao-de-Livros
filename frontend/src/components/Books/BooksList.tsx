@@ -56,7 +56,28 @@ function selectBook (book:any){
       })
   };
 
-  
+  const requestPut = async()=>{
+   
+   api.put( "api/Books/"+bookSelected.id, bookSelected)
+    .then(response => {
+      var resp = response.data;
+      var auxiliarData = allBooks;
+
+      auxiliarData.map((book: {id:number; name:string;author:string;price:number; isbn:number}) => {
+        if(book.id === bookSelected.id){
+          book.name = resp.name;
+          book.author= resp.author;
+          book.price= resp.price;
+          book.isbn= resp.isbn;
+        }
+      });
+      setUpdatedata(true);
+      abrirFecharModalEditar();
+
+    }).catch(error =>{
+      console.log(error);
+    })
+  }
 
 
   return (
@@ -64,7 +85,7 @@ function selectBook (book:any){
       
       <ul id='book-ul'>
         {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
-         <li id='book-li'>
+         <li id='book-li' key={book.id}>
              <BookCard 
               edit={()=>selectBook(book)}
               name={book.name} 
@@ -83,6 +104,7 @@ function selectBook (book:any){
                 <ModalHeader>Editar Livro</ModalHeader>
                 <ModalBody>
                     <div className='form-group'>
+                      <input type="number" hidden name='id' value={bookSelected && bookSelected.id}/>
                     <label>Isbn:</label>
                     <input className='form-control' value={bookSelected && bookSelected.isbn} />
                     <br/>
@@ -99,7 +121,7 @@ function selectBook (book:any){
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button id='btn-edit' className='btn btn-primary ' >Editar</button> {"  "}
+                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestPut()}>Editar</button> {"  "}
                     <button id='btn-cancel' className='btn btn-danger' onClick={()=>abrirFecharModalEditar()}>Cancelar</button>    
                 </ModalFooter>
             </Modal>
