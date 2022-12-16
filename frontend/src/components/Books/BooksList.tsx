@@ -120,7 +120,7 @@ function selectBook (book:any, option:string){
 
   return (
     <div className='container mt-4'>
-      <form className="mt-3 ">
+      <form className=" mb-3">
         <input type="text" placeholder="Filtrar" onChange={(e)=> searchBooks(e.target.value)}/>
                 
       </form>
