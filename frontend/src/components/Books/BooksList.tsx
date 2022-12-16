@@ -30,7 +30,7 @@ function selectBook (book:any){
     setBookSelected(book);
     abrirFecharModalEditar();
 };
-
+//FILTRO  
   const [inputSearch, setInputSearch] = useState('');
   const [filter, setFilter]= useState([]);
 
@@ -100,10 +100,10 @@ function selectBook (book:any){
 
   return (
     <div className='container mt-4'>
-      <form className="mt-3 text-end">
-                <input type="text" placeholder="Filtrar" onChange={(e)=> searchBooks(e.target.value)}/>
+      <form className="mt-3 ">
+        <input type="text" placeholder="Filtrar" onChange={(e)=> searchBooks(e.target.value)}/>
                 
-            </form>
+      </form>
             {inputSearch.length< 1 ? (
               <ul id='book-ul'>
         {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
