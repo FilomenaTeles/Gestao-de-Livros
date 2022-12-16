@@ -116,6 +116,28 @@ namespace GestaoLivrosApi.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var book = await _bookService.GetBookById(id);
+                if (book != null)
+                {
+                    await _bookService.DeleteBook(book);
+                    return Ok($"Livro de id={id} eliminado com sucesso");
+                }
+                else
+                {
+                    return NotFound($"Livro de id={id} não encontrado");
+                }
+            }
+            catch
+            {
+                return BadRequest("Request inválido");
+            }
+        }
+
     }
 } 
 

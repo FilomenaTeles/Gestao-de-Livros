@@ -35,12 +35,19 @@ namespace GestaoLivrosApi.Services
 
             if (!string.IsNullOrEmpty(isbn))
             {
-                books = await _context.Books.Where(b => (b.Isbn.ToString()).Contains(isbn)).ToListAsync();
+                books = await _context.Books.Where(b => (b.Isbn.ToString()).Equals(isbn)).ToListAsync();
             }
             else
             {
                 books = await GetBooks();
             }
+            return books;
+        }
+
+        public async Task<Book> GetBookById(int id)
+        {
+            var books = await _context.Books.FindAsync(id);
+            
             return books;
         }
 
@@ -57,7 +64,13 @@ namespace GestaoLivrosApi.Services
             _context.Entry(book).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
-    
+
+        public async Task DeleteBook(Book book)
+        {
+            _context.Entry(book).CurrentValues["isDeleted"] = true;
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
 

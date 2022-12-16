@@ -19,7 +19,9 @@ namespace GestaoLivrosApi.Models
         [Required]
 		public double Price { get; set; }
 
-	
+		public bool isDeleted { get; set; } = false;
+
+
     }
 }
 
