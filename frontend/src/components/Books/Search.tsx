@@ -18,7 +18,7 @@ export function SearchBook(){
         <div className="container">
             <form className="mt-3 text-end">
                 <input type="text" placeholder="ISBN" />
-                <button type="button" className="btn btn-outline-secondary ms-2">Filtrar</button>   
+                
             </form>
         </div>
     );

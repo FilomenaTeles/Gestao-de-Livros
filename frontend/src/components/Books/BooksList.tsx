@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import api from '../../services/api';
 import { BookCard } from '../global/Card';
 import "./booklist.css"
-import {Modal, ModalBody, ModalFooter, ModalHeader, Button} from 'reactstrap';
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -30,6 +30,24 @@ function selectBook (book:any){
     setBookSelected(book);
     abrirFecharModalEditar();
 };
+//FILTRO  
+  const [inputSearch, setInputSearch] = useState('');
+  const [filter, setFilter]= useState([]);
+
+  const searchBooks = (searchValue:any) => {
+    setInputSearch(searchValue);
+
+    if(inputSearch != ''){
+        const booksFiltered=allBooks.filter((item)=>{
+          return Object.values(item).join('').toLowerCase().includes(inputSearch.toLowerCase())
+        });
+        setFilter(booksFiltered);
+    }
+    else{
+      setFilter(allBooks);
+    }
+  }
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
         setBookSelected({
@@ -82,8 +100,12 @@ function selectBook (book:any){
 
   return (
     <div className='container mt-4'>
-      
-      <ul id='book-ul'>
+      <form className="mt-3 ">
+        <input type="text" placeholder="Filtrar" onChange={(e)=> searchBooks(e.target.value)}/>
+                
+      </form>
+            {inputSearch.length< 1 ? (
+              <ul id='book-ul'>
         {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
          <li id='book-li' key={book.id}>
              <BookCard 
@@ -99,6 +121,25 @@ function selectBook (book:any){
         
         ))}
       </ul>
+            ):(
+              <ul id='book-ul'>
+              {filter.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
+               <li id='book-li' key={book.id}>
+                   <BookCard 
+                    edit={()=>selectBook(book)}
+                    name={book.name} 
+                    author={book.author} 
+                    price={book.price}
+                    isbn={book.isbn}
+                    id={book.id}
+                  
+                />
+               </li>
+              
+              ))}
+            </ul>
+            )}
+      
 
       <Modal isOpen={modalEditar}>
                 <ModalHeader>Editar Livro</ModalHeader>
