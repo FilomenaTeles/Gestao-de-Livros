@@ -31,6 +31,7 @@ export function AddBook(){
     }catch(error){
             alert('Erro ao adicionar novo livro: '+error);
     }
+    <Link to={'/books'}></Link>
      navigate('/books');
     redirect('/books');
   }
