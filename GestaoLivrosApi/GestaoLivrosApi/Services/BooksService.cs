@@ -15,6 +15,8 @@ namespace GestaoLivrosApi.Services
             _context = context;
         }
 
+       
+
         public async Task<IEnumerable<Book>> GetBooks()
         {
             try
@@ -71,6 +73,24 @@ namespace GestaoLivrosApi.Services
             await _context.SaveChangesAsync();
         }
 
+    }
+
+    public static PagedResult<Book> GetPaged<Book>(this IQueryable<Book> query,
+                                        int page, int pageSize) where Book : class
+    {
+        var result = new PagedResult<Book>();
+        result.CurrentPage = page;
+        result.PageSize = pageSize;
+        result.RowCount = query.Count();
+
+
+        var pageCount = (double)result.RowCount / pageSize;
+        result.PageCount = (int)Math.Ceiling(pageCount);
+
+        var skip = (page - 1) * pageSize;
+        result.Results = query.Skip(skip).Take(pageSize).ToList();
+
+        return result;
     }
 }
 

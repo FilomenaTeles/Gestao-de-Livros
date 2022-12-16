@@ -23,6 +23,8 @@ namespace GestaoLivrosApi.Controllers
         }
 
 
+
+
         // GET: api/values
         [HttpGet]
        public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooks()

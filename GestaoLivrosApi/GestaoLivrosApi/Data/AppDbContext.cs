@@ -48,7 +48,8 @@ namespace GestaoLivrosApi.Data
                       Price = 18.90
 
                   }
-                );
+                   
+                ); ;
         }
 
         public override int SaveChanges()
