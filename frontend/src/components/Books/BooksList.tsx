@@ -11,11 +11,19 @@ export function AllBooks(){
   const [allBooks, setAllBooks]= useState([]);
 
    //estado para controlar o modal
-   const [modalEditar, setModalEditar]=useState(false);
+   const [modalEdit, setModalEdit]=useState(false);
 
    //metodo para alternar estados do modal
-   function abrirFecharModalEditar(){
-     setModalEditar(!modalEditar);
+   function openCloseModalEdit(){
+     setModalEdit(!modalEdit);
+   }
+
+   //estado para controlar o modal
+   const [modalDelete, setModalDelete]=useState(false);
+
+   //metodo para alternar estados do modal
+   const openCloseModalDelete=() =>{
+     setModalDelete(!modalDelete);
    }
 
    const [bookSelected,setBookSelected]= useState({
@@ -26,9 +34,9 @@ export function AllBooks(){
     id:0
 });
 
-function selectBook (book:any){
+function selectBook (book:any, option:string){
     setBookSelected(book);
-    abrirFecharModalEditar();
+    (option=='edit') ? openCloseModalEdit(): openCloseModalDelete();
 };
 //FILTRO  
   const [inputSearch, setInputSearch] = useState('');
@@ -90,13 +98,25 @@ function selectBook (book:any){
         }
       });
       setUpdatedata(true);
-      abrirFecharModalEditar();
+      openCloseModalEdit();
 
     }).catch(error =>{
       console.log(error);
     })
   }
 
+  const requestDelete = async()=>{
+
+    api.delete("api/Books/"+bookSelected.id)
+    .then(response => {
+      setAllBooks(allBooks.filter((book:any) => book.id !== response.data));
+      setUpdatedata(true);
+      openCloseModalDelete();
+
+    }).catch(error =>{
+      console.log(error);
+    })
+  }
 
   return (
     <div className='container mt-4'>
@@ -109,7 +129,8 @@ function selectBook (book:any){
         {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
          <li id='book-li' key={book.id}>
              <BookCard 
-              edit={()=>selectBook(book)}
+             delete={()=>selectBook(book,'delete')}
+              edit={()=>selectBook(book,'edit')}
               name={book.name} 
               author={book.author} 
               price={book.price}
@@ -126,7 +147,8 @@ function selectBook (book:any){
               {filter.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
                <li id='book-li' key={book.id}>
                    <BookCard 
-                    edit={()=>selectBook(book)}
+                   delete={()=>selectBook(book,'delete')}
+                    edit={()=>selectBook(book,'edit')}
                     name={book.name} 
                     author={book.author} 
                     price={book.price}
@@ -141,7 +163,7 @@ function selectBook (book:any){
             )}
       
 
-      <Modal isOpen={modalEditar}>
+      <Modal isOpen={modalEdit}>
                 <ModalHeader>Editar Livro</ModalHeader>
                 <ModalBody>
                     <div className='form-group'>
@@ -163,8 +185,22 @@ function selectBook (book:any){
                 </ModalBody>
                 <ModalFooter>
                     <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestPut()}>Editar</button> {"  "}
-                    <button id='btn-cancel' className='btn btn-danger' onClick={()=>abrirFecharModalEditar()}>Cancelar</button>    
+                    <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalEdit()}>Cancelar</button>    
                 </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={modalDelete}>
+              <ModalBody>
+                Esta ação vai eliminar o livro: <br />
+                Titulo: {bookSelected && bookSelected.name} <br />
+                Autor: {bookSelected && bookSelected.author} <br />
+                ISBN: {bookSelected && bookSelected.isbn} <br />
+                <b>Deseja continuar?</b>
+              </ModalBody>
+              <ModalFooter>
+                <button className='btn btn-danger' onClick={()=>requestDelete()}>Eliminar</button>
+                <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
+              </ModalFooter>
             </Modal>
       
     </div>
