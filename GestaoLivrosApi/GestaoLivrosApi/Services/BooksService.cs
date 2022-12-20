@@ -17,17 +17,22 @@ namespace GestaoLivrosApi.Services
 
        
 
-        public async Task<IEnumerable<Book>> GetBooks()
+        public PagedList<Book> GetBooks(BookParameters bookParameters)
         {
             try
             {
 
-                return await _context.Books.OrderBy(b => b.Name).ToListAsync();
+                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b=>b.Name),bookParameters.PageNumber, bookParameters.PageSize);
             }
             catch
             {
                 throw;
             }
+        }
+
+        public IQueryable<Book> FindAll()
+        {
+            return this._context.Set<Book>();
         }
 
         public async Task<IEnumerable<Book>> GetBooksByIsbn(string isbn)
@@ -41,7 +46,8 @@ namespace GestaoLivrosApi.Services
             }
             else
             {
-                books = await GetBooks();
+                //books = await GetBooks();
+                books = await _context.Books.Where(b => (b.Isbn.ToString()).Equals(isbn)).ToListAsync();
             }
             return books;
         }
@@ -75,22 +81,6 @@ namespace GestaoLivrosApi.Services
 
     }
 
-    public static PagedResult<Book> GetPaged<Book>(this IQueryable<Book> query,
-                                        int page, int pageSize) where Book : class
-    {
-        var result = new PagedResult<Book>();
-        result.CurrentPage = page;
-        result.PageSize = pageSize;
-        result.RowCount = query.Count();
-
-
-        var pageCount = (double)result.RowCount / pageSize;
-        result.PageCount = (int)Math.Ceiling(pageCount);
-
-        var skip = (page - 1) * pageSize;
-        result.Results = query.Skip(skip).Take(pageSize).ToList();
-
-        return result;
-    }
+  
 }
 

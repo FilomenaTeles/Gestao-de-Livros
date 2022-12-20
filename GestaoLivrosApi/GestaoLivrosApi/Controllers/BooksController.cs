@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GestaoLivrosApi.Services;
 using GestaoLivrosApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -27,11 +28,23 @@ namespace GestaoLivrosApi.Controllers
 
         // GET: api/values
         [HttpGet]
-       public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooks()
+       public IActionResult GetBooks([FromQuery] BookParameters bookParameters)
         {
             try
             {
-                var books = await _bookService.GetBooks();
+                var books = _bookService.GetBooks(bookParameters);
+
+                var metadata = new
+                {
+                    books.TotalCount,
+                    books.PageSize,
+                    books.CurrentPage,
+                    books.TotalPages,
+                    books.HasNext,
+                    books.HasPrevious
+                };
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
                 return Ok(books);
             }
             catch
