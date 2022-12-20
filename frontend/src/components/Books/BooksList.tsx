@@ -7,6 +7,7 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BsArrowDownCircle} from "react-icons/bs";
 import {BsArrowUpCircle} from "react-icons/bs";
+import ReactPaginate from 'react-paginate';
 
 export function AllBooks(){
  
@@ -89,9 +90,11 @@ function selectBook (book:any, option:string){
     }, [updateData])
 
     const requestGet = async() =>{
-      api.get('api/Books').then(response => {
+      api.get('api/Books?PageNumber=1&PageSize=3').then(response => {
         setAllBooks(response.data);
         setOrderBooks(response.data);
+        const header =response.headers;
+        console.log(header);
       }).catch(error =>{
         console.log(error);
       })
@@ -176,7 +179,7 @@ function selectBook (book:any, option:string){
         </div>
         <div className='container text-end col-4'>
           <select className='' name="orderBy" id="orderBy" onChange={(e)=>orderBy(e.target.value)}>
-            <option selected disabled>Ordenar por:</option>
+            <option value= "" selected disabled>Ordenar por:</option>
             <option value="name-asc">Nome (ASC)</option>
             <option value="price-asc">Preço (ASC)</option>
             <option value="name-desc">Nome (DESC)</option>
@@ -224,7 +227,25 @@ function selectBook (book:any, option:string){
               ))}
             </ul>
             )}
-      
+      <ReactPaginate 
+        previousLabel={'previous'}
+        nextLabel={'next'}
+        breakLabel={'...'} 
+        pageCount={10}
+        marginPagesDisplayed={3}
+        pageRangeDisplayed={4}
+        //onPageChange={handlePageClick}
+        containerClassName={'pagination justify-content-center'}
+        pageClassName={'page-item'}
+        pageLinkClassName={'page-link'}
+        previousClassName={'page-item'}
+        previousLinkClassName={'page-link'}
+        nextClassName={'page-item'}
+        nextLinkClassName={'page-link'}
+        breakClassName={'page-item'}
+        breakLinkClassName={'page-link'}
+        activeClassName={'active'}
+  />
 
       <Modal isOpen={modalEdit}>
                 <ModalHeader>Editar Livro</ModalHeader>
