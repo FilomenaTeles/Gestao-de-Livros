@@ -77,3 +77,4 @@
 /Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/JetBrains.Annotations.dll
 /Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/X.PagedList.dll
 /Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/X.PagedList.Mvc.Core.dll
+/Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/Newtonsoft.Json.dll

@@ -5,10 +5,19 @@ import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {BsArrowDownCircle} from "react-icons/bs";
+import {BsArrowUpCircle} from "react-icons/bs";
+import ReactPaginate from 'react-paginate';
 
 export function AllBooks(){
  
-  const [allBooks, setAllBooks]= useState([]);
+  const [allBooks, setAllBooks]= useState([{
+    name: '',
+    author: '',
+    isbn: 0,
+    price: 0.0,
+    id:0
+  }]);
 
    //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
@@ -40,7 +49,13 @@ function selectBook (book:any, option:string){
 };
 //FILTRO  
   const [inputSearch, setInputSearch] = useState('');
-  const [filter, setFilter]= useState([]);
+  const [filter, setFilter]= useState([{
+    name: '',
+    author: '',
+    isbn: 0,
+    price: 0.0,
+    id:0
+  }]);
 
   const searchBooks = (searchValue:any) => {
     setInputSearch(searchValue);
@@ -74,9 +89,14 @@ function selectBook (book:any, option:string){
       } 
     }, [updateData])
 
+    const [atualPage,setAtualPage]=useState(1);
+
     const requestGet = async() =>{
-      api.get('api/Books').then(response => {
+      api.get('api/Books?PageNumber='+atualPage+'&PageSize=3').then(response => {
         setAllBooks(response.data);
+        setOrderBooks(response.data);
+        const header =response.headers;
+        console.log(header);
       }).catch(error =>{
         console.log(error);
       })
@@ -117,13 +137,82 @@ function selectBook (book:any, option:string){
       console.log(error);
     })
   }
+  const [orderBooks, setOrderBooks]= useState([{
+    name: '',
+    author: '',
+    isbn: 0,
+    price: 0.0,
+    id:0
+}]);
+
+  function orderBy(e:any){
+      const option=e;
+      if(option ==="name-asc"){
+        const orderByName= [...orderBooks].sort((a, b) => a.name > b.name ? 1 : -1);
+        setAllBooks(orderByName);
+        console.log(orderByName);
+      }
+      else if(option ==="price-asc"){
+        const orderByPrice= [...orderBooks].sort((a, b) => a.price - b.price)
+        console.log(orderByPrice);
+        setAllBooks(orderByPrice);
+      }
+      else if(option ==="price-desc"){
+        const orderByPrice= [...orderBooks].sort((a, b) => b.price - a.price)
+        console.log(orderByPrice);
+        setAllBooks(orderByPrice);
+      }
+      else if(option ==="name-desc"){
+        const orderByName= [...orderBooks].sort((a, b) => a.name > b.name ? -1 : 1);
+        setAllBooks(orderByName);
+        console.log(orderByName);
+      }
+      console.log(e)
+  }; 
+
+  //paginação
+  const fetchBooks = async (currentPage: number) => {
+    const res = await fetch('https://localhost:7124/api/Books?PageNumber='+currentPage+'&PageSize=3');
+    const temp = res.json();
+    return temp;
+  }; 
+
+  const handlePageClick = async (data:any)=>{
+   
+    let currentPage = data.selected +1
+    const alunosFormServer = await fetchBooks(currentPage);
+    setAllBooks (alunosFormServer);
+    setAtualPage(currentPage);
+  }
+ 
+  const [pageCount, setPageCount] = useState(0);
+   api.get("api/Books/").then(response => {
+    const res =response.data;
+    const totalPage=res.length;
+    setPageCount(totalPage/3)
+   })
 
   return (
     <div className='container mt-4'>
-      <form className="mt-3 ">
-        <input type="text" placeholder="Filtrar" onChange={(e)=> searchBooks(e.target.value)}/>
-                
-      </form>
+      <div className='container row'>
+        <div className='col-8'>
+          <form className=" mb-3">
+            <input type="text" placeholder="Filtrar" onChange={(e)=> searchBooks(e.target.value)}/>       
+          </form>
+        </div>
+        <div className='container text-end col-4'>
+          <select className='' name="orderBy" id="orderBy" onChange={(e)=>orderBy(e.target.value)}>
+            <option value= "" selected disabled>Ordenar por:</option>
+            <option value="name-asc">Nome (ASC)</option>
+            <option value="price-asc">Preço (ASC)</option>
+            <option value="name-desc">Nome (DESC)</option>
+            <option value="price-desc">Preço (DESC)</option>
+          </select>
+        </div>
+      </div>
+     
+     
+
             {inputSearch.length< 1 ? (
               <ul id='book-ul'>
         {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
@@ -161,7 +250,25 @@ function selectBook (book:any, option:string){
               ))}
             </ul>
             )}
-      
+      <ReactPaginate 
+        previousLabel={'previous'}
+        nextLabel={'next'}
+        breakLabel={'...'} 
+        pageCount={pageCount}
+        marginPagesDisplayed={3}
+        pageRangeDisplayed={4}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination justify-content-center'}
+        pageClassName={'page-item'}
+        pageLinkClassName={'page-link'}
+        previousClassName={'page-item'}
+        previousLinkClassName={'page-link'}
+        nextClassName={'page-item'}
+        nextLinkClassName={'page-link'}
+        breakClassName={'page-item'}
+        breakLinkClassName={'page-link'}
+        activeClassName={'active'}
+  />
 
       <Modal isOpen={modalEdit}>
                 <ModalHeader>Editar Livro</ModalHeader>

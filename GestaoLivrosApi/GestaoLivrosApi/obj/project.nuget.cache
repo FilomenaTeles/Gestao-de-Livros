@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "F+R+WRqa048sqFHpcS8Yx1D2zn4LGEKpBquiaTj05Y3vgq9bbG61pYrzKX7XW2oNF8M6qBY+TjykSsHLtdDzSw==",
+  "dgSpecHash": "kYTwj6rBDyRhyd9owaowQF/mmCcGwCTRwJvpv/YVkQ0c8uRdrgeSCyyAccOmn99KqFxsp02zVzp+rAvMcr78SA==",
   "success": true,
   "projectFilePath": "/Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/GestaoLivrosApi.csproj",
   "expectedPackageFiles": [
@@ -46,6 +46,7 @@
     "/Users/Filomena/.nuget/packages/microsoft.win32.registry/5.0.0/microsoft.win32.registry.5.0.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/microsoft.win32.systemevents/5.0.0/microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
+    "/Users/Filomena/.nuget/packages/newtonsoft.json/13.0.2/newtonsoft.json.13.0.2.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "/Users/Filomena/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.4.0/swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",

@@ -15,17 +15,24 @@ namespace GestaoLivrosApi.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Book>> GetBooks()
+       
+
+        public PagedList<Book> GetBooks(BookParameters bookParameters)
         {
             try
             {
 
-                return await _context.Books.OrderBy(b => b.Name).ToListAsync();
+                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b=>b.Name),bookParameters.PageNumber, bookParameters.PageSize);
             }
             catch
             {
                 throw;
             }
+        }
+
+        public IQueryable<Book> FindAll()
+        {
+            return this._context.Set<Book>();
         }
 
         public async Task<IEnumerable<Book>> GetBooksByIsbn(string isbn)
@@ -39,7 +46,8 @@ namespace GestaoLivrosApi.Services
             }
             else
             {
-                books = await GetBooks();
+                //books = await GetBooks();
+                books = await _context.Books.Where(b => (b.Isbn.ToString()).Equals(isbn)).ToListAsync();
             }
             return books;
         }
@@ -72,5 +80,7 @@ namespace GestaoLivrosApi.Services
         }
 
     }
+
+  
 }
 
