@@ -28,11 +28,11 @@ namespace GestaoLivrosApi.Controllers
 
         // GET: api/values
         [HttpGet]
-       public IActionResult GetBooks([FromQuery] BookParameters bookParameters)
+       public IActionResult GetBooks([FromQuery] BookParameters bookParameters, string? orderValue)
         {
             try
             {
-                var books = _bookService.GetBooks(bookParameters);
+                var books = _bookService.GetBooks(bookParameters, orderValue);
 
                 var metadata = new
                 {
