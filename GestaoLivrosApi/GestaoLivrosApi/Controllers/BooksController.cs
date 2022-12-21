@@ -43,7 +43,7 @@ namespace GestaoLivrosApi.Controllers
                     books.HasNext,
                     books.HasPrevious
                 };
-                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                Response.Headers.Add("x-pagination", JsonConvert.SerializeObject(metadata));
 
                 return Ok(books);
             }
