@@ -5,8 +5,6 @@ import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {BsArrowDownCircle} from "react-icons/bs";
-import {BsArrowUpCircle} from "react-icons/bs";
 import ReactPaginate from 'react-paginate';
 
 export function AllBooks(){
@@ -94,7 +92,6 @@ function selectBook (book:any, option:string){
     const requestGet = async() =>{
       api.get('api/Books?PageNumber='+atualPage+'&PageSize=3').then(response => {
         setAllBooks(response.data);
-        setOrderBooks(response.data);
         const header =response.headers;
         console.log(header);
       }).catch(error =>{
@@ -137,42 +134,31 @@ function selectBook (book:any, option:string){
       console.log(error);
     })
   }
-  const [orderBooks, setOrderBooks]= useState([{
-    name: '',
-    author: '',
-    isbn: 0,
-    price: 0.0,
-    id:0
-}]);
+ 
+const [orderValue, setOrderValue]=useState("");
+const [orderData, setOrderData]=useState(false)
 
   function orderBy(e:any){
       const option=e;
-      if(option ==="name-asc"){
-        const orderByName= [...orderBooks].sort((a, b) => a.name > b.name ? 1 : -1);
-        setAllBooks(orderByName);
-        console.log(orderByName);
-      }
-      else if(option ==="price-asc"){
-        const orderByPrice= [...orderBooks].sort((a, b) => a.price - b.price)
-        console.log(orderByPrice);
-        setAllBooks(orderByPrice);
-      }
-      else if(option ==="price-desc"){
-        const orderByPrice= [...orderBooks].sort((a, b) => b.price - a.price)
-        console.log(orderByPrice);
-        setAllBooks(orderByPrice);
-      }
-      else if(option ==="name-desc"){
-        const orderByName= [...orderBooks].sort((a, b) => a.name > b.name ? -1 : 1);
-        setAllBooks(orderByName);
-        console.log(orderByName);
-      }
-      console.log(e)
+      setOrderValue(option);
+     api.get('api/Books?PageNumber='+atualPage+'&PageSize=3&orderValue='+option)
+     .then(response => {
+        setAllBooks(response.data);
+        setOrderData(true)
+     })
+     
   }; 
 
   //paginação
   const fetchBooks = async (currentPage: number) => {
-    const res = await fetch('https://localhost:7124/api/Books?PageNumber='+currentPage+'&PageSize=3');
+    var res: any
+    if(orderData){
+       res = await fetch('https://localhost:7124/api/Books?PageNumber='+currentPage+'&PageSize=3&orderValue='+orderValue);
+
+    }else{
+      res = await fetch('https://localhost:7124/api/Books?PageNumber='+currentPage+'&PageSize=3');
+
+    }
     const temp = res.json();
     return temp;
   }; 
@@ -180,8 +166,8 @@ function selectBook (book:any, option:string){
   const handlePageClick = async (data:any)=>{
    
     let currentPage = data.selected +1
-    const alunosFormServer = await fetchBooks(currentPage);
-    setAllBooks (alunosFormServer);
+    const booksFormServer = await fetchBooks(currentPage);
+    setAllBooks (booksFormServer);
     setAtualPage(currentPage);
   }
  

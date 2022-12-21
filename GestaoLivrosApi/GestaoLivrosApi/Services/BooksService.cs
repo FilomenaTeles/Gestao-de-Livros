@@ -17,12 +17,43 @@ namespace GestaoLivrosApi.Services
 
        
 
-        public PagedList<Book> GetBooks(BookParameters bookParameters)
+        public PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue)
         {
             try
             {
+                if (orderValue!=null)
+                {
+                    switch (orderValue)
+                    {
+                       
+                        case "name-desc":
+                            {
+                                return PagedList<Book>.ToPagedList(FindAll().OrderByDescending(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
+                                break;
+                            }
+                        case "price-asc":
+                            {
+                                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Price), bookParameters.PageNumber, bookParameters.PageSize);
 
-                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b=>b.Name),bookParameters.PageNumber, bookParameters.PageSize);
+                            }
+                        case "price-desc":
+                            {
+                                return PagedList<Book>.ToPagedList(FindAll().OrderByDescending(b => b.Price), bookParameters.PageNumber, bookParameters.PageSize);
+
+                            }
+                        default:
+                            {
+                                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
+                                break;
+                            }
+                    }
+                }
+                else
+                {
+                    return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
+
+                }
+
             }
             catch
             {

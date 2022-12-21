@@ -5,7 +5,7 @@ namespace GestaoLivrosApi.Services
 	public interface IBookService
 	{
 		//Get livros
-		PagedList<Book> GetBooks(BookParameters bookParameters);
+		PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue);
 
 		//Get livros por o Isbn
         Task<IEnumerable<Book>> GetBooksByIsbn(string isbn);
