@@ -26,7 +26,7 @@ namespace GestaoLivrosApi.Services
                     switch (orderValue)
                     {
                        
-                        case "name-des":
+                        case "name-desc":
                             {
                                 return PagedList<Book>.ToPagedList(FindAll().OrderByDescending(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
                                 break;
