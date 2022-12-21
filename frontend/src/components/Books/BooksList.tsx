@@ -89,8 +89,10 @@ function selectBook (book:any, option:string){
       } 
     }, [updateData])
 
+    const [atualPage,setAtualPage]=useState(1);
+
     const requestGet = async() =>{
-      api.get('api/Books?PageNumber=1&PageSize=3').then(response => {
+      api.get('api/Books?PageNumber='+atualPage+'&PageSize=3').then(response => {
         setAllBooks(response.data);
         setOrderBooks(response.data);
         const header =response.headers;
@@ -167,7 +169,28 @@ function selectBook (book:any, option:string){
       }
       console.log(e)
   }; 
+
+  //paginação
+  const fetchBooks = async (currentPage: number) => {
+    const res = await fetch('https://localhost:7124/api/Books?PageNumber='+currentPage+'&PageSize=3');
+    const temp = res.json();
+    return temp;
+  }; 
+
+  const handlePageClick = async (data:any)=>{
+   
+    let currentPage = data.selected +1
+    const alunosFormServer = await fetchBooks(currentPage);
+    setAllBooks (alunosFormServer);
+    setAtualPage(currentPage);
+  }
  
+  const [pageCount, setPageCount] = useState(0);
+   api.get("api/Books/").then(response => {
+    const res =response.data;
+    const totalPage=res.length;
+    setPageCount(totalPage/3)
+   })
 
   return (
     <div className='container mt-4'>
@@ -231,10 +254,10 @@ function selectBook (book:any, option:string){
         previousLabel={'previous'}
         nextLabel={'next'}
         breakLabel={'...'} 
-        pageCount={10}
+        pageCount={pageCount}
         marginPagesDisplayed={3}
         pageRangeDisplayed={4}
-        //onPageChange={handlePageClick}
+        onPageChange={handlePageClick}
         containerClassName={'pagination justify-content-center'}
         pageClassName={'page-item'}
         pageLinkClassName={'page-link'}
