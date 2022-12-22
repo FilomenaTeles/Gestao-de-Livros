@@ -54,7 +54,28 @@ namespace GestaoLivrosApi.Controllers
             }
         }
 
-        [HttpGet("GetBooksByIsbn")]
+        [HttpGet("GetBooksBy")]
+        public IActionResult GetBooksBy([FromQuery] BookParameters bookParameters, string searchValue)
+        {
+            try
+            {
+                var books = _bookService.GetBooksBy(bookParameters, searchValue);
+                if (books.Count > 0)
+                {
+                    return Ok(books);
+                }
+                else
+                {
+                    return NotFound($"Não existe o livro {searchValue} neste catálogo");
+                }
+            }
+            catch
+            {
+                return BadRequest("Request inválido");
+            }
+        }
+
+            [HttpGet("GetBooksByIsbn")]
         public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooksByIsbn([FromQuery] string isbn)
         {
             try
