@@ -45,29 +45,7 @@ function selectBook (book:any, option:string){
     setBookSelected(book);
     (option=='edit') ? openCloseModalEdit(): openCloseModalDelete();
 };
-//FILTRO  
-  const [inputSearch, setInputSearch] = useState('');
-  const [filter, setFilter]= useState([{
-    name: '',
-    author: '',
-    isbn: 0,
-    price: 0.0,
-    id:0
-  }]);
 
-  const searchBooks = (searchValue:any) => {
-    setInputSearch(searchValue);
-
-    if(inputSearch != ''){
-        const booksFiltered=allBooks.filter((item)=>{
-          return Object.values(item).join('').toLowerCase().includes(inputSearch.toLowerCase())
-        });
-        setFilter(booksFiltered);
-    }
-    else{
-      setFilter(allBooks);
-    }
-  }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -92,8 +70,7 @@ function selectBook (book:any, option:string){
     const requestGet = async() =>{
       api.get('api/Books?PageNumber='+atualPage+'&PageSize=3').then(response => {
         setAllBooks(response.data);
-        const header =response.headers;
-        console.log(header);
+        
       }).catch(error =>{
         console.log(error);
       })
@@ -178,12 +155,43 @@ const [orderData, setOrderData]=useState(false)
     setPageCount(totalPage/3)
    })
 
+   //FILTRO  
+  const [inputSearch, setInputSearch] = useState('');
+  const searchReset = () => {
+    setInputSearch("");
+    requestGet();
+  };
+
+ /*  const searchBooks = (searchValue:any) => {
+    setInputSearch(searchValue);
+
+    if(inputSearch != ''){
+        const booksFiltered=allBooks.filter((item)=>{
+          return Object.values(item).join('').toLowerCase().includes(inputSearch.toLowerCase())
+        });
+        setFilter(booksFiltered);
+    }
+    else{
+      setFilter(allBooks);
+    }
+  } */
+  const requestGetBy = async()=>{
+    const input = inputSearch.toLowerCase();
+    console.log(inputSearch)
+     api.get("api/Books/GetBooksBy?PageNumber="+atualPage+"&PageSize=3&searchValue="+input)
+     .then(response => {
+      setAllBooks(response.data)
+     })
+  }
+
   return (
     <div className='container mt-4'>
       <div className='container row'>
         <div className='col-8'>
-          <form className=" mb-3">
-            <input type="text" placeholder="Filtrar" onChange={(e)=> searchBooks(e.target.value)}/>       
+          <form className=" mb-3" onSubmit={requestGetBy}>
+            <input type="text" name='search' onChange={(e)=> setInputSearch(e.target.value)}/>
+            <button className='btn' type='submit'>Pesquisar</button>
+            <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>    
           </form>
         </div>
         <div className='container text-end col-4'>
@@ -199,7 +207,7 @@ const [orderData, setOrderData]=useState(false)
      
      
 
-            {inputSearch.length< 1 ? (
+           
               <ul id='book-ul'>
         {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
          <li id='book-li' key={book.id}>
@@ -217,25 +225,7 @@ const [orderData, setOrderData]=useState(false)
         
         ))}
       </ul>
-            ):(
-              <ul id='book-ul'>
-              {filter.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
-               <li id='book-li' key={book.id}>
-                   <BookCard 
-                   delete={()=>selectBook(book,'delete')}
-                    edit={()=>selectBook(book,'edit')}
-                    name={book.name} 
-                    author={book.author} 
-                    price={book.price}
-                    isbn={book.isbn}
-                    id={book.id}
-                  
-                />
-               </li>
-              
-              ))}
-            </ul>
-            )}
+           
       <ReactPaginate 
         previousLabel={'previous'}
         nextLabel={'next'}
