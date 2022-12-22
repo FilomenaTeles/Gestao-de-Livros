@@ -65,7 +65,7 @@ namespace GestaoLivrosApi.Services
         {
             try
             {
-                return PagedList<Book>.ToPagedList(FindAll().Where(b => b.Name == searchValue || b.Author == searchValue).OrderByDescending(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
+                return PagedList<Book>.ToPagedList(FindAll().Where(b => b.Name.Contains( searchValue) || b.Author.Contains(searchValue)).OrderByDescending(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
                
             }
             catch 
