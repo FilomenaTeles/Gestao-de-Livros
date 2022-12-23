@@ -32,6 +32,7 @@ namespace GestaoLivrosApi.Controllers
         {
             try
             {
+
                 var books = _bookService.GetBooks(bookParameters, orderValue);
 
                 var metadata = new
@@ -59,15 +60,22 @@ namespace GestaoLivrosApi.Controllers
         {
             try
             {
-                var books = _bookService.GetBooksBy(bookParameters, searchValue);
-                if (books.Count > 0)
+                if (searchValue.Length > 2)
                 {
-                    return Ok(books);
+                    var books = _bookService.GetBooksBy(bookParameters, searchValue);
+                    if (books.Count > 0)
+                    {
+                        return Ok(books);
+                    }
+                    else
+                    {
+                        return NotFound($"Não existe o livro {searchValue} neste catálogo");
+                    }
                 }
                 else
-                {
-                    return NotFound($"Não existe o livro {searchValue} neste catálogo");
-                }
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Por favor insira mais que 2 letras para fazer a pesquisa");
+
+
             }
             catch
             {
