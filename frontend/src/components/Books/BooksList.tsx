@@ -221,7 +221,7 @@ const [orderData, setOrderData]=useState(false)
           </select>
         </div>
       </div>
-      {inputSearch.length< 3 ? (
+      {filter.length< 1 ? (
         <ul id='book-ul'>
           {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
           <li id='book-li' key={book.id}>
