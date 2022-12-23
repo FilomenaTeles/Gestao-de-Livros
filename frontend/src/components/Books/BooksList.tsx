@@ -152,7 +152,7 @@ const [orderData, setOrderData]=useState(false)
    api.get("api/Books/").then(response => {
     const res =response.data;
     const totalPage=res.length;
-    setPageCount(totalPage/3)
+    setPageCount(Math.ceil(totalPage/3))
    })
 
    //FILTRO  
@@ -175,28 +175,37 @@ const [orderData, setOrderData]=useState(false)
       setFilter(allBooks);
     }
   } */
-  const requestGetBy = async()=>{
+  const [filter, setFilter]=useState([]);
+
+  const requestGetBy = async(e:any) => {
+    setAtualPage(1);
     const input = inputSearch.toLowerCase();
-    console.log(inputSearch)
+    console.log(e)
+
      api.get("api/Books/GetBooksBy?PageNumber="+atualPage+"&PageSize=3&searchValue="+input)
      .then(response => {
-      setAllBooks(response.data)
-     })
+      setFilter(response.data);
+      const res=response.data;
+      const totalPage = res.length;
+      setPageCount(Math.ceil(totalPage/3))
+     }).catch((error) => {
+      console.log(error);
+    });
   }
 
   return (
     <div className='container mt-4'>
       <div className='container row'>
         <div className='col-8'>
-          <form className=" mb-3" onSubmit={requestGetBy}>
-            <input type="text" name='search' onChange={(e)=> setInputSearch(e.target.value)}/>
-            <button className='btn' type='submit'>Pesquisar</button>
-            <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>    
+          <form className="form mb-3"  onSubmit={requestGetBy}>
+            <input type="search" name='search'  />
+            <button className='btn ms-2' type='submit'>Pesquisar</button>
+            {/* <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>     */}
           </form>
         </div>
         <div className='container text-end col-4'>
           <select className='' name="orderBy" id="orderBy" onChange={(e)=>orderBy(e.target.value)}>
-            <option value= "" selected disabled>Ordenar por:</option>
+            {/* <option defaultValue="" selected disabled>Ordenar por:</option> */}
             <option value="name-asc">Nome (ASC)</option>
             <option value="price-asc">Preço (ASC)</option>
             <option value="name-desc">Nome (DESC)</option>
@@ -204,27 +213,43 @@ const [orderData, setOrderData]=useState(false)
           </select>
         </div>
       </div>
-     
-     
-
-           
-              <ul id='book-ul'>
-        {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
-         <li id='book-li' key={book.id}>
-             <BookCard 
-             delete={()=>selectBook(book,'delete')}
-              edit={()=>selectBook(book,'edit')}
-              name={book.name} 
-              author={book.author} 
-              price={book.price}
-              isbn={book.isbn}
-              id={book.id}
-            
-          />
-         </li>
-        
-        ))}
-      </ul>
+      {inputSearch.length< 1 ? (
+        <ul id='book-ul'>
+          {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
+          <li id='book-li' key={book.id}>
+              <BookCard 
+              delete={()=>selectBook(book,'delete')}
+                edit={()=>selectBook(book,'edit')}
+                name={book.name} 
+                author={book.author} 
+                price={book.price}
+                isbn={book.isbn}
+                id={book.id}
+              
+            />
+          </li>
+          
+          ))}
+        </ul>
+      ):(  
+        <ul id='book-ul'>
+          {filter.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
+          <li id='book-li' key={book.id}>
+              <BookCard 
+              delete={()=>selectBook(book,'delete')}
+                edit={()=>selectBook(book,'edit')}
+                name={book.name} 
+                author={book.author} 
+                price={book.price}
+                isbn={book.isbn}
+                id={book.id}
+              
+            />
+          </li>
+          
+          ))}
+        </ul>
+      )}
            
       <ReactPaginate 
         previousLabel={'previous'}
