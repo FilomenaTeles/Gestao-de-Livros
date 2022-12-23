@@ -6,6 +6,7 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
+import { isDisabled } from '@testing-library/user-event/dist/utils';
 
 export function AllBooks(){
  
@@ -159,6 +160,7 @@ const [orderData, setOrderData]=useState(false)
   const [inputSearch, setInputSearch] = useState('');
   const searchReset = () => {
     setInputSearch("");
+    setFilter([]);
     requestGet();
   };
 
@@ -179,15 +181,18 @@ const [orderData, setOrderData]=useState(false)
 
   const requestGetBy = async(e:any) => {
     setAtualPage(1);
+    e.preventDefault();
+  
     const input = inputSearch.toLowerCase();
-    console.log(e)
 
-     api.get("api/Books/GetBooksBy?PageNumber="+atualPage+"&PageSize=3&searchValue="+input)
+     api.get("api/Books/GetBooksBy?PageNumber=1&PageSize=3&searchValue="+input)
      .then(response => {
       setFilter(response.data);
-      const res=response.data;
-      const totalPage = res.length;
-      setPageCount(Math.ceil(totalPage/3))
+      const sizeData=response.data;
+      const size = sizeData.length;
+      setPageCount(Math.ceil(size/3))
+      console.log(atualPage);
+
      }).catch((error) => {
       console.log(error);
     });
@@ -197,10 +202,13 @@ const [orderData, setOrderData]=useState(false)
     <div className='container mt-4'>
       <div className='container row'>
         <div className='col-8'>
-          <form className="form mb-3"  onSubmit={requestGetBy}>
-            <input type="search" name='search'  />
-            <button className='btn ms-2' type='submit'>Pesquisar</button>
-            {/* <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>     */}
+          <form className=" mb-3"  onSubmit={requestGetBy}>
+            <input type="text" name='search' value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
+            {inputSearch.length< 3 
+            ? (<button className='btn ms-2' disabled type='submit' >Pesquisar</button>)
+            :(<button className='btn ms-2' type='submit' >Pesquisar</button>)} 
+            
+            <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>
           </form>
         </div>
         <div className='container text-end col-4'>
@@ -213,7 +221,7 @@ const [orderData, setOrderData]=useState(false)
           </select>
         </div>
       </div>
-      {inputSearch.length< 1 ? (
+      {inputSearch.length< 3 ? (
         <ul id='book-ul'>
           {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
           <li id='book-li' key={book.id}>
@@ -231,7 +239,7 @@ const [orderData, setOrderData]=useState(false)
           
           ))}
         </ul>
-      ):(  
+     ):(  
         <ul id='book-ul'>
           {filter.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
           <li id='book-li' key={book.id}>
@@ -249,7 +257,7 @@ const [orderData, setOrderData]=useState(false)
           
           ))}
         </ul>
-      )}
+      )} 
            
       <ReactPaginate 
         previousLabel={'previous'}
