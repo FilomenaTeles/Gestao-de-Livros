@@ -25,15 +25,18 @@ export function AddBook(){
 
   async function postRequest(event: any) {
     try{
+        console.log(newBook);
+        alert();
         await api.post('api/Books',newBook);
-       
+        navigate(-1);
+
           
     }catch(error){
             alert('Erro ao adicionar novo livro: '+error);
     }
-    <Link to={'/books'}></Link>
-     navigate('/books');
-    redirect('/books');
+    // <Link to={'/books'}></Link>
+    
+    // redirect('/books');
   }
 
     return(
@@ -46,7 +49,7 @@ export function AddBook(){
                         <input className="input-group m-3" type="text" placeholder="Nome" name="name" onChange={handleChange} />
                         <input className="input-group m-3"  type="text" placeholder="Autor" name="author" onChange={handleChange}/>
                         <input className="input-group m-3"  type="number" placeholder="ISBN" name="isbn" onChange={handleChange}/>
-                        <input className="input-group m-3"  type="double" placeholder="Preço" name="price" onChange={handleChange}/>
+                        <input className="input-group m-3"  type="number" placeholder="Preço" name="price" onChange={handleChange}/>
                         {/* <input className="input-group m-3" type="file" /> */}
                         <button className="btn btn-success ms-3" type="submit" >Adicionar</button>
                         <Link className="btn btn-danger m-2" to='/books'>Cancelar</Link>
@@ -55,5 +58,6 @@ export function AddBook(){
             </div>
            </div>
         </div>
+
     );
 }

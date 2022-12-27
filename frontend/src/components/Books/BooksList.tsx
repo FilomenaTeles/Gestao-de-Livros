@@ -185,7 +185,7 @@ const [orderData, setOrderData]=useState(false)
   
     const input = inputSearch.toLowerCase();
 
-     api.get("api/Books/GetBooksBy?PageNumber=1&PageSize=3&searchValue="+input)
+     api.get("api/Books/GetBooksBy?PageNumber="+atualPage+"&PageSize=3&searchValue="+input)
      .then(response => {
       setFilter(response.data);
       const sizeData=response.data;
