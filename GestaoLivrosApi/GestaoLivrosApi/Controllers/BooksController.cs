@@ -111,14 +111,14 @@ namespace GestaoLivrosApi.Controllers
                     await _bookService.InsertBook(book);
                     return Ok(book);
                 }
-                else if (hasIsbn.Any() == true)
+               if (hasIsbn.Any() == true)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
                 }
-                else 
-                {
+                
+               
                     return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
-                }
+                
             }
             catch
             {
