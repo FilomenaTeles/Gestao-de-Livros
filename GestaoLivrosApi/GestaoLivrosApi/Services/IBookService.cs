@@ -7,7 +7,9 @@ namespace GestaoLivrosApi.Services
 		//Get livros
 		PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue);
 
-		//Get livros por o Isbn
+        PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue);
+
+        //Get livros por o Isbn
         Task<IEnumerable<Book>> GetBooksByIsbn(string isbn);
 
         Task<Book> GetBookById(int id);

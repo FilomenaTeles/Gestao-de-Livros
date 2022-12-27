@@ -32,6 +32,7 @@ namespace GestaoLivrosApi.Controllers
         {
             try
             {
+
                 var books = _bookService.GetBooks(bookParameters, orderValue);
 
                 var metadata = new
@@ -54,7 +55,35 @@ namespace GestaoLivrosApi.Controllers
             }
         }
 
-        [HttpGet("GetBooksByIsbn")]
+        [HttpGet("GetBooksBy")]
+        public IActionResult GetBooksBy([FromQuery] BookParameters bookParameters, string searchValue)
+        {
+            try
+            {
+                if (searchValue.Length > 2)
+                {
+                    var books = _bookService.GetBooksBy(bookParameters, searchValue);
+                    if (books.Count > 0)
+                    {
+                        return Ok(books);
+                    }
+                    else
+                    {
+                        return NotFound($"Não existe o livro {searchValue} neste catálogo");
+                    }
+                }
+                else
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Por favor insira mais que 2 letras para fazer a pesquisa");
+
+
+            }
+            catch
+            {
+                return BadRequest("Request inválido");
+            }
+        }
+
+            [HttpGet("GetBooksByIsbn")]
         public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooksByIsbn([FromQuery] string isbn)
         {
             try
@@ -82,14 +111,14 @@ namespace GestaoLivrosApi.Controllers
                     await _bookService.InsertBook(book);
                     return Ok(book);
                 }
-                else if (hasIsbn.Any() == true)
+               if (hasIsbn.Any() == true)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
                 }
-                else 
-                {
+                
+               
                     return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
-                }
+                
             }
             catch
             {
