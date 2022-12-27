@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Data;
 using X.PagedList;
+using GestaoLivrosApi.Helpers;
 
 namespace GestaoLivrosApi.Services
 {
@@ -16,9 +17,10 @@ namespace GestaoLivrosApi.Services
         }
 
        
-
+        /*
         public PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue)
         {
+            
             try
             {
                 if (orderValue!=null)
@@ -59,9 +61,47 @@ namespace GestaoLivrosApi.Services
             {
                 throw;
             }
+        }*/
+
+        public async Task<PagedList<Book>> GetBooks(BookParameters bookParameters)
+        {
+            PagedList<Book> result = new PagedList<Book>();
         }
 
-        public PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue)
+
+        /*
+         * public async Task<PaginatedList<AssistanceListDTO>> GetAll(SearchDTO search)
+        {
+            PaginatedList<AssistanceListDTO> result = new PaginatedList<AssistanceListDTO>();
+            try
+            {
+                string endpointUrl = $"{_wintouchApiUrlBase}/Assistance/getAll";
+
+                var httpClient = new HttpClient();
+
+                var resultSendRequest = await Request.SendRequest<PaginatedList<AssistanceListDTO>, ErrorMessageDTO>(httpClient, search, endpointUrl, HttpMethod.Post);
+                if (resultSendRequest.Success == false || resultSendRequest.Obj.Success == false)
+                {
+                    Logs.Write(LogTypes.Error, $"Sem sucesso ao obter as assistencias do wintouch: {resultSendRequest.ErrorMessage}", true);
+
+                    result.Success = false;
+                    result.Message = "Sem sucesso ao obter as assistencias do wintouch";
+                    return result;
+                }
+                result = resultSendRequest.Obj;
+            }
+            catch (Exception ex)
+            {
+                Logs.Write(LogTypes.Error, $"Falhou o pedido para obter as assistencias do wintouch: {ex.GetBaseException()}", true);
+
+                result.Success = false;
+                result.Message = "Ocorreu um erro inesperado ao obter as assistencias do wintouch.";
+            }
+            return (result);
+        }
+         */
+
+       /* public PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue)
         {
             try
             {
@@ -75,7 +115,7 @@ namespace GestaoLivrosApi.Services
             {
                 throw;
             }
-        }
+        }*/
 
         public IQueryable<Book> FindAll()
         {

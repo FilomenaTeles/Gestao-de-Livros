@@ -1,7 +1,7 @@
-﻿using System;
+﻿
 using Ardalis.SmartEnum;
 using Ardalis.SmartEnum.SystemTextJson;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace GestaoLivrosApi.Helpers
 {
