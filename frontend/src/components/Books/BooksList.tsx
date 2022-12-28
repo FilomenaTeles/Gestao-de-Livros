@@ -151,9 +151,9 @@ const [orderData, setOrderData]=useState(false)
  
   const [pageCount, setPageCount] = useState(0);
    api.get("api/Books/").then(response => {
-    const res =response.data;
+    const res =response.data.items
     const totalPage=res.length;
-    setPageCount(Math.ceil(totalPage/3))
+    setPageCount(response.data.totalPages)
    })
 
    //FILTRO  
