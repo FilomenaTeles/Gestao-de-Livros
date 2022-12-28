@@ -149,11 +149,8 @@ const [orderData, setOrderData]=useState(false)
     const booksFormServer = await fetchBooks(currentPage);
     setAllBooks (booksFormServer.items);
     setAtualPage(currentPage);
-    console.log(booksFormServer.items);
   }
  
-  
-  
 
    //FILTRO  
   const [inputSearch, setInputSearch] = useState('');
