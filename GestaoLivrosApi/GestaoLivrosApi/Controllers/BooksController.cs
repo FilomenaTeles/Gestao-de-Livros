@@ -29,7 +29,7 @@ namespace GestaoLivrosApi.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<PaginatedList<Book>> GetBooks(int currentPage = 1, int pageSize = 5)
+        public async Task<PaginatedList<Book>> GetBooks(int currentPage = 1, int pageSize = 6)
         {
             return await _bookService.GetBooks(currentPage, pageSize );
         }

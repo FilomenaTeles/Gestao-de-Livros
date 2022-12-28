@@ -9,7 +9,7 @@ namespace GestaoLivrosApi.Services
 	{
         //Get livros
         //PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue);
-        Task<PaginatedList<Book>> GetBooks(int currentPage = 1, int pageSize = 5);
+        Task<PaginatedList<Book>> GetBooks(int currentPage = 1, int pageSize = 6);
 
         //PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue);
 
