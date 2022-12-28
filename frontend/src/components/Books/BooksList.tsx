@@ -67,10 +67,12 @@ function selectBook (book:any, option:string){
     }, [updateData])
 
     const [atualPage,setAtualPage]=useState(1);
-
+    const [pageCount, setPageCount] = useState(0);
+    
     const requestGet = async() =>{
-      api.get('api/Books?PageNumber='+atualPage+'&PageSize=3').then(response => {
-        setAllBooks(response.data);
+      api.get('api/Books').then(response => {
+        setAllBooks(response.data.items);
+        setPageCount(response.data.totalPages);
         
       }).catch(error =>{
         console.log(error);
@@ -131,10 +133,10 @@ const [orderData, setOrderData]=useState(false)
   const fetchBooks = async (currentPage: number) => {
     var res: any
     if(orderData){
-       res = await fetch('https://localhost:7124/api/Books?PageNumber='+currentPage+'&PageSize=3&orderValue='+orderValue);
+       res = await fetch('https://localhost:7124/api/Books?currentPage='+currentPage+'&pageSize=3&orderValue='+orderValue);
 
     }else{
-      res = await fetch('https://localhost:7124/api/Books?PageNumber='+currentPage+'&PageSize=3');
+      res = await fetch('https://localhost:7124/api/Books?currentPage='+currentPage+'&pageSize=3');
 
     }
     const temp = res.json();
@@ -149,12 +151,8 @@ const [orderData, setOrderData]=useState(false)
     setAtualPage(currentPage);
   }
  
-  const [pageCount, setPageCount] = useState(0);
-   api.get("api/Books/").then(response => {
-    const res =response.data.items
-    const totalPage=res.length;
-    setPageCount(response.data.totalPages)
-   })
+  
+  
 
    //FILTRO  
   const [inputSearch, setInputSearch] = useState('');
