@@ -1,6 +1,7 @@
 ﻿using System;
+using GestaoLivrosApi.Helpers;
 using GestaoLivrosApi.Models;
-using X.PagedList;
+
 
 namespace GestaoLivrosApi.Services
 {
@@ -8,7 +9,7 @@ namespace GestaoLivrosApi.Services
 	{
         //Get livros
         //PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue);
-        Task<PagedList<Book>> GetBooks(BookParameters bookParameters);
+        Task<PaginatedList<Book>> GetBooks(int currentPage = 1, int pageSize = 5);
 
         //PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue);
 

@@ -6,6 +6,7 @@ using GestaoLivrosApi.Services;
 using GestaoLivrosApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using GestaoLivrosApi.Helpers;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -28,11 +29,15 @@ namespace GestaoLivrosApi.Controllers
 
         // GET: api/values
         [HttpGet]
-       public IActionResult GetBooks([FromQuery] BookParameters bookParameters, string? orderValue)
+        public async Task<PaginatedList<Book>> GetBooks(int currentPage = 1, int pageSize = 5)
+        {
+            return await _bookService.GetBooks(currentPage, pageSize );
+        }
+      /*public IActionResult GetBooks([FromQuery] BookParameters bookParameters, string? orderValue)
         {
             try
             {
-
+               
                 var books = _bookService.GetBooks(bookParameters, orderValue);
 
                 var metadata = new
@@ -44,6 +49,7 @@ namespace GestaoLivrosApi.Controllers
                     books.HasNext,
                     books.HasPrevious
                 };
+                books.Metadada = JsonConvert.SerializeObject(metadata);
                 Response.Headers.Add("x-pagination", JsonConvert.SerializeObject(metadata));
 
                 return Ok(books);
@@ -53,35 +59,35 @@ namespace GestaoLivrosApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao obter alunos");
 
             }
-        }
+        }*/
 
-        [HttpGet("GetBooksBy")]
-        public IActionResult GetBooksBy([FromQuery] BookParameters bookParameters, string searchValue)
-        {
-            try
-            {
-                if (searchValue.Length > 2)
-                {
-                    var books = _bookService.GetBooksBy(bookParameters, searchValue);
-                    if (books.Count > 0)
-                    {
-                        return Ok(books);
-                    }
-                    else
-                    {
-                        return NotFound($"Não existe o livro {searchValue} neste catálogo");
-                    }
-                }
-                else
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Por favor insira mais que 2 letras para fazer a pesquisa");
+        /* [HttpGet("GetBooksBy")]
+         public IActionResult GetBooksBy([FromQuery] BookParameters bookParameters, string searchValue)
+         {
+             try
+             {
+                 if (searchValue.Length > 2)
+                 {
+                     var books = _bookService.GetBooksBy(bookParameters, searchValue);
+                     if (books.Count > 0)
+                     {
+                         return Ok(books);
+                     }
+                     else
+                     {
+                         return NotFound($"Não existe o livro {searchValue} neste catálogo");
+                     }
+                 }
+                 else
+                     return StatusCode(StatusCodes.Status500InternalServerError, "Por favor insira mais que 2 letras para fazer a pesquisa");
 
 
-            }
-            catch
-            {
-                return BadRequest("Request inválido");
-            }
-        }
+             }
+             catch
+             {
+                 return BadRequest("Request inválido");
+             }
+         }*/
 
             [HttpGet("GetBooksByIsbn")]
         public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooksByIsbn([FromQuery] string isbn)

@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Data;
-using X.PagedList;
 using GestaoLivrosApi.Helpers;
+using Azure.Core;
+using System.Net.Http;
+using X.PagedList;
+using Azure;
 
 namespace GestaoLivrosApi.Services
 {
@@ -17,10 +20,10 @@ namespace GestaoLivrosApi.Services
         }
 
        
-        /*
-        public PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue)
+        
+        /*public PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue)
         {
-            
+
             try
             {
                 if (orderValue!=null)
@@ -62,10 +65,41 @@ namespace GestaoLivrosApi.Services
                 throw;
             }
         }*/
-
-        public async Task<PagedList<Book>> GetBooks(BookParameters bookParameters)
+        //TENTATIVA DE IMPLEMENTAR PAGINAÇÃO COMO PROJETO FERNANDO GOMES
+        public async Task<PaginatedList<Book>> GetBooks( int currentPage = 1, int pageSize = 5)
         {
-            PagedList<Book> result = new PagedList<Book>();
+            PaginatedList<Book> result = new PaginatedList<Book>();
+
+            try
+            {
+                var query =  _context.Books.AsQueryable();
+                //result.Items = resultSendRequest;
+                //var sendRequest = await Request.SendRequest
+
+                result.TotalRecords = query.Count();
+
+                var numberOfItemsToSkip = pageSize * (currentPage - 1);
+
+                query = query.Skip(numberOfItemsToSkip);
+                query = query.Take(pageSize);
+
+                var list = await query.ToListAsync();
+
+                result.Items = list;
+                result.CurrentPage = currentPage;
+                result.PageSize = pageSize;
+                result.Success = true;
+                result.Message = null;
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Ocorreu um erro inesperado ao obter os livros.";
+                return result;
+            }
         }
 
 
