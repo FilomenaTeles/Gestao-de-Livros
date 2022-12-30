@@ -1,4 +1,17 @@
 .card{
     width: 18rem;
     background-color: whitesmoke;
+    height: 14rem;
+   
+}
+
+.card-text{
+    min-height: 5rem;
+    max-height: 5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-btn{
+    height: 2rem;
 }
