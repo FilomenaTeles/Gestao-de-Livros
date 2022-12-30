@@ -8,6 +8,7 @@ using System.Net.Http;
 using X.PagedList;
 using Azure;
 using GestaoLivrosApi.Interfaces.Repositories;
+using GestaoLivrosApi.Models.Books;
 
 namespace GestaoLivrosApi.Services
 {
@@ -68,10 +69,10 @@ namespace GestaoLivrosApi.Services
                 throw;
             }
         }*/
-        //TENTATIVA DE IMPLEMENTAR PAGINAÇÃO COMO PROJETO FERNANDO GOMES
-        public async Task<PaginatedList<Book>> GetBooks(SearchDTO search)
+        
+        public async Task<PaginatedList<ListBook>> GetBooks(SearchDTO search)
         {
-            PaginatedList<Book> result = new PaginatedList<Book>();
+            PaginatedList<ListBook> result = new PaginatedList<ListBook>();
 
             try
             {
@@ -102,7 +103,7 @@ namespace GestaoLivrosApi.Services
                     result.Message = "Erro ao obter a informação das urdissagens";
                     return result;
                 }
-                result.Items = responseRepository.Items.Select(t => new Book(t)).ToList();
+                result.Items = responseRepository.Items.Select(t => new ListBook(t)).ToList();
                 result.PageSize = responseRepository.PageSize;
                 result.CurrentPage = responseRepository.CurrentPage;
                 result.TotalRecords = responseRepository.TotalRecords;
@@ -119,54 +120,6 @@ namespace GestaoLivrosApi.Services
             return result;
         }
 
-
-        /*
-         * public async Task<PaginatedList<AssistanceListDTO>> GetAll(SearchDTO search)
-        {
-            PaginatedList<AssistanceListDTO> result = new PaginatedList<AssistanceListDTO>();
-            try
-            {
-                string endpointUrl = $"{_wintouchApiUrlBase}/Assistance/getAll";
-
-                var httpClient = new HttpClient();
-
-                var resultSendRequest = await Request.SendRequest<PaginatedList<AssistanceListDTO>, ErrorMessageDTO>(httpClient, search, endpointUrl, HttpMethod.Post);
-                if (resultSendRequest.Success == false || resultSendRequest.Obj.Success == false)
-                {
-                    Logs.Write(LogTypes.Error, $"Sem sucesso ao obter as assistencias do wintouch: {resultSendRequest.ErrorMessage}", true);
-
-                    result.Success = false;
-                    result.Message = "Sem sucesso ao obter as assistencias do wintouch";
-                    return result;
-                }
-                result = resultSendRequest.Obj;
-            }
-            catch (Exception ex)
-            {
-                Logs.Write(LogTypes.Error, $"Falhou o pedido para obter as assistencias do wintouch: {ex.GetBaseException()}", true);
-
-                result.Success = false;
-                result.Message = "Ocorreu um erro inesperado ao obter as assistencias do wintouch.";
-            }
-            return (result);
-        }
-         */
-
-       /* public PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue)
-        {
-            try
-            {
-
-                return PagedList<Book>.ToPagedList(FindAll().Where(b => b.Name.Contains( searchValue) || b.Author.Contains(searchValue)
-                                        || b.Isbn.ToString().Contains(searchValue) || b.Price.ToString().Contains(searchValue)).
-                                        OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-               
-            }
-            catch 
-            {
-                throw;
-            }
-        }*/
 
         public IQueryable<Book> FindAll()
         {
