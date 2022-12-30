@@ -7,16 +7,19 @@ using Azure.Core;
 using System.Net.Http;
 using X.PagedList;
 using Azure;
+using GestaoLivrosApi.Interfaces.Repositories;
 
 namespace GestaoLivrosApi.Services
 {
     public class BooksService : IBookService
     {
         private readonly AppDbContext _context;
+        private readonly IBookRepositorie _bookRepository;
 
-        public BooksService(AppDbContext context)
+        public BooksService(AppDbContext context, IBookRepositorie bookRepository)
         {
             _context = context;
+            _bookRepository = bookRepository;
         }
 
        
@@ -66,40 +69,54 @@ namespace GestaoLivrosApi.Services
             }
         }*/
         //TENTATIVA DE IMPLEMENTAR PAGINAÇÃO COMO PROJETO FERNANDO GOMES
-        public async Task<PaginatedList<Book>> GetBooks( int currentPage = 1, int pageSize = 6)
+        public async Task<PaginatedList<Book>> GetBooks(SearchDTO search)
         {
             PaginatedList<Book> result = new PaginatedList<Book>();
 
             try
             {
-                var query =  _context.Books.AsQueryable();
-                //result.Items = resultSendRequest;
-                //var sendRequest = await Request.SendRequest
+                //lógica
+                
+                if (search.PageSize > 100)
+                {
+                    search.PageSize = 100;
+                }
 
-                result.TotalRecords = query.Count();
+                if (search.PageSize <= 0)
+                {
+                    search.PageSize = 1;
+                }
 
-                var numberOfItemsToSkip = pageSize * (currentPage - 1);
+                if (search.CurrentPage <= 0)
+                {
+                    search.CurrentPage = 1;
+                }
 
-                query = query.Skip(numberOfItemsToSkip);
-                query = query.Take(pageSize);
+                //obter a informação - pedido a bd (repositorie)
 
-                var list = await query.ToListAsync();
+                var responseRepository = await _bookRepository.GetAllAsync(search.SearchParameters, search.SortingParameters, search.CurrentPage, search.PageSize);
 
-                result.Items = list;
-                result.CurrentPage = currentPage;
-                result.PageSize = pageSize;
+                if (responseRepository.Success != true)
+                {
+                    result.Success = false;
+                    result.Message = "Erro ao obter a informação das urdissagens";
+                    return result;
+                }
+                result.Items = responseRepository.Items.Select(t => new Book(t)).ToList();
+                result.PageSize = responseRepository.PageSize;
+                result.CurrentPage = responseRepository.CurrentPage;
+                result.TotalRecords = responseRepository.TotalRecords;
                 result.Success = true;
-                result.Message = null;
 
-
-                return result;
+                
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Ocorreu um erro inesperado ao obter os livros.";
-                return result;
+              
             }
+            return result;
         }
 
 

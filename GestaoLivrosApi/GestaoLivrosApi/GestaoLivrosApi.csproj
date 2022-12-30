@@ -34,6 +34,12 @@
     <None Remove="Helpers\" />
     <None Remove="Ardalis.SmartEnum" />
     <None Remove="Ardalis.SmartEnum.SystemTextJson" />
+    <None Remove="DAL\" />
+    <None Remove="DAL\Repositories\" />
+    <None Remove="Interfaces\" />
+    <None Remove="Interfaces\Repositories\" />
+    <None Remove="Interfaces\Services\" />
+    <None Remove="Models\Books\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -41,5 +47,11 @@
     <Folder Include="Data\" />
     <Folder Include="Services\" />
     <Folder Include="Helpers\" />
+    <Folder Include="DAL\" />
+    <Folder Include="DAL\Repositories\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Interfaces\Repositories\" />
+    <Folder Include="Interfaces\Services\" />
+    <Folder Include="Models\Books\" />
   </ItemGroup>
 </Project>

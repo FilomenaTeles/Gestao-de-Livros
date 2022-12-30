@@ -29,9 +29,9 @@ namespace GestaoLivrosApi.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<PaginatedList<Book>> GetBooks(int currentPage = 1, int pageSize = 6)
+        public async Task<PaginatedList<Book>> GetBooks(SearchDTO search)
         {
-            return await _bookService.GetBooks(currentPage, pageSize );
+            return await _bookService.GetBooks(search);
         }
       /*public IActionResult GetBooks([FromQuery] BookParameters bookParameters, string? orderValue)
         {
