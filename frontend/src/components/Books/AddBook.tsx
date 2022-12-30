@@ -46,10 +46,10 @@ export function AddBook(){
             <div className="container row">
                 <div className="container col-6">
                     <form onSubmit={postRequest}>
-                        <input className="input-group m-3" type="text" placeholder="Nome" name="name" onChange={handleChange} />
-                        <input className="input-group m-3"  type="text" placeholder="Autor" name="author" onChange={handleChange}/>
-                        <input className="input-group m-3"  type="number" placeholder="ISBN" name="isbn" onChange={handleChange}/>
-                        <input className="input-group m-3"  type="number" placeholder="Preço" name="price" onChange={handleChange}/>
+                        <input className="input-group m-3" type="text" placeholder="Nome" name="name" required onChange={handleChange} />
+                        <input className="input-group m-3"  type="text" placeholder="Autor" name="author" required onChange={handleChange}/>
+                        <input className="input-group m-3"  type="number" placeholder="ISBN" name="isbn" required onChange={handleChange}/>
+                        <input className="input-group m-3"  type="number" placeholder="Preço" name="price" min={0} required onChange={handleChange}/>
                         {/* <input className="input-group m-3" type="file" /> */}
                         <button className="btn btn-success ms-3" type="submit" >Adicionar</button>
                         <Link className="btn btn-danger m-2" to='/books'>Cancelar</Link>

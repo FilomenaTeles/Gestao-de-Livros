@@ -18,6 +18,8 @@
     </PackageReference>
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Ardalis.SmartEnum" Version="2.1.0" />
+    <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,11 +31,27 @@
     <None Remove="Services\" />
     <None Remove="X.PagedList.Mvc.Core" />
     <None Remove="Newtonsoft.Json" />
+    <None Remove="Helpers\" />
+    <None Remove="Ardalis.SmartEnum" />
+    <None Remove="Ardalis.SmartEnum.SystemTextJson" />
+    <None Remove="DAL\" />
+    <None Remove="DAL\Repositories\" />
+    <None Remove="Interfaces\" />
+    <None Remove="Interfaces\Repositories\" />
+    <None Remove="Interfaces\Services\" />
+    <None Remove="Models\Books\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="Data\" />
     <Folder Include="Services\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="DAL\" />
+    <Folder Include="DAL\Repositories\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Interfaces\Repositories\" />
+    <Folder Include="Interfaces\Services\" />
+    <Folder Include="Models\Books\" />
   </ItemGroup>
 </Project>

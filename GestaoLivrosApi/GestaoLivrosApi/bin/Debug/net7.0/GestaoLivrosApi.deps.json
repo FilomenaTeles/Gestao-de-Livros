@@ -8,6 +8,8 @@
     ".NETCoreApp,Version=v7.0": {
       "GestaoLivrosApi/1.0.0": {
         "dependencies": {
+          "Ardalis.SmartEnum": "2.1.0",
+          "Ardalis.SmartEnum.SystemTextJson": "2.1.0",
           "Microsoft.AspNetCore.OpenApi": "7.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.0",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.0",
@@ -17,6 +19,26 @@
         },
         "runtime": {
           "GestaoLivrosApi.dll": {}
+        }
+      },
+      "Ardalis.SmartEnum/2.1.0": {
+        "runtime": {
+          "lib/netstandard2.0/Ardalis.SmartEnum.dll": {
+            "assemblyVersion": "1.0.8.0",
+            "fileVersion": "1.0.8.0"
+          }
+        }
+      },
+      "Ardalis.SmartEnum.SystemTextJson/2.1.0": {
+        "dependencies": {
+          "Ardalis.SmartEnum": "2.1.0",
+          "System.Text.Json": "7.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Ardalis.SmartEnum.SystemTextJson.dll": {
+            "assemblyVersion": "1.0.8.0",
+            "fileVersion": "1.0.8.0"
+          }
         }
       },
       "Azure.Core/1.24.0": {
@@ -719,6 +741,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Ardalis.SmartEnum/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RY3BulzPKbcwGhsY/gYkn8sPQtbipF6XheDHbW/TSVUtyFJ/FKTnY2Tx+34WLL5+e/9UnSQcGd3dOqpdN1QzKA==",
+      "path": "ardalis.smartenum/2.1.0",
+      "hashPath": "ardalis.smartenum.2.1.0.nupkg.sha512"
+    },
+    "Ardalis.SmartEnum.SystemTextJson/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2Qxut1JqP14OEyH/T6meC1Byndb+UnJ2h2CeZsYZ8mwAWPEjhhqut0tTlv0trZT66b84119xyYo1OldWSZSEUQ==",
+      "path": "ardalis.smartenum.systemtextjson/2.1.0",
+      "hashPath": "ardalis.smartenum.systemtextjson.2.1.0.nupkg.sha512"
     },
     "Azure.Core/1.24.0": {
       "type": "package",
