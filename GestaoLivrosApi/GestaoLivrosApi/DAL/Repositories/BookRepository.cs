@@ -27,7 +27,7 @@ namespace GestaoLivrosApi.DAL.Repositories
             
             if(searchBy!= null)
             {
-                searchBy = searchBy.ToLower();
+                searchBy = searchBy.ToLower().Trim();
                 var search = query.Where(b => b.Name.Contains(searchBy) || b.Author.Contains(searchBy)
                                         || b.Isbn.ToString().Contains(searchBy) || b.Price.ToString().Contains(searchBy));
                 if( search == null)
