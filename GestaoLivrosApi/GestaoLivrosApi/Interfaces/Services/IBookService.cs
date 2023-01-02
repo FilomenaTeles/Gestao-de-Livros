@@ -1,15 +1,15 @@
 ﻿using System;
 using GestaoLivrosApi.Helpers;
 using GestaoLivrosApi.Models;
+using GestaoLivrosApi.Models.Books;
 
-
-namespace GestaoLivrosApi.Services
+namespace GestaoLivrosApi.Interfaces.Services
 {
 	public interface IBookService
 	{
         //Get livros
         //PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue);
-        Task<PaginatedList<Book>> GetBooks(SearchDTO search);
+        Task<PaginatedList<ListBook>> GetBooks(SearchDTO search);
 
         //PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue);
 

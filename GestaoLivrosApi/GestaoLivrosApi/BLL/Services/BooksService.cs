@@ -1,22 +1,19 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Data;
 using GestaoLivrosApi.Helpers;
-using Azure.Core;
-using System.Net.Http;
-using X.PagedList;
-using Azure;
 using GestaoLivrosApi.Interfaces.Repositories;
+using GestaoLivrosApi.Interfaces.Services;
+using GestaoLivrosApi.Models.Books;
 
 namespace GestaoLivrosApi.Services
 {
     public class BooksService : IBookService
     {
         private readonly AppDbContext _context;
-        private readonly IBookRepositorie _bookRepository;
+        private readonly IBookRepository _bookRepository;
 
-        public BooksService(AppDbContext context, IBookRepositorie bookRepository)
+        public BooksService(AppDbContext context, IBookRepository bookRepository)
         {
             _context = context;
             _bookRepository = bookRepository;
@@ -68,10 +65,10 @@ namespace GestaoLivrosApi.Services
                 throw;
             }
         }*/
-        //TENTATIVA DE IMPLEMENTAR PAGINAÇÃO COMO PROJETO FERNANDO GOMES
-        public async Task<PaginatedList<Book>> GetBooks(SearchDTO search)
+        
+        public async Task<PaginatedList<ListBook>> GetBooks(SearchDTO search)
         {
-            PaginatedList<Book> result = new PaginatedList<Book>();
+            PaginatedList<ListBook> result = new PaginatedList<ListBook>();
 
             try
             {
@@ -94,7 +91,7 @@ namespace GestaoLivrosApi.Services
 
                 //obter a informação - pedido a bd (repositorie)
 
-                var responseRepository = await _bookRepository.GetAllAsync(search.SearchParameters, search.SortingParameters, search.CurrentPage, search.PageSize);
+                var responseRepository = await _bookRepository.GetAllAsync(search.SearchParameter, search.SortingParameter, search.CurrentPage, search.PageSize);
 
                 if (responseRepository.Success != true)
                 {
@@ -102,7 +99,7 @@ namespace GestaoLivrosApi.Services
                     result.Message = "Erro ao obter a informação das urdissagens";
                     return result;
                 }
-                result.Items = responseRepository.Items.Select(t => new Book(t)).ToList();
+                result.Items = responseRepository.Items.Select(t => new ListBook(t)).ToList();
                 result.PageSize = responseRepository.PageSize;
                 result.CurrentPage = responseRepository.CurrentPage;
                 result.TotalRecords = responseRepository.TotalRecords;
@@ -110,7 +107,7 @@ namespace GestaoLivrosApi.Services
 
                 
             }
-            catch (Exception ex)
+            catch 
             {
                 result.Success = false;
                 result.Message = "Ocorreu um erro inesperado ao obter os livros.";
@@ -119,40 +116,8 @@ namespace GestaoLivrosApi.Services
             return result;
         }
 
-
         /*
-         * public async Task<PaginatedList<AssistanceListDTO>> GetAll(SearchDTO search)
-        {
-            PaginatedList<AssistanceListDTO> result = new PaginatedList<AssistanceListDTO>();
-            try
-            {
-                string endpointUrl = $"{_wintouchApiUrlBase}/Assistance/getAll";
-
-                var httpClient = new HttpClient();
-
-                var resultSendRequest = await Request.SendRequest<PaginatedList<AssistanceListDTO>, ErrorMessageDTO>(httpClient, search, endpointUrl, HttpMethod.Post);
-                if (resultSendRequest.Success == false || resultSendRequest.Obj.Success == false)
-                {
-                    Logs.Write(LogTypes.Error, $"Sem sucesso ao obter as assistencias do wintouch: {resultSendRequest.ErrorMessage}", true);
-
-                    result.Success = false;
-                    result.Message = "Sem sucesso ao obter as assistencias do wintouch";
-                    return result;
-                }
-                result = resultSendRequest.Obj;
-            }
-            catch (Exception ex)
-            {
-                Logs.Write(LogTypes.Error, $"Falhou o pedido para obter as assistencias do wintouch: {ex.GetBaseException()}", true);
-
-                result.Success = false;
-                result.Message = "Ocorreu um erro inesperado ao obter as assistencias do wintouch.";
-            }
-            return (result);
-        }
-         */
-
-       /* public PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue)
+          public PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue)
         {
             try
             {
@@ -166,7 +131,8 @@ namespace GestaoLivrosApi.Services
             {
                 throw;
             }
-        }*/
+        }
+         */
 
         public IQueryable<Book> FindAll()
         {
@@ -193,6 +159,7 @@ namespace GestaoLivrosApi.Services
         public async Task<Book> GetBookById(int id)
         {
             var books = await _context.Books.FindAsync(id);
+
             
             return books;
         }

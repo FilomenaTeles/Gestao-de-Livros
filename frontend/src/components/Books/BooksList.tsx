@@ -8,6 +8,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
 import { isDisabled } from '@testing-library/user-event/dist/utils';
 
+import Toast from "../global/Toast";
+
+
 export function AllBooks(){
  
   const [allBooks, setAllBooks]= useState([{
@@ -68,13 +71,22 @@ function selectBook (book:any, option:string){
 
     const [atualPage,setAtualPage]=useState(1);
     const [pageCount, setPageCount] = useState(0);
+    const [getBooks, setGetBooks] = useState({
+        currentPage: 1,
+        pageSize: 6,
+        sortingParameter: "name-asc",
+        searchParameter: ""
+    }
+     );
 
     const requestGet = async() =>{
-      api.get('api/Books').then(response => {
+      console.log(getBooks)
+      api.post('api/Books/getBooks',getBooks).then(response => {
         setAllBooks(response.data.items);
         setPageCount(response.data.totalPages);
-        console.log(response.data.items)
+        
       }).catch(error =>{
+        Toast.Show("error","Erro")
         console.log(error);
       })
   };
@@ -114,50 +126,49 @@ function selectBook (book:any, option:string){
       console.log(error);
     })
   }
- 
-const [orderValue, setOrderValue]=useState("");
-const [orderData, setOrderData]=useState(false)
 
   function orderBy(e:any){
       const option=e;
-      setOrderValue(option);
-     api.get('api/Books?PageNumber='+atualPage+'&PageSize=3&orderValue='+option)
-     .then(response => {
-        setAllBooks(response.data);
-        setOrderData(true)
-     })
+      
+      console.log(atualPage);
+
+      setGetBooks({
+        ...getBooks, sortingParameter : option
+      })
+
+      setUpdatedata(true);
      
   }; 
-
-  //paginação
-  const fetchBooks = async (currentPage: number) => {
-    var res: any
-    if(orderData){
-       res = await fetch('https://localhost:7124/api/Books?currentPage='+currentPage+'&pageSize=6&orderValue='+orderValue);
-
-    }else{
-      res = await fetch('https://localhost:7124/api/Books?currentPage='+currentPage);
-
-    }
-    const temp = res.json();
-    return temp;
-  }; 
+  //dá o highligtht na paginação
+  const [forcePage, setForcePage]=useState(0);
 
   const handlePageClick = async (data:any)=>{
-   
-    let currentPage = data.selected +1
-    const booksFormServer = await fetchBooks(currentPage);
-    setAllBooks (booksFormServer.items);
-    setAtualPage(currentPage);
+  
+    let currentPag = data.selected +1
+    setGetBooks({
+      ... getBooks, currentPage : currentPag
+     })
+     setForcePage(data.selected); //dá o highligtht na pagina selecionada
+    setUpdatedata(true);
   }
  
 
-   //FILTRO  
+   //LIMPAR FILTRO  
   const [inputSearch, setInputSearch] = useState('');
+
   const searchReset = () => {
     setInputSearch("");
-    setFilter([]);
-    requestGet();
+    
+    setGetBooks({
+      ... getBooks, searchParameter  : "",
+      currentPage : 1
+     
+     })
+     requestGet();
+     setForcePage(0); //dá o highligtht para a pagina 1
+     
+     //setUpdatedata(true);
+     console.log(getBooks)
   };
 
  /*  const searchBooks = (searchValue:any) => {
@@ -175,24 +186,24 @@ const [orderData, setOrderData]=useState(false)
   } */
   const [filter, setFilter]=useState([]);
 
+  //FILTRO
   const requestGetBy = async(e:any) => {
     setAtualPage(1);
     e.preventDefault();
   
-    const input = inputSearch.toLowerCase();
+    const input = inputSearch.toLowerCase().trim();
+    setForcePage(0);  //dá o highligtht para a pagina 1
+    setGetBooks({
+      ... getBooks, searchParameter  : input,
+      currentPage : 1
+     })
+     
+     setUpdatedata(true);
 
-     api.get("api/Books/GetBooksBy?PageNumber="+atualPage+"&PageSize=3&searchValue="+input)
-     .then(response => {
-      setFilter(response.data);
-      const sizeData=response.data;
-      const size = sizeData.length;
-      setPageCount(Math.ceil(size/3))
-      console.log(atualPage);
-
-     }).catch((error) => {
-      console.log(error);
-    });
   }
+  
+ 
+
 
   return (
     <div className='container mt-4'>
@@ -201,7 +212,10 @@ const [orderData, setOrderData]=useState(false)
           <form className=" mb-3"  onSubmit={requestGetBy}>
             <input type="text" name='search' value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
             {inputSearch.length< 3 
-            ? (<button className='btn ms-2' disabled type='submit' >Pesquisar</button>)
+            ? (
+              <button className='btn ms-2' disabled type='submit' >Pesquisar</button>
+              
+            )
             :(<button className='btn ms-2' type='submit' >Pesquisar</button>)} 
             
             <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>
@@ -217,7 +231,8 @@ const [orderData, setOrderData]=useState(false)
           </select>
         </div>
       </div>
-      {filter.length< 1 ? (
+    
+      
         <ul id='book-ul'>
           {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
           <li id='book-li' key={book.id}>
@@ -235,30 +250,13 @@ const [orderData, setOrderData]=useState(false)
           
           ))}
         </ul>
-     ):(  
-        <ul id='book-ul'>
-          {filter.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
-          <li id='book-li' key={book.id}>
-              <BookCard 
-              delete={()=>selectBook(book,'delete')}
-                edit={()=>selectBook(book,'edit')}
-                name={book.name} 
-                author={book.author} 
-                price={book.price}
-                isbn={book.isbn}
-                id={book.id}
-              
-            />
-          </li>
-          
-          ))}
-        </ul>
-      )} 
+     
            
       <ReactPaginate 
         previousLabel={'previous'}
         nextLabel={'next'}
         breakLabel={'...'} 
+        forcePage={forcePage}
         pageCount={pageCount}
         marginPagesDisplayed={3}
         pageRangeDisplayed={4}
@@ -274,7 +272,6 @@ const [orderData, setOrderData]=useState(false)
         breakLinkClassName={'page-link'}
         activeClassName={'active'}
   />
-
       <Modal isOpen={modalEdit}>
                 <ModalHeader>Editar Livro</ModalHeader>
                 <ModalBody>

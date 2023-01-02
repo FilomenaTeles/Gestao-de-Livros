@@ -25,8 +25,8 @@ export function AddBook(){
 
   async function postRequest(event: any) {
     try{
-        console.log(newBook);
-        alert();
+        //console.log(newBook);
+        //alert();
         await api.post('api/Books',newBook);
         navigate(-1);
 
