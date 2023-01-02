@@ -127,7 +127,6 @@ function selectBook (book:any, option:string){
     })
   }
 
-
   function orderBy(e:any){
       const option=e;
       
@@ -140,6 +139,8 @@ function selectBook (book:any, option:string){
       setUpdatedata(true);
      
   }; 
+  //dá o highligtht na paginação
+  const [forcePage, setForcePage]=useState(0);
 
   const handlePageClick = async (data:any)=>{
   
@@ -147,7 +148,7 @@ function selectBook (book:any, option:string){
     setGetBooks({
       ... getBooks, currentPage : currentPag
      })
-   
+     setForcePage(data.selected); //dá o highligtht na pagina selecionada
     setUpdatedata(true);
   }
  
@@ -164,7 +165,7 @@ function selectBook (book:any, option:string){
      
      })
      requestGet();
-     setForcePage(0);
+     setForcePage(0); //dá o highligtht para a pagina 1
      
      //setUpdatedata(true);
      console.log(getBooks)
@@ -190,29 +191,18 @@ function selectBook (book:any, option:string){
     setAtualPage(1);
     e.preventDefault();
   
-    const input = inputSearch.toLowerCase();
-
+    const input = inputSearch.toLowerCase().trim();
+    setForcePage(0);  //dá o highligtht para a pagina 1
     setGetBooks({
       ... getBooks, searchParameter  : input,
       currentPage : 1
      })
-
+     
      setUpdatedata(true);
 
-     /* api.get("api/Books/GetBooksBy?PageNumber="+atualPage+"&PageSize=3&searchValue="+input)
-     .then(response => {
-      setFilter(response.data);
-      const sizeData=response.data;
-      const size = sizeData.length;
-      setPageCount(Math.ceil(size/3))
-      console.log(atualPage);
-
-     }).catch((error) => {
-      console.log(error);
-    }); */
   }
   
-  const [forcePage, setForcePage]=useState(0);
+ 
 
 
   return (
@@ -242,7 +232,7 @@ function selectBook (book:any, option:string){
         </div>
       </div>
     
-      {filter.length< 1 ? (
+      
         <ul id='book-ul'>
           {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
           <li id='book-li' key={book.id}>
@@ -260,31 +250,13 @@ function selectBook (book:any, option:string){
           
           ))}
         </ul>
-     ):(  
-        <ul id='book-ul'>
-          {filter.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
-          <li id='book-li' key={book.id}>
-              <BookCard 
-              delete={()=>selectBook(book,'delete')}
-                edit={()=>selectBook(book,'edit')}
-                name={book.name} 
-                author={book.author} 
-                price={book.price}
-                isbn={book.isbn}
-                id={book.id}
-              
-            />
-          </li>
-          
-          ))}
-        </ul>
-      )} 
+     
            
       <ReactPaginate 
         previousLabel={'previous'}
         nextLabel={'next'}
         breakLabel={'...'} 
-        page={forcePage}
+        forcePage={forcePage}
         pageCount={pageCount}
         marginPagesDisplayed={3}
         pageRangeDisplayed={4}
