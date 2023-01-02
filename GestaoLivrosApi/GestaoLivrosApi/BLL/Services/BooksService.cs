@@ -1,13 +1,9 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Data;
 using GestaoLivrosApi.Helpers;
-using Azure.Core;
-using System.Net.Http;
-using X.PagedList;
-using Azure;
 using GestaoLivrosApi.Interfaces.Repositories;
+using GestaoLivrosApi.Interfaces.Services;
 using GestaoLivrosApi.Models.Books;
 
 namespace GestaoLivrosApi.Services
@@ -15,9 +11,9 @@ namespace GestaoLivrosApi.Services
     public class BooksService : IBookService
     {
         private readonly AppDbContext _context;
-        private readonly IBookRepositorie _bookRepository;
+        private readonly IBookRepository _bookRepository;
 
-        public BooksService(AppDbContext context, IBookRepositorie bookRepository)
+        public BooksService(AppDbContext context, IBookRepository bookRepository)
         {
             _context = context;
             _bookRepository = bookRepository;
@@ -111,7 +107,7 @@ namespace GestaoLivrosApi.Services
 
                 
             }
-            catch (Exception ex)
+            catch 
             {
                 result.Success = false;
                 result.Message = "Ocorreu um erro inesperado ao obter os livros.";
@@ -146,6 +142,7 @@ namespace GestaoLivrosApi.Services
         public async Task<Book> GetBookById(int id)
         {
             var books = await _context.Books.FindAsync(id);
+
             
             return books;
         }

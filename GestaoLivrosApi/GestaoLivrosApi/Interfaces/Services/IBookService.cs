@@ -3,7 +3,7 @@ using GestaoLivrosApi.Helpers;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Models.Books;
 
-namespace GestaoLivrosApi.Services
+namespace GestaoLivrosApi.Interfaces.Services
 {
 	public interface IBookService
 	{

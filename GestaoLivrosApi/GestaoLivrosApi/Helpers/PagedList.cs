@@ -69,7 +69,7 @@ namespace GestaoLivrosApi.Helpers
         /// <summary>
         /// Tamanho de cada página
         /// </summary>
-        public int PageSize { get; set; } = 0;
+        public int PageSize { get; set; } = 6;
 
         /// <summary>
         /// Número de páginas existentes

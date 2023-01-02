@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GestaoLivrosApi.Services;
+using GestaoLivrosApi.Interfaces.Services;
 using GestaoLivrosApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using GestaoLivrosApi.Helpers;
+using GestaoLivrosApi.Models.Books;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -29,7 +30,7 @@ namespace GestaoLivrosApi.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<PaginatedList<Book>> GetBooks(SearchDTO search)
+        public async Task<PaginatedList<ListBook>> GetBooks([FromQuery]SearchDTO search)
         {
             return await _bookService.GetBooks(search);
         }
