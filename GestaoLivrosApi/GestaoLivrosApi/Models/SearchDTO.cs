@@ -7,7 +7,7 @@ namespace GestaoLivrosApi.Models
 	{
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
-        public List<Parameter>? SearchParameters { get; set; }
+        public string? SearchParameter { get; set; }
         public string? SortingParameter { get; set; }
     }
 }

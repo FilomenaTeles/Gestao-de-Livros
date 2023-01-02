@@ -19,12 +19,25 @@ namespace GestaoLivrosApi.DAL.Repositories
             _context = context;
         }
 
-        public async Task<PaginatedList<Book>> GetAllAsync(List<Parameter>? SearchBy, string? orderBy, int currentPage , int pageSize)
+        public async Task<PaginatedList<Book>> GetAllAsync(string? searchBy, string? orderBy, int currentPage , int pageSize)
         {
             PaginatedList<Book> response = new PaginatedList<Book>();
 
             var query = _context.Books.AsQueryable();
             
+            if(searchBy!= null)
+            {
+                searchBy = searchBy.ToLower();
+                var search = query.Where(b => b.Name.Contains(searchBy) || b.Author.Contains(searchBy)
+                                        || b.Isbn.ToString().Contains(searchBy) || b.Price.ToString().Contains(searchBy));
+                if( search == null)
+                {
+                    response.Success = false;
+                    response.Message = "Pesquisa sem resultados";
+                    return response;
+                }
+                query = search;
+            } 
 
             response.TotalRecords = query.Count();
 
