@@ -91,7 +91,7 @@ namespace GestaoLivrosApi.Services
 
                 //obter a informação - pedido a bd (repositorie)
 
-                var responseRepository = await _bookRepository.GetAllAsync(search.SearchParameters, search.SortingParameters, search.CurrentPage, search.PageSize);
+                var responseRepository = await _bookRepository.GetAllAsync(search.SearchParameters, search.SortingParameter, search.CurrentPage, search.PageSize);
 
                 if (responseRepository.Success != true)
                 {

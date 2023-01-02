@@ -19,13 +19,12 @@ namespace GestaoLivrosApi.DAL.Repositories
             _context = context;
         }
 
-        public async Task<PaginatedList<Book>> GetAllAsync(List<Parameter>? SearchBy, string? orderBy, int currentPage = 1, int pageSize = 5)
+        public async Task<PaginatedList<Book>> GetAllAsync(List<Parameter>? SearchBy, string? orderBy, int currentPage , int pageSize)
         {
             PaginatedList<Book> response = new PaginatedList<Book>();
 
             var query = _context.Books.AsQueryable();
-            //result.Items = resultSendRequest;
-            //var sendRequest = await Request.SendRequest
+            
 
             response.TotalRecords = query.Count();
 
