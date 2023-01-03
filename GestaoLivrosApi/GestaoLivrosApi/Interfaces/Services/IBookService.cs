@@ -18,7 +18,8 @@ namespace GestaoLivrosApi.Interfaces.Services
 
         Task<Book> GetBookById(int id);
 
-        Task InsertBook(Book book);
+        //Task InsertBook(Book book);
+        Task<MessagingHelper> Create(CreateBookDTO createBook);
 
         Task UpdateBook(Book book);
 

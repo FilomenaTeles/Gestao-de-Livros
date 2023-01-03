@@ -107,7 +107,12 @@ namespace GestaoLivrosApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Insert(Book book)
+        [Route("create")]
+        public async Task<MessagingHelper> Create(CreateBookDTO createBook)
+        {
+            return await _bookService.Create(createBook);
+        }
+        /*public async Task<ActionResult> Insert(Book book)
         {
             try
             {
@@ -131,7 +136,7 @@ namespace GestaoLivrosApi.Controllers
             {
                 return BadRequest("Request inválido");
             }
-        }
+        }*/
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] Book book)

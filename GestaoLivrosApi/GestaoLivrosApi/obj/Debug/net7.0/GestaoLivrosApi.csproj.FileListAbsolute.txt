@@ -80,3 +80,6 @@
 /Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/Newtonsoft.Json.dll
 /Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/Ardalis.SmartEnum.dll
 /Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/Ardalis.SmartEnum.SystemTextJson.dll
+/Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/FluentValidation.dll
+/Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/FluentValidation.AspNetCore.dll
+/Users/Filomena/Projects/Gestao_livros/GestaoLivrosApi/GestaoLivrosApi/bin/Debug/net7.0/FluentValidation.DependencyInjectionExtensions.dll

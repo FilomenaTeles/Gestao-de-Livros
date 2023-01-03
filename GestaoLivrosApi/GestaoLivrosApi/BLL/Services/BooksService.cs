@@ -5,6 +5,7 @@ using GestaoLivrosApi.Helpers;
 using GestaoLivrosApi.Interfaces.Repositories;
 using GestaoLivrosApi.Interfaces.Services;
 using GestaoLivrosApi.Models.Books;
+using static GestaoLivrosApi.Models.Books.CreateBookDTO;
 
 namespace GestaoLivrosApi.Services
 {
@@ -164,12 +165,53 @@ namespace GestaoLivrosApi.Services
             return books;
         }
 
-        public async Task InsertBook(Book book)
+        /* public async Task InsertBook(Book book)
+         {
+
+             _context.Books.Add(book);
+             await _context.SaveChangesAsync();
+
+         }*/
+
+        public async Task<MessagingHelper> Create(CreateBookDTO createBook)
         {
+            MessagingHelper response = new MessagingHelper();
 
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
+            try
+            {
+                CreateBookDTOValidator validator = new();
+                var responseValidate = await validator.ValidateAsync(createBook);
+                if (responseValidate == null || responseValidate.IsValid == false)
+                {
+                    if (responseValidate == null)
+                    {
+                        response.Message = "Erro ao validar a informação do livro.";
+                        return response;
+                    }
 
+                    response.Message = responseValidate.Errors.FirstOrDefault()!.ErrorMessage;
+                    return response;
+                }
+
+                var isbnExist = await _bookRepository.Exist(createBook.Isbn);
+                if (isbnExist == true)
+                {
+                    response.Success = false;
+                    response.Message = "Este ISBN já existe";
+                    return response;
+                }
+
+                response.Success = true;
+                response.Message = "Livro criado com sucesso";
+            }
+
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Erro interno ao criar um livro.";
+            }
+
+            return response;
         }
 
         public async Task UpdateBook(Book book)
