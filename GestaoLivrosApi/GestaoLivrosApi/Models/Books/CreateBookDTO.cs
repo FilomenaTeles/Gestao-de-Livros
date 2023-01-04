@@ -4,7 +4,7 @@ namespace GestaoLivrosApi.Models.Books
 {
     public class CreateBookDTO
 	{
-        public int Id { get; set; }
+       // public int Id { get; set; }
 
         public long Isbn { get; set; }
 
@@ -14,7 +14,20 @@ namespace GestaoLivrosApi.Models.Books
 
         public double Price { get; set; }
 
-        public bool isDeleted { get; set; } = false;
+        //public bool isDeleted { get; set; } = false;
+
+        public Book ToEntity()
+        {
+            var book = new Book
+            {
+                Isbn = this.Isbn,
+                Name = this.Name,
+                Author = this.Author,
+                Price = this.Price
+            };
+
+            return book;
+        }
 
         public class CreateBookDTOValidator : AbstractValidator<CreateBookDTO>
         {

@@ -193,11 +193,20 @@ namespace GestaoLivrosApi.Services
                     return response;
                 }
 
-                var isbnExist = await _bookRepository.Exist(createBook.Isbn);
+                var isbnExist = await _bookRepository.ExistIsbn(createBook.Isbn);
                 if (isbnExist == true)
                 {
                     response.Success = false;
                     response.Message = "Este ISBN já existe";
+                    return response;
+                }
+
+                var newBook = createBook.ToEntity();
+                var book = await _bookRepository.Create(newBook);
+                if(book == null)
+                {
+                    response.Success = false;
+                    response.Message = "Erro ao criar livro";
                     return response;
                 }
 

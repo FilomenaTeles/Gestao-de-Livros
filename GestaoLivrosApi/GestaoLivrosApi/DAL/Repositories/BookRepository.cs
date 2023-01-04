@@ -91,9 +91,16 @@ namespace GestaoLivrosApi.DAL.Repositories
             return response;
         }
 
-        public async Task<bool> Exist(long isbn)
+        public async Task<bool> ExistIsbn(long isbn)
         {
             return await _context.Books.AnyAsync(b => b.Isbn == isbn);
+        }
+
+        public async Task<Book> Create(Book book)
+        {
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
+            return book;
         }
     }
 
