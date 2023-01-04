@@ -6,9 +6,12 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
-import { isDisabled } from '@testing-library/user-event/dist/utils';
+import {BsBook} from "react-icons/bs";
+import {BiBookAdd} from "react-icons/bi";
 
 import Toast from "../global/Toast";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export function AllBooks(){
@@ -80,20 +83,20 @@ function selectBook (book:any, option:string){
      );
 
     const requestGet = async() =>{
-      console.log(getBooks)
+      //console.log(getBooks)
       api.post('api/Books/getBooks',getBooks).then(response => {
         setAllBooks(response.data.items);
         setPageCount(response.data.totalPages);
         
       }).catch(error =>{
-        Toast.Show("error","Erro")
+        Toast.Show("error",error)
         console.log(error);
       })
   };
 
-  const requestPut = async()=>{
+  const requestUpdate = async()=>{
    
-   api.put( "api/Books/"+bookSelected.id, bookSelected)
+   api.post( "api/Books/update", bookSelected)
     .then(response => {
       var resp = response.data;
       var auxiliarData = allBooks;
@@ -107,7 +110,15 @@ function selectBook (book:any, option:string){
         }
       });
       setUpdatedata(true);
-      openCloseModalEdit();
+      
+     
+      if(response.data.success){
+        Toast.Show("success","Livro editado com sucesso")
+        openCloseModalEdit();
+      }else{
+        Toast.Show("error",response.data.message)
+      }
+      
 
     }).catch(error =>{
       console.log(error);
@@ -187,8 +198,51 @@ function selectBook (book:any, option:string){
 
   }
 
+ 
+
+  //teste adicionar:
+
+  //estado para controlar o modal
+  const [modalCreate, setModalCreate]=useState(false);
+
+  //metodo para alternar estados do modal
+  function openCloseModalCreate(){
+    setModalCreate(!modalCreate);
+  }
+  const [newBook,setNewBook]= useState({
+    name: '',
+    author: '',
+    isbn: 0,
+    price: 0.0,
+});
+const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
+  const {name, value} = e.target;
+  setNewBook({
+    ...newBook,[name]:value
+  });
+  console.log(newBook);
+}
+  const requestCreate = async() => {
+    await api.post('api/Books/create', newBook).then(response => {
+       
+        
+        if(response.data.success == false){
+        
+            Toast.Show("error",response.data.message)
+        }else{
+          Toast.Show("success","Livro inserido com sucesso")
+          openCloseModalCreate()
+        }
+        
+    }).catch(error =>{
+        Toast.Show("error",error)
+        console.log(error);
+      });
+ }
+
   return (
     <div className='container mt-4'>
+      <button className='btn mb-3' onClick={openCloseModalCreate}><BiBookAdd size={25}/> Novo Livro</button>
       <div className='container row'>
         <div className='col-8'>
           <form className=" mb-3"  onSubmit={requestGetBy}>
@@ -214,8 +268,8 @@ function selectBook (book:any, option:string){
         </div>
       </div>
     
-      
         <ul id='book-ul'>
+         
           {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
           <li id='book-li' key={book.id}>
               <BookCard 
@@ -233,7 +287,8 @@ function selectBook (book:any, option:string){
           ))}
         </ul>
      
-           
+        <ToastContainer />
+
       <ReactPaginate 
         previousLabel={'previous'}
         nextLabel={'next'}
@@ -260,7 +315,7 @@ function selectBook (book:any, option:string){
                     <div className='form-group'>
                       <input type="number" hidden name='id' value={bookSelected && bookSelected.id}/>
                     <label>Isbn:</label>
-                    <input className='form-control' value={bookSelected && bookSelected.isbn} />
+                    <input type="number" className='form-control' name='isbn' onChange={handleChange} value={bookSelected && bookSelected.isbn} />
                     <br/>
                     <label>Nome:</label>
                     <br/>
@@ -275,10 +330,10 @@ function selectBook (book:any, option:string){
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestPut()}>Editar</button> {"  "}
+                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestUpdate()}>Editar</button> {"  "}
                     <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalEdit()}>Cancelar</button>    
                 </ModalFooter>
-            </Modal>
+      </Modal>
 
             <Modal isOpen={modalDelete}>
               <ModalBody>
@@ -293,6 +348,32 @@ function selectBook (book:any, option:string){
                 <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
               </ModalFooter>
             </Modal>
+
+            <Modal isOpen={modalCreate}>
+                <ModalHeader><BsBook size={25}/> Novo Livro</ModalHeader>
+                <ModalBody>
+                    <div className='form-group'>
+                      
+                    <label>Isbn:</label>
+                    <input type="number" className='form-control' name='isbn' onChange={handleChangeCreate} />
+                    <br/>
+                    <label>Nome:</label>
+                    <br/>
+                    <input type="text" className='form-control' name='name' onChange={handleChangeCreate}  />
+                    <label>Autor:</label>
+                    <br/>
+                    <input type="text" className='form-control'  name='author' onChange={handleChangeCreate}  />
+                    <label>Preço:</label>
+                    <br/>
+                    <input type="number" className='form-control'  name='price' onChange={handleChangeCreate}  />
+
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestCreate()}>Adicionar</button> {"  "}
+                    <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalCreate()}>Cancelar</button>    
+                </ModalFooter>
+      </Modal>
       
     </div>
   );

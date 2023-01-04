@@ -7,7 +7,9 @@ class ToastClass {
         toast.dismiss();
         toast(message, {
             type,
-            theme: "colored"
+            theme: "colored",
+            autoClose: 5000,
+            
         });
     }
 }
