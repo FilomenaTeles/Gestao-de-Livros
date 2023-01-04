@@ -6,6 +6,8 @@ using GestaoLivrosApi.Interfaces.Repositories;
 using GestaoLivrosApi.Interfaces.Services;
 using GestaoLivrosApi.Models.Books;
 using static GestaoLivrosApi.Models.Books.CreateBookDTO;
+using static GestaoLivrosApi.Models.Books.EditBookDTO;
+using Azure;
 
 namespace GestaoLivrosApi.Services
 {
@@ -20,52 +22,6 @@ namespace GestaoLivrosApi.Services
             _bookRepository = bookRepository;
         }
 
-       
-        
-        /*public PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue)
-        {
-
-            try
-            {
-                if (orderValue!=null)
-                {
-                    switch (orderValue)
-                    {
-                       
-                        case "name-desc":
-                            {
-                                return PagedList<Book>.ToPagedList(FindAll().OrderByDescending(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-                              
-                            }
-                        case "price-asc":
-                            {
-                                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Price), bookParameters.PageNumber, bookParameters.PageSize);
-
-                            }
-                        case "price-desc":
-                            {
-                                return PagedList<Book>.ToPagedList(FindAll().OrderByDescending(b => b.Price), bookParameters.PageNumber, bookParameters.PageSize);
-
-                            }
-                        default:
-                            {
-                                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-                                
-                            }
-                    }
-                }
-                else
-                {
-                    return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-
-                }
-
-            }
-            catch
-            {
-                throw;
-            }
-        }*/
         
         public async Task<PaginatedList<ListBook>> GetBooks(SearchDTO search)
         {
@@ -117,24 +73,6 @@ namespace GestaoLivrosApi.Services
             return result;
         }
 
-        /*
-          public PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue)
-        {
-            try
-            {
-
-                return PagedList<Book>.ToPagedList(FindAll().Where(b => b.Name.Contains( searchValue) || b.Author.Contains(searchValue)
-                                        || b.Isbn.ToString().Contains(searchValue) || b.Price.ToString().Contains(searchValue)).
-                                        OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-               
-            }
-            catch 
-            {
-                throw;
-            }
-        }
-         */
-
         public IQueryable<Book> FindAll()
         {
             return this._context.Set<Book>();
@@ -164,14 +102,6 @@ namespace GestaoLivrosApi.Services
             
             return books;
         }
-
-        /* public async Task InsertBook(Book book)
-         {
-
-             _context.Books.Add(book);
-             await _context.SaveChangesAsync();
-
-         }*/
 
         public async Task<MessagingHelper> Create(CreateBookDTO createBook)
         {
@@ -223,11 +153,94 @@ namespace GestaoLivrosApi.Services
             return response;
         }
 
-        public async Task UpdateBook(Book book)
+        public async Task<MessagingHelper<BookDTO>> GetById(int id)
+        {
+            MessagingHelper<BookDTO> result = new();
+
+            try
+            {
+                var responseRepository = await _bookRepository.GetById(id);
+
+                if (responseRepository == null)
+                {
+                    result.Success = false;
+                    result.Message = "Não foi possivel encontrar este livro";
+                    return result;
+                }
+                
+
+                var bookRepository = new  BookDTO(responseRepository);
+
+                result.Obj = bookRepository;
+                result.Success = true;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Ocorreu um erro ao ir buscar o livro";
+            }
+            return result;
+        }
+
+        public async Task<MessagingHelper<BookDTO>> Update(EditBookDTO editBook)
+        {
+            MessagingHelper<BookDTO> result = new();
+
+            try
+            {
+                EditBookDTOValidator validator = new();
+                var responseValidator = validator.Validate(editBook);
+
+                if (responseValidator.IsValid == false)
+                {
+                    result.Success = false;
+                    result.Message = responseValidator.Errors.FirstOrDefault().ErrorMessage;
+                    return result;
+                }
+
+                var book = await _bookRepository.GetById(editBook.Id);
+                if (book == null)
+                {
+                    result.Message = "Este livro não existe";
+                    return result;
+                }
+
+                if(book.Isbn != editBook.Isbn)
+                {
+                    //validar se novo isbn existe na bd
+                    var isbnExist = await _bookRepository.ExistIsbn(editBook.Isbn);
+                    if (isbnExist == true)
+                    {
+                        result.Success = false;
+                        result.Message = "Este ISBN já existe";
+                        return result;
+                    }
+                }
+
+                book.Name = editBook.Name;
+                book.Author = editBook.Author;
+                book.Isbn = editBook.Isbn;
+                book.Price = editBook.Price;
+
+                book = await _bookRepository.Update(book);
+
+                result.Success = true;
+                result.Obj = new BookDTO(book);
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Erro ao editar o livro ";
+            }
+            return result;
+        }
+
+        /*public async Task UpdateBook(Book book)
         {
             _context.Entry(book).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-        }
+        }*/
 
         public async Task DeleteBook(Book book)
         {

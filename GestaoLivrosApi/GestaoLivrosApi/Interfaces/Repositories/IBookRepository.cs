@@ -11,6 +11,10 @@ namespace GestaoLivrosApi.Interfaces.Repositories
         Task<bool> ExistIsbn(long isbn);
         Task<Book> Create(Book book);
 
+        Task<Book?> GetById(int id);
+
+        Task<Book> Update(Book task);
+
     }
 }
 
