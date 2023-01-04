@@ -25,30 +25,11 @@ namespace GestaoLivrosApi.Controllers
             _bookService = bookService;
         }
 
-
-
-
         // GET: api/values
         [HttpPost ("getBooks")]
         public async Task<PaginatedList<ListBook>> GetBooks(SearchDTO search)
         {
             return await _bookService.GetBooks(search);
-        }
-
-        [HttpGet("GetBooksByIsbn")]
-        public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooksByIsbn([FromQuery] string isbn)
-        {
-            try
-            {
-                var books = await _bookService.GetBooksByIsbn(isbn);
-                if (books?.Any() != true)
-                    return NotFound($"Não existe o livro com isbn: {isbn} neste catálogo");
-                return Ok(books);
-            }
-            catch 
-            {
-                return BadRequest("Request inválido");
-            }
         }
 
         [HttpPost]
@@ -57,53 +38,7 @@ namespace GestaoLivrosApi.Controllers
         {
             return await _bookService.Create(createBook);
         }
-        /*public async Task<ActionResult> Insert(Book book)
-        {
-            try
-            {
-                var hasIsbn = await _bookService.GetBooksByIsbn(book.Isbn.ToString());
-
-                if (hasIsbn.Any() != true && book.Price>0)
-                {
-                    await _bookService.InsertBook(book);
-                    return Ok(book);
-                }
-               if (hasIsbn.Any() == true)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
-                }
-                
-               
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
-                
-            }
-            catch
-            {
-                return BadRequest("Request inválido");
-            }
-        }*/
-
-        /*  [HttpPut("{id:int}")]
-          public async Task<ActionResult> Update(int id, [FromBody] Book book)
-          {
-              try
-              {
-                  if (book.Id == id)
-                  {
-
-                          await _bookService.UpdateBook(book);
-                          return Ok($"Livro com id={id} foi atualizado com sucesso");
-
-                  }
-                  else
-                      return BadRequest("Dados inconsistentes");
-              }
-              catch
-              {
-                  return BadRequest("Request inválido");
-              }
-          }*/
-
+      
         [HttpGet("{id}")]
         public async Task<MessagingHelper<BookDTO>> GetById(int id)
         {

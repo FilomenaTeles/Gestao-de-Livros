@@ -73,36 +73,6 @@ namespace GestaoLivrosApi.Services
             return result;
         }
 
-        public IQueryable<Book> FindAll()
-        {
-            return this._context.Set<Book>();
-        }
-
-        public async Task<IEnumerable<Book>> GetBooksByIsbn(string isbn)
-        {
-            // cira enumeravel de livros
-            IEnumerable<Book> books;
-
-            if (!string.IsNullOrEmpty(isbn))
-            {
-                books = await _context.Books.Where(b => (b.Isbn.ToString()).Equals(isbn)).ToListAsync();
-            }
-            else
-            {
-                //books = await GetBooks();
-                books = await _context.Books.Where(b => (b.Isbn.ToString()).Equals(isbn)).ToListAsync();
-            }
-            return books;
-        }
-
-        public async Task<Book> GetBookById(int id)
-        {
-            var books = await _context.Books.FindAsync(id);
-
-            
-            return books;
-        }
-
         public async Task<MessagingHelper> Create(CreateBookDTO createBook)
         {
             MessagingHelper response = new MessagingHelper();
@@ -236,11 +206,13 @@ namespace GestaoLivrosApi.Services
             return result;
         }
 
-        /*public async Task UpdateBook(Book book)
+        public async Task<Book> GetBookById(int id)
         {
-            _context.Entry(book).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-        }*/
+            var books = await _context.Books.FindAsync(id);
+
+
+            return books;
+        }
 
         public async Task DeleteBook(Book book)
         {
