@@ -171,21 +171,6 @@ function selectBook (book:any, option:string){
      console.log(getBooks)
   };
 
- /*  const searchBooks = (searchValue:any) => {
-    setInputSearch(searchValue);
-
-    if(inputSearch != ''){
-        const booksFiltered=allBooks.filter((item)=>{
-          return Object.values(item).join('').toLowerCase().includes(inputSearch.toLowerCase())
-        });
-        setFilter(booksFiltered);
-    }
-    else{
-      setFilter(allBooks);
-    }
-  } */
-  const [filter, setFilter]=useState([]);
-
   //FILTRO
   const requestGetBy = async(e:any) => {
     setAtualPage(1);
@@ -201,9 +186,6 @@ function selectBook (book:any, option:string){
      setUpdatedata(true);
 
   }
-  
- 
-
 
   return (
     <div className='container mt-4'>

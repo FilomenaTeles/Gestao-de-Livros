@@ -90,6 +90,32 @@ namespace GestaoLivrosApi.DAL.Repositories
 
             return response;
         }
+
+        public async Task<bool> ExistIsbn(long isbn)
+        {
+            return await _context.Books.AnyAsync(b => b.Isbn == isbn);
+        }
+
+        public async Task<Book> Create(Book book)
+        {
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
+            return book;
+        }
+
+        public async Task<Book?> GetById(int id)
+        {
+            return await _context.Books
+                .Where(b => b.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Book> Update(Book book)
+        {
+            _context.Entry<Book>(book).CurrentValues.SetValues(book);
+            await _context.SaveChangesAsync();
+            return book;
+        }
     }
 
 }

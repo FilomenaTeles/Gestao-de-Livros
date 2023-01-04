@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GestaoLivrosApi.Models
 {
-   
+    //[Index(nameof(Isbn), IsUnique = true)]
     public class Book
 	{
 		public int Id { get; set; }
@@ -26,6 +26,5 @@ namespace GestaoLivrosApi.Models
 
 
     }
-    
 }
 

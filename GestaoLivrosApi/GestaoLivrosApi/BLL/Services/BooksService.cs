@@ -5,6 +5,9 @@ using GestaoLivrosApi.Helpers;
 using GestaoLivrosApi.Interfaces.Repositories;
 using GestaoLivrosApi.Interfaces.Services;
 using GestaoLivrosApi.Models.Books;
+using static GestaoLivrosApi.Models.Books.CreateBookDTO;
+using static GestaoLivrosApi.Models.Books.EditBookDTO;
+using Azure;
 
 namespace GestaoLivrosApi.Services
 {
@@ -19,52 +22,6 @@ namespace GestaoLivrosApi.Services
             _bookRepository = bookRepository;
         }
 
-       
-        
-        /*public PagedList<Book> GetBooks(BookParameters bookParameters, string? orderValue)
-        {
-
-            try
-            {
-                if (orderValue!=null)
-                {
-                    switch (orderValue)
-                    {
-                       
-                        case "name-desc":
-                            {
-                                return PagedList<Book>.ToPagedList(FindAll().OrderByDescending(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-                              
-                            }
-                        case "price-asc":
-                            {
-                                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Price), bookParameters.PageNumber, bookParameters.PageSize);
-
-                            }
-                        case "price-desc":
-                            {
-                                return PagedList<Book>.ToPagedList(FindAll().OrderByDescending(b => b.Price), bookParameters.PageNumber, bookParameters.PageSize);
-
-                            }
-                        default:
-                            {
-                                return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-                                
-                            }
-                    }
-                }
-                else
-                {
-                    return PagedList<Book>.ToPagedList(FindAll().OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-
-                }
-
-            }
-            catch
-            {
-                throw;
-            }
-        }*/
         
         public async Task<PaginatedList<ListBook>> GetBooks(SearchDTO search)
         {
@@ -116,66 +73,145 @@ namespace GestaoLivrosApi.Services
             return result;
         }
 
-        /*
-          public PagedList<Book> GetBooksBy(BookParameters bookParameters, string searchValue)
+        public async Task<MessagingHelper> Create(CreateBookDTO createBook)
         {
+            MessagingHelper response = new MessagingHelper();
+
             try
             {
+                CreateBookDTOValidator validator = new();
+                var responseValidate = await validator.ValidateAsync(createBook);
+                if (responseValidate == null || responseValidate.IsValid == false)
+                {
+                    if (responseValidate == null)
+                    {
+                        response.Message = "Erro ao validar a informação do livro.";
+                        return response;
+                    }
 
-                return PagedList<Book>.ToPagedList(FindAll().Where(b => b.Name.Contains( searchValue) || b.Author.Contains(searchValue)
-                                        || b.Isbn.ToString().Contains(searchValue) || b.Price.ToString().Contains(searchValue)).
-                                        OrderBy(b => b.Name), bookParameters.PageNumber, bookParameters.PageSize);
-               
+                    response.Message = responseValidate.Errors.FirstOrDefault()!.ErrorMessage;
+                    return response;
+                }
+
+                var isbnExist = await _bookRepository.ExistIsbn(createBook.Isbn);
+                if (isbnExist == true)
+                {
+                    response.Success = false;
+                    response.Message = "Este ISBN já existe";
+                    return response;
+                }
+
+                var newBook = createBook.ToEntity();
+                var book = await _bookRepository.Create(newBook);
+                if(book == null)
+                {
+                    response.Success = false;
+                    response.Message = "Erro ao criar livro";
+                    return response;
+                }
+
+                response.Success = true;
+                response.Message = "Livro criado com sucesso";
             }
-            catch 
+
+            catch (Exception ex)
             {
-                throw;
+                response.Success = false;
+                response.Message = "Erro interno ao criar um livro.";
             }
+
+            return response;
         }
-         */
 
-        public IQueryable<Book> FindAll()
+        public async Task<MessagingHelper<BookDTO>> GetById(int id)
         {
-            return this._context.Set<Book>();
+            MessagingHelper<BookDTO> result = new();
+
+            try
+            {
+                var responseRepository = await _bookRepository.GetById(id);
+
+                if (responseRepository == null)
+                {
+                    result.Success = false;
+                    result.Message = "Não foi possivel encontrar este livro";
+                    return result;
+                }
+                
+
+                var bookRepository = new  BookDTO(responseRepository);
+
+                result.Obj = bookRepository;
+                result.Success = true;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Ocorreu um erro ao ir buscar o livro";
+            }
+            return result;
         }
 
-        public async Task<IEnumerable<Book>> GetBooksByIsbn(string isbn)
+        public async Task<MessagingHelper<BookDTO>> Update(EditBookDTO editBook)
         {
-            // cira enumeravel de livros
-            IEnumerable<Book> books;
+            MessagingHelper<BookDTO> result = new();
 
-            if (!string.IsNullOrEmpty(isbn))
+            try
             {
-                books = await _context.Books.Where(b => (b.Isbn.ToString()).Equals(isbn)).ToListAsync();
+                EditBookDTOValidator validator = new();
+                var responseValidator = validator.Validate(editBook);
+
+                if (responseValidator.IsValid == false)
+                {
+                    result.Success = false;
+                    result.Message = responseValidator.Errors.FirstOrDefault().ErrorMessage;
+                    return result;
+                }
+
+                var book = await _bookRepository.GetById(editBook.Id);
+                if (book == null)
+                {
+                    result.Message = "Este livro não existe";
+                    return result;
+                }
+
+                if(book.Isbn != editBook.Isbn)
+                {
+                    //validar se novo isbn existe na bd
+                    var isbnExist = await _bookRepository.ExistIsbn(editBook.Isbn);
+                    if (isbnExist == true)
+                    {
+                        result.Success = false;
+                        result.Message = "Este ISBN já existe";
+                        return result;
+                    }
+                }
+
+                book.Name = editBook.Name;
+                book.Author = editBook.Author;
+                book.Isbn = editBook.Isbn;
+                book.Price = editBook.Price;
+
+                book = await _bookRepository.Update(book);
+
+                result.Success = true;
+                result.Obj = new BookDTO(book);
+
             }
-            else
+            catch (Exception ex)
             {
-                //books = await GetBooks();
-                books = await _context.Books.Where(b => (b.Isbn.ToString()).Equals(isbn)).ToListAsync();
+                result.Success = false;
+                result.Message = "Erro ao editar o livro ";
             }
-            return books;
+            return result;
         }
 
         public async Task<Book> GetBookById(int id)
         {
             var books = await _context.Books.FindAsync(id);
 
-            
+
             return books;
-        }
-
-        public async Task InsertBook(Book book)
-        {
-
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-
-        }
-
-        public async Task UpdateBook(Book book)
-        {
-            _context.Entry(book).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteBook(Book book)

@@ -25,146 +25,30 @@ namespace GestaoLivrosApi.Controllers
             _bookService = bookService;
         }
 
-
-
-
         // GET: api/values
         [HttpPost ("getBooks")]
         public async Task<PaginatedList<ListBook>> GetBooks(SearchDTO search)
         {
             return await _bookService.GetBooks(search);
         }
-      /*public IActionResult GetBooks([FromQuery] BookParameters bookParameters, string? orderValue)
-        {
-            try
-            {
-               
-                var books = _bookService.GetBooks(bookParameters, orderValue);
-
-                var metadata = new
-                {
-                    books.TotalCount,
-                    books.PageSize,
-                    books.CurrentPage,
-                    books.TotalPages,
-                    books.HasNext,
-                    books.HasPrevious
-                };
-                books.Metadada = JsonConvert.SerializeObject(metadata);
-                Response.Headers.Add("x-pagination", JsonConvert.SerializeObject(metadata));
-
-                return Ok(books);
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao obter alunos");
-
-            }
-        }*/
-
-        /* [HttpGet("GetBooksBy")]
-         public IActionResult GetBooksBy([FromQuery] BookParameters bookParameters, string searchValue)
-         {
-             try
-             {
-                 if (searchValue.Length > 2)
-                 {
-                     var books = _bookService.GetBooksBy(bookParameters, searchValue);
-                     if (books.Count > 0)
-                     {
-                         return Ok(books);
-                     }
-                     else
-                     {
-                         return NotFound($"Não existe o livro {searchValue} neste catálogo");
-                     }
-                 }
-                 else
-                     return StatusCode(StatusCodes.Status500InternalServerError, "Por favor insira mais que 2 letras para fazer a pesquisa");
-
-
-             }
-             catch
-             {
-                 return BadRequest("Request inválido");
-             }
-         }*/
-
-            [HttpGet("GetBooksByIsbn")]
-        public async Task<ActionResult<IAsyncEnumerable<Book>>> GetBooksByIsbn([FromQuery] string isbn)
-        {
-            try
-            {
-                var books = await _bookService.GetBooksByIsbn(isbn);
-                if (books?.Any() != true)
-                    return NotFound($"Não existe o livro com isbn: {isbn} neste catálogo");
-                return Ok(books);
-            }
-            catch 
-            {
-                return BadRequest("Request inválido");
-            }
-        }
 
         [HttpPost]
-        public async Task<ActionResult> Insert(Book book)
+        [Route("create")]
+        public async Task<MessagingHelper> Create(CreateBookDTO createBook)
         {
-            try
-            {
-                var hasIsbn = await _bookService.GetBooksByIsbn(book.Isbn.ToString());
-
-                if (hasIsbn.Any() != true && book.Price>0)
-                {
-                    await _bookService.InsertBook(book);
-                    return Ok(book);
-                }
-               if (hasIsbn.Any() == true)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
-                }
-                
-               
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
-                
-            }
-            catch
-            {
-                return BadRequest("Request inválido");
-            }
+            return await _bookService.Create(createBook);
+        }
+      
+        [HttpGet("{id}")]
+        public async Task<MessagingHelper<BookDTO>> GetById(int id)
+        {
+            return await _bookService.GetById(id);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Update(int id, [FromBody] Book book)
+        [HttpPost("update")]
+        public async Task<MessagingHelper<BookDTO>> Update(EditBookDTO editBook)
         {
-            try
-            {
-                if (book.Id == id)
-                {
-                   // var hasIsbn = await _bookService.GetBooksByIsbn(book.Isbn.ToString());
-                   // var isbnLenght = hasIsbn.Count();
-                    
-
-                    //if (hasIsbn.Any() != true && book.Price > 0)
-                    //{
-                        await _bookService.UpdateBook(book);
-                        return Ok($"Livro com id={id} foi atualizado com sucesso");
-                    /*}
-                    else if (hasIsbn.Any() == true)
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, $"O ISBN {book.Isbn} já existe no catálogo");
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, "Impossivel adicionar um livro com preço negativo");
-                    }*/
-                }
-                else
-                    return BadRequest("Dados inconsistentes");
-            }
-            catch
-            {
-                return BadRequest("Request inválido");
-            }
+            return await _bookService.Update(editBook);
         }
 
         [HttpDelete("{id}")]
