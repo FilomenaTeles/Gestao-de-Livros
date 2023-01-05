@@ -3,11 +3,11 @@ import api from '../../services/api';
 import { BookCard } from '../global/Card';
 import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
 import {BsBook} from "react-icons/bs";
 import {BiBookAdd} from "react-icons/bi";
+import NotFound from '../../assets/nodata.png';
 
 import Toast from "../global/Toast";
 import { ToastContainer } from 'react-toastify';
@@ -23,6 +23,7 @@ export function AllBooks(){
     price: 0.0,
     id:0
   }]);
+  console.log(allBooks);
 
    //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
@@ -188,6 +189,7 @@ function selectBook (book:any, option:string){
     e.preventDefault();
   
     const input = inputSearch.toLowerCase().trim();
+  
     setForcePage(0);  //dá o highligtht para a pagina 1
     setGetBooks({
       ... getBooks, searchParameter  : input,
@@ -223,7 +225,13 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
   console.log(newBook);
 }
   const requestCreate = async() => {
-    await api.post('api/Books/create', newBook).then(response => {
+    console.log(newBook)
+    if(newBook.author == "" || newBook.author=="" || newBook.isbn==0 ){
+      Toast.Show("error","Prencha todos os campos para inserir um livro")
+
+    }
+    else{
+      await api.post('api/Books/create', newBook).then(response => {
        
         
         if(response.data.success == false){
@@ -238,6 +246,8 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
         Toast.Show("error",error)
         console.log(error);
       });
+    }
+    
  }
 
   return (
@@ -257,6 +267,7 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
             <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>
           </form>
         </div>
+
         <div className='container text-end col-4'>
           <select className='' name="orderBy" id="orderBy" onChange={(e)=>orderBy(e.target.value)}>
             {/* <option defaultValue="" selected disabled>Ordenar por:</option> */}
@@ -267,26 +278,31 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
           </select>
         </div>
       </div>
-    
-        <ul id='book-ul'>
-         
-          {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
-          <li id='book-li' key={book.id}>
-              <BookCard 
-              delete={()=>selectBook(book,'delete')}
-                edit={()=>selectBook(book,'edit')}
-                name={book.name} 
-                author={book.author} 
-                price={book.price}
-                isbn={book.isbn}
-                id={book.id}
-              
-            />
-          </li>
-          
-          ))}
-        </ul>
-     
+
+       {allBooks.length === 0 ?
+       (
+         <div className='container mt-3 ms-3 mb-0 text-center'>
+             <h5 className='text-start'>Livro não encontrado</h5>
+             <img src={NotFound} alt="not found data" className='not-found-img'/>
+         </div>
+       ):(
+         <ul id='book-ul'>
+             {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: any}) =>(
+             <li id='book-li' key={book.id}>
+                 <BookCard 
+                 delete={()=>selectBook(book,'delete')}
+                   edit={()=>selectBook(book,'edit')}
+                   name={book.name} 
+                   author={book.author} 
+                   price={parseFloat(book.price).toFixed(2).toString().replace(".",",")}
+                   isbn={book.isbn}
+                   id={book.id}
+               />
+             </li>
+             ))}
+         </ul>
+       )}
+        
         <ToastContainer />
 
       <ReactPaginate 
@@ -315,17 +331,17 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
                     <div className='form-group'>
                       <input type="number" hidden name='id' value={bookSelected && bookSelected.id}/>
                     <label>Isbn:</label>
-                    <input type="number" className='form-control' name='isbn' onChange={handleChange} value={bookSelected && bookSelected.isbn} />
+                    <input type="number" className='form-control' name='isbn' required onChange={handleChange} value={bookSelected && bookSelected.isbn} />
                     <br/>
                     <label>Nome:</label>
                     <br/>
-                    <input type="text" className='form-control' name='name' onChange={handleChange} value={bookSelected && bookSelected.name} />
+                    <input type="text" className='form-control' name='name'required onChange={handleChange} value={bookSelected && bookSelected.name} />
                     <label>Autor:</label>
                     <br/>
-                    <input type="text" className='form-control'  name='author' onChange={handleChange}  value={bookSelected && bookSelected.author}/>
+                    <input type="text" className='form-control'  name='author' required onChange={handleChange}  value={bookSelected && bookSelected.author}/>
                     <label>Preço:</label>
                     <br/>
-                    <input type="number" className='form-control'  name='price' onChange={handleChange} value={bookSelected && bookSelected.price} />
+                    <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} />
 
                     </div>
                 </ModalBody>
@@ -355,17 +371,17 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
                     <div className='form-group'>
                       
                     <label>Isbn:</label>
-                    <input type="number" className='form-control' name='isbn' onChange={handleChangeCreate} />
+                    <input type="number" className='form-control' name='isbn' required onChange={handleChangeCreate} />
                     <br/>
                     <label>Nome:</label>
                     <br/>
-                    <input type="text" className='form-control' name='name' onChange={handleChangeCreate}  />
+                    <input type="text" className='form-control' name='name' required onChange={handleChangeCreate}  />
                     <label>Autor:</label>
                     <br/>
-                    <input type="text" className='form-control'  name='author' onChange={handleChangeCreate}  />
+                    <input type="text" className='form-control'  name='author' required onChange={handleChangeCreate}  />
                     <label>Preço:</label>
                     <br/>
-                    <input type="number" className='form-control'  name='price' onChange={handleChangeCreate}  />
+                    <input type="number" className='form-control'  name='price' required onChange={handleChangeCreate}  />
 
                     </div>
                 </ModalBody>
