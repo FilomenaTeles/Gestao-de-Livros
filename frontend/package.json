@@ -23,6 +23,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^9.1.1",
     "reactstrap": "^9.1.5",
+    "remove-accents": "^0.4.4",
     "typescript": "^4.9.4",
     "web-vitals": "^2.1.4"
   },

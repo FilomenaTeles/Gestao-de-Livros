@@ -5,6 +5,10 @@ import {BsBook} from "react-icons/bs";
 import { Link, useNavigate, redirect} from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 
+import Toast from "../global/Toast";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export function AddBook(){
 
@@ -22,12 +26,34 @@ export function AddBook(){
         });
         console.log(newBook);
       }
+      
+     const postRequest = async() => {
+        await api.post('api/Books/create', newBook).then(response => {
+           
+            alert("alerta")
+            if(response.data.success == false){
+                alert(response.data.message)
+                Toast.Show("error",response.data.message)
+            }
+        }).catch(error =>{
+            Toast.Show("error",error)
+            console.log(error);
+          });
+     }
 
-  async function postRequest(event: any) {
+  async function postRequeste(event: any) {
     try{
         //console.log(newBook);
-        //alert();
-        await api.post('api/Books',newBook);
+        alert();
+        
+        await api.post('api/Books/create',newBook)
+        /*.then(response => {
+            alert("alerta")
+            if(response.data.success == false){
+                alert(response.data.message)
+                Toast.Show("error",response.data.message)
+            }
+        });*/
         navigate(-1);
 
           
@@ -37,6 +63,10 @@ export function AddBook(){
     // <Link to={'/books'}></Link>
     
     // redirect('/books');
+  }
+
+  function test  () {
+    Toast.Show("error","erro")
   }
 
     return(
@@ -54,6 +84,8 @@ export function AddBook(){
                         <button className="btn btn-success ms-3" type="submit" >Adicionar</button>
                         <Link className="btn btn-danger m-2" to='/books'>Cancelar</Link>
                     </form>
+                    <button className="btn" onClick={test}>Teste</button>
+                    <ToastContainer />
                 </div>
             </div>
            </div>

@@ -32,8 +32,8 @@ namespace GestaoLivrosApi.Controllers
             return await _bookService.GetBooks(search);
         }
 
-        [HttpPost]
-        [Route("create")]
+        [HttpPost("create")]
+        
         public async Task<MessagingHelper> Create(CreateBookDTO createBook)
         {
             return await _bookService.Create(createBook);
