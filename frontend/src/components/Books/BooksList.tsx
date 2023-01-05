@@ -21,8 +21,10 @@ export function AllBooks(){
     author: '',
     isbn: 0,
     price: 0.0,
-    id:0
+    id:0,
+    image:''
   }]);
+  console.log("All books")
   console.log(allBooks);
 
    //estado para controlar o modal
@@ -46,7 +48,8 @@ export function AllBooks(){
     author: '',
     isbn: 0,
     price: 0.0,
-    id:0
+    id:0,
+    image:''
 });
 
 function selectBook (book:any, option:string){
@@ -96,23 +99,29 @@ function selectBook (book:any, option:string){
   };
 
   const requestUpdate = async()=>{
-   
-   api.post( "api/Books/update", bookSelected)
+    console.log(bookSelected)
+   if(bookSelected.name =="" || bookSelected.author=="" || bookSelected.isbn==0  ){
+    Toast.Show("error","Todos os campos têm que estar preenchidos para editar o livro")
+   }
+   else if(bookSelected.price == 0){
+    Toast.Show("error","Insira um valor superior a 0")
+   }
+   else{
+    api.post( "api/Books/update", bookSelected)
     .then(response => {
       var resp = response.data;
       var auxiliarData = allBooks;
 
-      auxiliarData.map((book: {id:number; name:string;author:string;price:number; isbn:number}) => {
+      auxiliarData.map((book: {id:number; name:string;author:string;price:number; isbn:number; image:string}) => {
         if(book.id === bookSelected.id){
           book.name = resp.name;
-          book.author= resp.author;
-          book.price= resp.price;
-          book.isbn= resp.isbn;
+          book.author = resp.author;
+          book.price = resp.price;
+          book.isbn = resp.isbn;
+          book.image = resp.image;
         }
       });
       setUpdatedata(true);
-      
-     
       if(response.data.success){
         Toast.Show("success","Livro editado com sucesso")
         openCloseModalEdit();
@@ -124,6 +133,9 @@ function selectBook (book:any, option:string){
     }).catch(error =>{
       console.log(error);
     })
+   }
+
+   
   }
 
   const requestDelete = async()=>{
@@ -215,6 +227,7 @@ function selectBook (book:any, option:string){
     author: '',
     isbn: 0,
     price: 0.0,
+    img: ''
 });
 const handleChangeCreate = (e: any) => {
   const {name, value} = e.target;
@@ -228,7 +241,9 @@ const handleChangeCreate = (e: any) => {
     if(newBook.author == "" || newBook.author=="" || newBook.isbn==0 ){
       Toast.Show("error","Prencha todos os campos para inserir um livro")
 
-    }
+    }else if(newBook.price == 0){
+      Toast.Show("error","Insira um valor superior a 0")
+     }
     else{
       await api.post('api/Books/create', newBook).then(response => {
        
@@ -287,8 +302,9 @@ const handleChangeCreate = (e: any) => {
          </div>
        ):(
          <ul id='book-ul'>
-             {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: any}) =>(
+             {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: any; image:string}) =>(
              <li id='book-li' key={book.id}>
+              
                  <BookCard 
                  delete={()=>selectBook(book,'delete')}
                    edit={()=>selectBook(book,'edit')}
@@ -297,6 +313,7 @@ const handleChangeCreate = (e: any) => {
                    price={parseFloat(book.price).toFixed(2).toString().replace(".",",")}
                    isbn={book.isbn}
                    id={book.id}
+                   img={book.image}
                />
              </li>
              ))}
