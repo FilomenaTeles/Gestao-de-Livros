@@ -200,7 +200,6 @@ function selectBook (book:any, option:string){
 
   }
 
- 
 
   //teste adicionar:
 
@@ -217,7 +216,7 @@ function selectBook (book:any, option:string){
     isbn: 0,
     price: 0.0,
 });
-const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
+const handleChangeCreate = (e: any) => {
   const {name, value} = e.target;
   setNewBook({
     ...newBook,[name]:value
@@ -225,7 +224,7 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
   console.log(newBook);
 }
   const requestCreate = async() => {
-    console.log(newBook)
+  
     if(newBook.author == "" || newBook.author=="" || newBook.isbn==0 ){
       Toast.Show("error","Prencha todos os campos para inserir um livro")
 
@@ -240,6 +239,7 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
         }else{
           Toast.Show("success","Livro inserido com sucesso")
           openCloseModalCreate()
+          setUpdatedata(true)
         }
         
     }).catch(error =>{
