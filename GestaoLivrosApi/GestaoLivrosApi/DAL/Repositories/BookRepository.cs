@@ -7,6 +7,7 @@ using GestaoLivrosApi.Interfaces.Repositories;
 using GestaoLivrosApi.Data;
 using X.PagedList;
 using System.Linq;
+using System.Text;
 
 namespace GestaoLivrosApi.DAL.Repositories
 {

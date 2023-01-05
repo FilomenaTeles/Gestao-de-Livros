@@ -64,10 +64,10 @@ namespace GestaoLivrosApi.Services
 
                 
             }
-            catch 
+            catch(Exception ex) 
             {
                 result.Success = false;
-                result.Message = "Ocorreu um erro inesperado ao obter os livros.";
+                result.Message = "Ocorreu um erro inesperado ao obter os livros.:"+ex;
               
             }
             return result;
