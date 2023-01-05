@@ -3,10 +3,11 @@ import api from '../../services/api';
 import { BookCard } from '../global/Card';
 import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import { Collapse, Button, CardBody, Card } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
 import {BsBook} from "react-icons/bs";
-import {BiBookAdd} from "react-icons/bi";
+import {BiBookAdd, BiImageAdd} from "react-icons/bi";
 import NotFound from '../../assets/nodata.png';
 
 import Toast from "../global/Toast";
@@ -24,9 +25,7 @@ export function AllBooks(){
     id:0,
     image:''
   }]);
-  console.log("All books")
-  console.log(allBooks);
-
+  
    //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
 
@@ -221,13 +220,21 @@ function selectBook (book:any, option:string){
   //metodo para alternar estados do modal
   function openCloseModalCreate(){
     setModalCreate(!modalCreate);
+    setNewBook({
+      ...newBook, name:'',
+      author:'',
+      isbn:0,
+      price:0,
+      image:''
+    });
+    
   }
   const [newBook,setNewBook]= useState({
     name: '',
     author: '',
     isbn: 0,
     price: 0.0,
-    img: ''
+    image: ''
 });
 const handleChangeCreate = (e: any) => {
   const {name, value} = e.target;
@@ -237,13 +244,14 @@ const handleChangeCreate = (e: any) => {
   console.log(newBook);
 }
   const requestCreate = async() => {
-  
+  console.log(newBook)
     if(newBook.author == "" || newBook.author=="" || newBook.isbn==0 ){
       Toast.Show("error","Prencha todos os campos para inserir um livro")
 
     }else if(newBook.price == 0){
       Toast.Show("error","Insira um valor superior a 0")
      }
+    
     else{
       await api.post('api/Books/create', newBook).then(response => {
        
@@ -254,6 +262,7 @@ const handleChangeCreate = (e: any) => {
         }else{
           Toast.Show("success","Livro inserido com sucesso")
           openCloseModalCreate()
+          //toggle()
           setUpdatedata(true)
         }
         
@@ -264,6 +273,12 @@ const handleChangeCreate = (e: any) => {
     }
     
  }
+
+ const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
+
+console.log(allBooks)
 
   return (
     <div className='container mt-4'>
@@ -359,6 +374,9 @@ const handleChangeCreate = (e: any) => {
                     <label>Preço:</label>
                     <br/>
                     <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} />
+                    <label>Imagem:</label>
+                    <br/>
+                    <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={bookSelected && bookSelected.image}/>
 
                     </div>
                 </ModalBody>
@@ -399,6 +417,15 @@ const handleChangeCreate = (e: any) => {
                     <label>Preço:</label>
                     <br/>
                     <input type="number" className='form-control'  name='price' required onChange={handleChangeCreate}  />
+                    <br />
+                    <React.StrictMode>
+                      <button className='btn' onClick={toggle}><BiImageAdd size={25}/> Associar Imagem</button>
+                      <Collapse isOpen={isOpen} >
+                      <label>Associar o link da imagem</label>
+                        <input type="url" pattern="https://.*"  className='form-control'  name='image'  onChange={handleChangeCreate} />
+                        <span className="validity"></span>
+                      </Collapse>
+                    </React.StrictMode>
 
                     </div>
                 </ModalBody>
