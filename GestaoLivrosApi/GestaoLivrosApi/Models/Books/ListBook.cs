@@ -16,6 +16,8 @@ namespace GestaoLivrosApi.Models.Books
 
         public bool isDeleted { get; set; } = false;
 
+        public string? Image { get; set; }
+
         public ListBook(Book book)
 		{
             Id = book.Id;
@@ -24,6 +26,7 @@ namespace GestaoLivrosApi.Models.Books
             Author = book.Author;
             Price = book.Price;
             isDeleted = book.isDeleted;
+            Image = book.Image;
 		}
 	}
 }
