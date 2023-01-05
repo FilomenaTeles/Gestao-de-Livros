@@ -12,6 +12,7 @@ namespace GestaoLivrosApi.Models.Books
         public string Author { get; set; } = null!;
 
         public double Price { get; set; }
+        public string? Image { get; set; }
 
         public BookDTO (Book book)
 		{
@@ -20,6 +21,7 @@ namespace GestaoLivrosApi.Models.Books
             this.Name = book.Name;
             this.Author = book.Author;
             this.Price = book.Price;
+            this.Image = book.Image;
 
 		}
 	}
