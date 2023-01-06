@@ -282,7 +282,7 @@ console.log(allBooks)
 
   return (
     <div className='container mt-4'>
-      <button className='btn mb-3' onClick={openCloseModalCreate}><BiBookAdd size={25}/> Novo Livro</button>
+      
       <div className='container row'>
         <div className='col-8'>
           <form className=" mb-3"  onSubmit={requestGetBy}>
