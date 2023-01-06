@@ -20,6 +20,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Ardalis.SmartEnum" Version="2.1.0" />
     <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="2.1.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +29,6 @@
     <None Remove="Data\" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.EntityFrameworkCore.Tools" />
-    <None Remove="Services\" />
     <None Remove="X.PagedList.Mvc.Core" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Helpers\" />
@@ -40,12 +40,16 @@
     <None Remove="Interfaces\Repositories\" />
     <None Remove="Interfaces\Services\" />
     <None Remove="Models\Books\" />
+    <None Remove="BLL\" />
+    <None Remove="BLL\Services\" />
+    <None Remove="DAL\Migrations\" />
+    <None Remove="FluentValidation" />
+    <None Remove="FluentValidation.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="Data\" />
-    <Folder Include="Services\" />
     <Folder Include="Helpers\" />
     <Folder Include="DAL\" />
     <Folder Include="DAL\Repositories\" />
@@ -53,5 +57,8 @@
     <Folder Include="Interfaces\Repositories\" />
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Models\Books\" />
+    <Folder Include="BLL\" />
+    <Folder Include="BLL\Services\" />
+    <Folder Include="DAL\Migrations\" />
   </ItemGroup>
 </Project>

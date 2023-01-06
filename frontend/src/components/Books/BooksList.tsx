@@ -3,10 +3,17 @@ import api from '../../services/api';
 import { BookCard } from '../global/Card';
 import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
-
+import { Collapse, Button, CardBody, Card } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
-import { isDisabled } from '@testing-library/user-event/dist/utils';
+import {BsBook} from "react-icons/bs";
+import {BiBookAdd, BiImageAdd} from "react-icons/bi";
+import NotFound from '../../assets/nodata.png';
+
+import Toast from "../global/Toast";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export function AllBooks(){
  
@@ -15,9 +22,10 @@ export function AllBooks(){
     author: '',
     isbn: 0,
     price: 0.0,
-    id:0
+    id:0,
+    image:''
   }]);
-
+  
    //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
 
@@ -39,7 +47,8 @@ export function AllBooks(){
     author: '',
     isbn: 0,
     price: 0.0,
-    id:0
+    id:0,
+    image:''
 });
 
 function selectBook (book:any, option:string){
@@ -68,38 +77,64 @@ function selectBook (book:any, option:string){
 
     const [atualPage,setAtualPage]=useState(1);
     const [pageCount, setPageCount] = useState(0);
+    const [getBooks, setGetBooks] = useState({
+        currentPage: 1,
+        pageSize: 6,
+        sortingParameter: "name-asc",
+        searchParameter: ""
+    }
+     );
 
     const requestGet = async() =>{
-      api.get('api/Books').then(response => {
+      //console.log(getBooks)
+      api.post('api/Books/getBooks',getBooks).then(response => {
         setAllBooks(response.data.items);
         setPageCount(response.data.totalPages);
-        console.log(response.data.items)
+        
       }).catch(error =>{
+        Toast.Show("error",error)
         console.log(error);
       })
   };
 
-  const requestPut = async()=>{
-   
-   api.put( "api/Books/"+bookSelected.id, bookSelected)
+  const requestUpdate = async()=>{
+    console.log(bookSelected)
+   if(bookSelected.name =="" || bookSelected.author=="" || bookSelected.isbn==0  ){
+    Toast.Show("error","Todos os campos têm que estar preenchidos para editar o livro")
+   }
+   else if(bookSelected.price == 0){
+    Toast.Show("error","Insira um valor superior a 0")
+   }
+   else{
+    api.post( "api/Books/update", bookSelected)
     .then(response => {
       var resp = response.data;
       var auxiliarData = allBooks;
 
-      auxiliarData.map((book: {id:number; name:string;author:string;price:number; isbn:number}) => {
+      auxiliarData.map((book: {id:number; name:string;author:string;price:number; isbn:number; image:string}) => {
         if(book.id === bookSelected.id){
           book.name = resp.name;
-          book.author= resp.author;
-          book.price= resp.price;
-          book.isbn= resp.isbn;
+          book.author = resp.author;
+          book.price = resp.price;
+          book.isbn = resp.isbn;
+          book.image = resp.image;
         }
       });
       setUpdatedata(true);
-      openCloseModalEdit();
+      if(response.data.success){
+        Toast.Show("success","Livro editado com sucesso")
+        openCloseModalEdit();
+      }else{
+        Toast.Show("error",response.data.message)
+      }
+      
 
     }).catch(error =>{
       console.log(error);
     })
+   }
+
+   
   }
 
   const requestDelete = async()=>{
@@ -114,99 +149,155 @@ function selectBook (book:any, option:string){
       console.log(error);
     })
   }
- 
-const [orderValue, setOrderValue]=useState("");
-const [orderData, setOrderData]=useState(false)
 
   function orderBy(e:any){
       const option=e;
-      setOrderValue(option);
-     api.get('api/Books?PageNumber='+atualPage+'&PageSize=3&orderValue='+option)
-     .then(response => {
-        setAllBooks(response.data);
-        setOrderData(true)
-     })
+      
+      console.log(atualPage);
+
+      setGetBooks({
+        ...getBooks, sortingParameter : option
+      })
+
+      setUpdatedata(true);
      
   }; 
-
-  //paginação
-  const fetchBooks = async (currentPage: number) => {
-    var res: any
-    if(orderData){
-       res = await fetch('https://localhost:7124/api/Books?currentPage='+currentPage+'&pageSize=6&orderValue='+orderValue);
-
-    }else{
-      res = await fetch('https://localhost:7124/api/Books?currentPage='+currentPage);
-
-    }
-    const temp = res.json();
-    return temp;
-  }; 
+  //dá o highligtht na paginação
+  const [forcePage, setForcePage]=useState(0);
 
   const handlePageClick = async (data:any)=>{
-   
-    let currentPage = data.selected +1
-    const booksFormServer = await fetchBooks(currentPage);
-    setAllBooks (booksFormServer.items);
-    setAtualPage(currentPage);
+  
+    let currentPag = data.selected +1
+    setGetBooks({
+      ... getBooks, currentPage : currentPag
+     })
+     setForcePage(data.selected); //dá o highligtht na pagina selecionada
+    setUpdatedata(true);
   }
  
 
-   //FILTRO  
+   //LIMPAR FILTRO  
   const [inputSearch, setInputSearch] = useState('');
+
   const searchReset = () => {
     setInputSearch("");
-    setFilter([]);
-    requestGet();
+    
+    setGetBooks({
+      ... getBooks, searchParameter  : "",
+      currentPage : 1
+     
+     })
+     requestGet();
+     setForcePage(0); //dá o highligtht para a pagina 1
+     
+     //setUpdatedata(true);
+     console.log(getBooks)
   };
 
- /*  const searchBooks = (searchValue:any) => {
-    setInputSearch(searchValue);
-
-    if(inputSearch != ''){
-        const booksFiltered=allBooks.filter((item)=>{
-          return Object.values(item).join('').toLowerCase().includes(inputSearch.toLowerCase())
-        });
-        setFilter(booksFiltered);
-    }
-    else{
-      setFilter(allBooks);
-    }
-  } */
-  const [filter, setFilter]=useState([]);
-
+  //FILTRO
   const requestGetBy = async(e:any) => {
     setAtualPage(1);
     e.preventDefault();
   
-    const input = inputSearch.toLowerCase();
+    const input = inputSearch.toLowerCase().trim();
+  
+    setForcePage(0);  //dá o highligtht para a pagina 1
+    setGetBooks({
+      ... getBooks, searchParameter  : input,
+      currentPage : 1
+     })
+     
+     setUpdatedata(true);
 
-     api.get("api/Books/GetBooksBy?PageNumber="+atualPage+"&PageSize=3&searchValue="+input)
-     .then(response => {
-      setFilter(response.data);
-      const sizeData=response.data;
-      const size = sizeData.length;
-      setPageCount(Math.ceil(size/3))
-      console.log(atualPage);
-
-     }).catch((error) => {
-      console.log(error);
-    });
   }
+
+
+  //teste adicionar:
+
+  //estado para controlar o modal
+  const [modalCreate, setModalCreate]=useState(false);
+
+  //metodo para alternar estados do modal
+  function openCloseModalCreate(){
+    setModalCreate(!modalCreate);
+    setNewBook({
+      ...newBook, name:'',
+      author:'',
+      isbn:0,
+      price:0,
+      image:''
+    });
+    
+  }
+  const [newBook,setNewBook]= useState({
+    name: '',
+    author: '',
+    isbn: 0,
+    price: 0.0,
+    image: ''
+});
+const handleChangeCreate = (e: any) => {
+  const {name, value} = e.target;
+  setNewBook({
+    ...newBook,[name]:value
+  });
+  console.log(newBook);
+}
+  const requestCreate = async() => {
+  console.log(newBook)
+    if(newBook.author == "" || newBook.author=="" || newBook.isbn==0 ){
+      Toast.Show("error","Prencha todos os campos para inserir um livro")
+
+    }else if(newBook.price == 0){
+      Toast.Show("error","Insira um valor superior a 0")
+     }
+    
+    else{
+      await api.post('api/Books/create', newBook).then(response => {
+       
+        
+        if(response.data.success == false){
+        
+            Toast.Show("error",response.data.message)
+        }else{
+          Toast.Show("success","Livro inserido com sucesso")
+          openCloseModalCreate()
+          //toggle()
+          setUpdatedata(true)
+        }
+        
+    }).catch(error =>{
+        Toast.Show("error",error)
+        console.log(error);
+      });
+    }
+    
+ }
+
+ const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
+
+console.log(allBooks)
 
   return (
     <div className='container mt-4'>
+      
       <div className='container row'>
         <div className='col-8'>
           <form className=" mb-3"  onSubmit={requestGetBy}>
             <input type="text" name='search' value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
             {inputSearch.length< 3 
-            ? (<button className='btn ms-2' disabled type='submit' >Pesquisar</button>)
+            ? (
+              <button className='btn ms-2' disabled type='submit' >Pesquisar</button>
+              
+            )
             :(<button className='btn ms-2' type='submit' >Pesquisar</button>)} 
             
             <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>
           </form>
         </div>
+
         <div className='container text-end col-4'>
           <select className='' name="orderBy" id="orderBy" onChange={(e)=>orderBy(e.target.value)}>
             {/* <option defaultValue="" selected disabled>Ordenar por:</option> */}
@@ -217,48 +308,40 @@ const [orderData, setOrderData]=useState(false)
           </select>
         </div>
       </div>
-      {filter.length< 1 ? (
-        <ul id='book-ul'>
-          {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
-          <li id='book-li' key={book.id}>
-              <BookCard 
-              delete={()=>selectBook(book,'delete')}
-                edit={()=>selectBook(book,'edit')}
-                name={book.name} 
-                author={book.author} 
-                price={book.price}
-                isbn={book.isbn}
-                id={book.id}
+
+       {allBooks.length === 0 ?
+       (
+         <div className='container mt-3 ms-3 mb-0 text-center'>
+             <h5 className='text-start'>Livro não encontrado</h5>
+             <img src={NotFound} alt="not found data" className='not-found-img'/>
+         </div>
+       ):(
+         <ul id='book-ul'>
+             {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: any; image:string}) =>(
+             <li id='book-li' key={book.id}>
               
-            />
-          </li>
-          
-          ))}
-        </ul>
-     ):(  
-        <ul id='book-ul'>
-          {filter.map((book: {id:number,isbn: number;name:string; author:string; price: number}) =>(
-          <li id='book-li' key={book.id}>
-              <BookCard 
-              delete={()=>selectBook(book,'delete')}
-                edit={()=>selectBook(book,'edit')}
-                name={book.name} 
-                author={book.author} 
-                price={book.price}
-                isbn={book.isbn}
-                id={book.id}
-              
-            />
-          </li>
-          
-          ))}
-        </ul>
-      )} 
-           
+                 <BookCard 
+                 delete={()=>selectBook(book,'delete')}
+                   edit={()=>selectBook(book,'edit')}
+                   name={book.name} 
+                   author={book.author} 
+                   price={parseFloat(book.price).toFixed(2).toString().replace(".",",")}
+                   isbn={book.isbn}
+                   id={book.id}
+                   img={book.image}
+               />
+             </li>
+             ))}
+         </ul>
+       )}
+        
+       
+
       <ReactPaginate 
         previousLabel={'previous'}
         nextLabel={'next'}
         breakLabel={'...'} 
+        forcePage={forcePage}
         pageCount={pageCount}
         marginPagesDisplayed={3}
         pageRangeDisplayed={4}
@@ -274,32 +357,34 @@ const [orderData, setOrderData]=useState(false)
         breakLinkClassName={'page-link'}
         activeClassName={'active'}
   />
-
       <Modal isOpen={modalEdit}>
                 <ModalHeader>Editar Livro</ModalHeader>
                 <ModalBody>
                     <div className='form-group'>
                       <input type="number" hidden name='id' value={bookSelected && bookSelected.id}/>
                     <label>Isbn:</label>
-                    <input className='form-control' value={bookSelected && bookSelected.isbn} />
+                    <input type="number" className='form-control' name='isbn' required onChange={handleChange} value={bookSelected && bookSelected.isbn} />
                     <br/>
                     <label>Nome:</label>
                     <br/>
-                    <input type="text" className='form-control' name='name' onChange={handleChange} value={bookSelected && bookSelected.name} />
+                    <input type="text" className='form-control' name='name'required onChange={handleChange} value={bookSelected && bookSelected.name} />
                     <label>Autor:</label>
                     <br/>
-                    <input type="text" className='form-control'  name='author' onChange={handleChange}  value={bookSelected && bookSelected.author}/>
+                    <input type="text" className='form-control'  name='author' required onChange={handleChange}  value={bookSelected && bookSelected.author}/>
                     <label>Preço:</label>
                     <br/>
-                    <input type="number" className='form-control'  name='price' onChange={handleChange} value={bookSelected && bookSelected.price} />
+                    <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} />
+                    <label>Imagem:</label>
+                    <br/>
+                    <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={bookSelected && bookSelected.image}/>
 
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestPut()}>Editar</button> {"  "}
+                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestUpdate()}>Editar</button> {"  "}
                     <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalEdit()}>Cancelar</button>    
                 </ModalFooter>
-            </Modal>
+      </Modal>
 
             <Modal isOpen={modalDelete}>
               <ModalBody>
@@ -314,6 +399,41 @@ const [orderData, setOrderData]=useState(false)
                 <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
               </ModalFooter>
             </Modal>
+
+            <Modal isOpen={modalCreate}>
+                <ModalHeader><BsBook size={25}/> Novo Livro</ModalHeader>
+                <ModalBody>
+                    <div className='form-group'>
+                      
+                    <label>Isbn:</label>
+                    <input type="number" className='form-control' name='isbn' required onChange={handleChangeCreate} />
+                    <br/>
+                    <label>Nome:</label>
+                    <br/>
+                    <input type="text" className='form-control' name='name' required onChange={handleChangeCreate}  />
+                    <label>Autor:</label>
+                    <br/>
+                    <input type="text" className='form-control'  name='author' required onChange={handleChangeCreate}  />
+                    <label>Preço:</label>
+                    <br/>
+                    <input type="number" className='form-control'  name='price' required onChange={handleChangeCreate}  />
+                    <br />
+                    <React.StrictMode>
+                      <button className='btn' onClick={toggle}><BiImageAdd size={25}/> Associar Imagem</button>
+                      <Collapse isOpen={isOpen} >
+                      <label>Associar o link da imagem</label>
+                        <input type="url" pattern="https://.*"  className='form-control'  name='image'  onChange={handleChangeCreate} />
+                        <span className="validity"></span>
+                      </Collapse>
+                    </React.StrictMode>
+
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestCreate()}>Adicionar</button> {"  "}
+                    <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalCreate()}>Cancelar</button>    
+                </ModalFooter>
+      </Modal>
       
     </div>
   );

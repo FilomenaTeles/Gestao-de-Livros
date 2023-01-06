@@ -1,17 +1,27 @@
 .card{
-    width: 18rem;
+    width: 22rem;
     background-color: whitesmoke;
-    height: 14rem;
+    height: 30rem;
    
+}
+.card-body{
+    min-height: 5rem;
+    max-height: 5rem;
 }
 
 .card-text{
-    min-height: 5rem;
-    max-height: 5rem;
+    min-height: 4rem;
+    max-height: 4rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
 
 .card-btn{
     height: 2rem;
+}
+
+.card-img-top{
+    min-height: 18rem;
+    max-height: 18rem;
+    
 }

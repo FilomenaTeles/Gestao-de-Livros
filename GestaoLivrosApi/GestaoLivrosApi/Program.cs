@@ -1,4 +1,7 @@
-﻿using GestaoLivrosApi.Data;
+﻿using GestaoLivrosApi.DAL.Repositories;
+using GestaoLivrosApi.Data;
+using GestaoLivrosApi.Interfaces.Repositories;
+using GestaoLivrosApi.Interfaces.Services;
 using GestaoLivrosApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IBookService, BooksService>();
+builder.Services.AddScoped<IBookRepository,BookRepository>();
+
 builder.Services.AddDbContext<AppDbContext>();
 
 var app = builder.Build();

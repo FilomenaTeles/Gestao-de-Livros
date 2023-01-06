@@ -5,10 +5,15 @@ using GestaoLivrosApi.Models;
 
 namespace GestaoLivrosApi.Interfaces.Repositories
 {
-	public interface IBookRepositorie
+	public interface IBookRepository
 	{
-        Task<PaginatedList<Book>> GetAllAsync(List<Parameter>? SearchBy, List<Parameter>? OrderBy, int currentPage = 1, int pageSize = 5);
+        Task<PaginatedList<Book>> GetAllAsync(string? SearchBy, string? orderBy, int currentPage = 1, int pageSize = 5);
+        Task<bool> ExistIsbn(long isbn);
+        Task<Book> Create(Book book);
 
+        Task<Book?> GetById(int id);
+
+        Task<Book> Update(Book task);
 
     }
 }
