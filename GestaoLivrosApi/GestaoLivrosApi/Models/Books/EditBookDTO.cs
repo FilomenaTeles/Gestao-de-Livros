@@ -15,7 +15,7 @@ namespace GestaoLivrosApi.Models.Books
 
         public double Price { get; set; }
 
-        
+        public string? Image { get; set; }
 
 
         public class EditBookDTOValidator : AbstractValidator<EditBookDTO>
@@ -23,7 +23,7 @@ namespace GestaoLivrosApi.Models.Books
             public EditBookDTOValidator()
             {
                 RuleFor(b => b.Isbn).NotNull().WithMessage("Insira o ISBN do livro").GreaterThan(0).WithMessage("Insira um ISBN superior a 0");
-                RuleFor(b => b.Price).NotNull().WithMessage("Insira o Preço do livro").GreaterThanOrEqualTo(0).WithMessage("Insira um valor superior a 0");
+                RuleFor(b => b.Price).NotNull().WithMessage("Insira o Preço do livro").GreaterThan(0).WithMessage("Insira um valor superior a 0");
                 RuleFor(b => b.Name).NotNull().WithMessage("Insira o Nome do livro");
                 RuleFor(b => b.Author).NotNull().WithMessage("Insira o Autor do livro");
 

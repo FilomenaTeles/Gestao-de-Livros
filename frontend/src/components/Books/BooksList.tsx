@@ -3,10 +3,11 @@ import api from '../../services/api';
 import { BookCard } from '../global/Card';
 import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import { Collapse, Button, CardBody, Card } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
 import {BsBook} from "react-icons/bs";
-import {BiBookAdd} from "react-icons/bi";
+import {BiBookAdd, BiImageAdd} from "react-icons/bi";
 import NotFound from '../../assets/nodata.png';
 
 import Toast from "../global/Toast";
@@ -21,10 +22,10 @@ export function AllBooks(){
     author: '',
     isbn: 0,
     price: 0.0,
-    id:0
+    id:0,
+    image:''
   }]);
-  console.log(allBooks);
-
+  
    //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
 
@@ -46,7 +47,8 @@ export function AllBooks(){
     author: '',
     isbn: 0,
     price: 0.0,
-    id:0
+    id:0,
+    image:''
 });
 
 function selectBook (book:any, option:string){
@@ -96,23 +98,29 @@ function selectBook (book:any, option:string){
   };
 
   const requestUpdate = async()=>{
-   
-   api.post( "api/Books/update", bookSelected)
+    console.log(bookSelected)
+   if(bookSelected.name =="" || bookSelected.author=="" || bookSelected.isbn==0  ){
+    Toast.Show("error","Todos os campos têm que estar preenchidos para editar o livro")
+   }
+   else if(bookSelected.price == 0){
+    Toast.Show("error","Insira um valor superior a 0")
+   }
+   else{
+    api.post( "api/Books/update", bookSelected)
     .then(response => {
       var resp = response.data;
       var auxiliarData = allBooks;
 
-      auxiliarData.map((book: {id:number; name:string;author:string;price:number; isbn:number}) => {
+      auxiliarData.map((book: {id:number; name:string;author:string;price:number; isbn:number; image:string}) => {
         if(book.id === bookSelected.id){
           book.name = resp.name;
-          book.author= resp.author;
-          book.price= resp.price;
-          book.isbn= resp.isbn;
+          book.author = resp.author;
+          book.price = resp.price;
+          book.isbn = resp.isbn;
+          book.image = resp.image;
         }
       });
       setUpdatedata(true);
-      
-     
       if(response.data.success){
         Toast.Show("success","Livro editado com sucesso")
         openCloseModalEdit();
@@ -124,6 +132,9 @@ function selectBook (book:any, option:string){
     }).catch(error =>{
       console.log(error);
     })
+   }
+
+   
   }
 
   const requestDelete = async()=>{
@@ -200,7 +211,6 @@ function selectBook (book:any, option:string){
 
   }
 
- 
 
   //teste adicionar:
 
@@ -210,14 +220,23 @@ function selectBook (book:any, option:string){
   //metodo para alternar estados do modal
   function openCloseModalCreate(){
     setModalCreate(!modalCreate);
+    setNewBook({
+      ...newBook, name:'',
+      author:'',
+      isbn:0,
+      price:0,
+      image:''
+    });
+    
   }
   const [newBook,setNewBook]= useState({
     name: '',
     author: '',
     isbn: 0,
     price: 0.0,
+    image: ''
 });
-const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
+const handleChangeCreate = (e: any) => {
   const {name, value} = e.target;
   setNewBook({
     ...newBook,[name]:value
@@ -225,11 +244,14 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
   console.log(newBook);
 }
   const requestCreate = async() => {
-    console.log(newBook)
+  console.log(newBook)
     if(newBook.author == "" || newBook.author=="" || newBook.isbn==0 ){
       Toast.Show("error","Prencha todos os campos para inserir um livro")
 
-    }
+    }else if(newBook.price == 0){
+      Toast.Show("error","Insira um valor superior a 0")
+     }
+    
     else{
       await api.post('api/Books/create', newBook).then(response => {
        
@@ -240,6 +262,8 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
         }else{
           Toast.Show("success","Livro inserido com sucesso")
           openCloseModalCreate()
+          //toggle()
+          setUpdatedata(true)
         }
         
     }).catch(error =>{
@@ -250,9 +274,15 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
     
  }
 
+ const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
+
+console.log(allBooks)
+
   return (
     <div className='container mt-4'>
-      <button className='btn mb-3' onClick={openCloseModalCreate}><BiBookAdd size={25}/> Novo Livro</button>
+      
       <div className='container row'>
         <div className='col-8'>
           <form className=" mb-3"  onSubmit={requestGetBy}>
@@ -287,8 +317,9 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
          </div>
        ):(
          <ul id='book-ul'>
-             {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: any}) =>(
+             {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: any; image:string}) =>(
              <li id='book-li' key={book.id}>
+              
                  <BookCard 
                  delete={()=>selectBook(book,'delete')}
                    edit={()=>selectBook(book,'edit')}
@@ -297,13 +328,14 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
                    price={parseFloat(book.price).toFixed(2).toString().replace(".",",")}
                    isbn={book.isbn}
                    id={book.id}
+                   img={book.image}
                />
              </li>
              ))}
          </ul>
        )}
         
-        <ToastContainer />
+       
 
       <ReactPaginate 
         previousLabel={'previous'}
@@ -342,6 +374,9 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
                     <label>Preço:</label>
                     <br/>
                     <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} />
+                    <label>Imagem:</label>
+                    <br/>
+                    <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={bookSelected && bookSelected.image}/>
 
                     </div>
                 </ModalBody>
@@ -382,6 +417,15 @@ const handleChangeCreate = (e: ChangeEvent<HTMLInputElement>) => {
                     <label>Preço:</label>
                     <br/>
                     <input type="number" className='form-control'  name='price' required onChange={handleChangeCreate}  />
+                    <br />
+                    <React.StrictMode>
+                      <button className='btn' onClick={toggle}><BiImageAdd size={25}/> Associar Imagem</button>
+                      <Collapse isOpen={isOpen} >
+                      <label>Associar o link da imagem</label>
+                        <input type="url" pattern="https://.*"  className='form-control'  name='image'  onChange={handleChangeCreate} />
+                        <span className="validity"></span>
+                      </Collapse>
+                    </React.StrictMode>
 
                     </div>
                 </ModalBody>

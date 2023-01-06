@@ -4,13 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GestaoLivrosApi.Models
 {
-    //[Index(nameof(Isbn), IsUnique = true)]
+    [Index(nameof(Isbn), IsUnique = true)]
     public class Book
 	{
-		public int Id { get; set; }
+        public int Id { get; set; }
 
-		[Required]
-        
+        [Required]
         public long Isbn { get; set; }
 
 		[Required]
@@ -20,10 +19,12 @@ namespace GestaoLivrosApi.Models
         public string Author { get; set; } = null!;
 
         [Required]
-		public double Price { get; set; }
+        public double Price { get; set; }
 
 		public bool isDeleted { get; set; } = false;
 
+        
+        public string? Image { get; set; }
 
     }
 }

@@ -67,7 +67,7 @@ namespace GestaoLivrosApi.Services
             catch(Exception ex) 
             {
                 result.Success = false;
-                result.Message = "Ocorreu um erro inesperado ao obter os livros.:"+ex;
+                result.Message = "Ocorreu um erro inesperado ao obter os livros.:\n"+ex;
               
             }
             return result;
@@ -191,6 +191,7 @@ namespace GestaoLivrosApi.Services
                 book.Author = editBook.Author;
                 book.Isbn = editBook.Isbn;
                 book.Price = editBook.Price;
+                book.Image = editBook.Image;
 
                 book = await _bookRepository.Update(book);
 
