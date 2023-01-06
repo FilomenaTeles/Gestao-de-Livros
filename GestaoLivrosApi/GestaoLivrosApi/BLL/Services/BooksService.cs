@@ -191,6 +191,7 @@ namespace GestaoLivrosApi.Services
                 book.Author = editBook.Author;
                 book.Isbn = editBook.Isbn;
                 book.Price = editBook.Price;
+                book.Image = editBook.Image;
 
                 book = await _bookRepository.Update(book);
 
