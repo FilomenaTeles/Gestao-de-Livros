@@ -54,6 +54,7 @@ export function AddBook(){
           }else{
             Toast.Show("success","Livro inserido com sucesso")
             navigate(-1);
+            //redirect('/books',)
           }
           
       }).catch(error =>{
@@ -92,7 +93,7 @@ export function AddBook(){
                         <button className="btn btn-success ms-3" onClick={requestCreate} >Adicionar</button>
                         <Link className="btn btn-danger m-2" to='/books'>Cancelar</Link>
                 
-                    <ToastContainer />
+                   
                 </div>
             </div>
            </div>

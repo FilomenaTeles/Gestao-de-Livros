@@ -17,6 +17,7 @@ import {
   DropdownItem,
   NavbarText,
 } from 'reactstrap';
+import { ToastContainer } from 'react-toastify';
 
 
 function App() {
@@ -57,7 +58,7 @@ function App() {
 
       <Main/>
   
-  
+      <ToastContainer />
     </div>
   );
 }
