@@ -6,8 +6,6 @@ namespace GestaoLivrosApi.Models.Authors
 {
     public class CreateAuthorDTO
     {
-
-
         public string Name { get; set; } = null!;
 
         public string Country { get; set; } = null!;

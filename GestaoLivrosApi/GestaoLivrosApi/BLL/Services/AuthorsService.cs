@@ -1,11 +1,14 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
 using GestaoLivrosApi.Data;
 using GestaoLivrosApi.Helpers;
 using GestaoLivrosApi.Interfaces.Repositories;
 using GestaoLivrosApi.Interfaces.Services;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Models.Authors;
-using GestaoLivrosApi.Models.Books;
+using static GestaoLivrosApi.Models.Authors.CreateAuthorDTO;
+using Azure;
+
 
 namespace GestaoLivrosApi.BLL.Services
 {
@@ -66,6 +69,47 @@ namespace GestaoLivrosApi.BLL.Services
                 result.Message = "Ocorreu um erro inesperado ao obter os livros.:\n" + ex;
             }
             return result;
+        }
+
+        public async Task<MessagingHelper> Create(CreateAuthorDTO createAuthor)
+        {
+            MessagingHelper response = new MessagingHelper();
+
+            try
+            {
+                CreateAuthorDTOValidator validator = new();
+                var responseValidate = await validator.ValidateAsync(createAuthor);
+
+                if (responseValidate == null || responseValidate.IsValid == false)
+                {
+                    if (responseValidate == null)
+                    {
+                        response.Message = "Erro ao validar a informação do autor.";
+                        return response;
+                    }
+
+                    response.Message = responseValidate.Errors.FirstOrDefault()!.ErrorMessage;
+                    return response;
+                }
+
+                var newAuthor = createAuthor.ToEntity();
+                var author = await _authorRepository.Create(newAuthor);
+
+                if(author == null)
+                {
+                    response.Success = false;
+                    response.Message = "Erro ao criar autor";
+                    return response;
+                }
+                response.Success = true;
+                response.Message = "Autor criado com sucesso";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Erro interno ao criar um autor.";
+            }
+            return response;
         }
 
     }

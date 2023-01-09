@@ -40,6 +40,13 @@ namespace GestaoLivrosApi.DAL.Repositories
             return response;
         }
 
+        public async Task<Author> Create(Author author)
+        {
+            _context.Authors.Add(author);
+            await _context.SaveChangesAsync();
+            return author;
+        }
+
     }
 }
 
