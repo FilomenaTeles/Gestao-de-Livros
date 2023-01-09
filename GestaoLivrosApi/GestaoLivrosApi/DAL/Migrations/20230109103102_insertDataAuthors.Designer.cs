@@ -3,6 +3,7 @@ using GestaoLivrosApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestaoLivrosApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230109103102_insertDataAuthors")]
+    partial class insertDataAuthors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,68 +158,6 @@ namespace GestaoLivrosApi.Migrations
                         .IsUnique();
 
                     b.ToTable("Books");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AuthorId = 1,
-                            Image = "https://img.wook.pt/images/a-mulher-do-dragao-vermelho-jose-rodrigues-dos-santos/MXwyNzQyMjE4NXwyMzc4Njg5MHwxNjYzNTc3MzY4MDAwfHdlYnA=/550x",
-                            Isbn = 9789897776168L,
-                            Name = "A Mulher do Dragão Vermelho",
-                            Price = 22.5,
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AuthorId = 2,
-                            Image = "https://img.wook.pt/images/as-filhas-da-vila-dos-tecidos-anne-jacobs/MXwyNzc0OTYyNnwyNDEyMzk5MHwxNjY1Mzg3MzI5MDAwfHdlYnA=/550x",
-                            Isbn = 9789897776342L,
-                            Name = "As Filhas da Vila dos Tecidos",
-                            Price = 19.899999999999999,
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AuthorId = 3,
-                            Image = "https://img.wook.pt/images/um-sonho-so-nosso-nicholas-sparks/MXwyNzM0ODM4M3wyMzcwMDU2NXwxNjYxNDQyMjQwMDAwfHdlYnA=/550x",
-                            Isbn = 9789892355214L,
-                            Name = "Um Sonho Só Nosso",
-                            Price = 18.899999999999999,
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AuthorId = 4,
-                            Image = "https://almedinanet.b-cdn.net/media/catalog/product/cache/10f519365b01716ddb90abc57de5a837/9/7/9789723718928_1587465282.jpg",
-                            Isbn = 9789723718928L,
-                            Name = "O Principezinho",
-                            Price = 5.5,
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AuthorId = 5,
-                            Image = "https://img.wook.pt/images/a-lista-do-juiz-john-grisham/MXwyNjczODMxOXwyMzAyMTA2MHwxNjY1MTQwMzgyMDAwfHdlYnA=/550x",
-                            Isbn = 9789722543606L,
-                            Name = "A Lista do Juizes",
-                            Price = 18.989999999999998,
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AuthorId = 6,
-                            Image = "https://img.wook.pt/images/lendarios-tracy-deonn/MXwyNzYxOTY2MHwyMzk5Mjg2M3wxNjY0NzkwODA4MDAwfHdlYnA=/550x",
-                            Isbn = 9789898860019L,
-                            Name = "Lendários",
-                            Price = 22.0,
-                            isDeleted = false
-                        });
                 });
 
             modelBuilder.Entity("GestaoLivrosApi.Models.Book", b =>

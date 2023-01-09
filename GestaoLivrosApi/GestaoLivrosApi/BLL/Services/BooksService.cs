@@ -188,7 +188,7 @@ namespace GestaoLivrosApi.Services
                 }
 
                 book.Name = editBook.Name;
-                book.Author = editBook.Author;
+                book.AuthorId = editBook.AuthorId;
                 book.Isbn = editBook.Isbn;
                 book.Price = editBook.Price;
                 book.Image = editBook.Image;

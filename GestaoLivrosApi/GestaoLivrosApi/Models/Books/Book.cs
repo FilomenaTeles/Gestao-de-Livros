@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using GestaoLivrosApi.Models.Authors;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestaoLivrosApi.Models
@@ -15,8 +16,9 @@ namespace GestaoLivrosApi.Models
 		[Required]
 		public string Name { get; set; } = null!;
 
-        [Required]
-        public string Author { get; set; } = null!;
+       
+        public int AuthorId { get; set; }
+        public Author Author { get; set; }
 
         [Required]
         public double Price { get; set; }
