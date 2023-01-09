@@ -21,6 +21,8 @@ namespace GestaoLivrosApi.Models.Authors
             this.Name = author.Name;
             this.Country = author.Country;
             this.Books = author.Books;
+            this.isDeleted = author.isDeleted;
+            this.Image = author.Image;
 		}
 	}
 }
