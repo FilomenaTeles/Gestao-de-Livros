@@ -22,6 +22,9 @@ namespace GestaoLivrosApi.Data
             modelBuilder.Entity<Book>().Property<bool>("isDeleted");
             modelBuilder.Entity<Book>().HasQueryFilter(m => EF.Property<bool>(m, "isDeleted") == false);
 
+            modelBuilder.Entity<Author>().Property<bool>("isDeleted");
+            modelBuilder.Entity<Author>().HasQueryFilter(m => EF.Property<bool>(m, "isDeleted") == false);
+
             modelBuilder.Entity<Book>()
           .HasOne(b => b.Author)
           .WithMany(a => a.Books)

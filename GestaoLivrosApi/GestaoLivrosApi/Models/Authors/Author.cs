@@ -14,7 +14,7 @@ namespace GestaoLivrosApi.Models.Authors
         [Required]
         public string Country { get; set; } = null!;
 
-        public ICollection<Book> Books { get; set; } = null!;
+        public ICollection<Book> Books { get; set; } 
 
 
         public bool isDeleted { get; set; } = false;
