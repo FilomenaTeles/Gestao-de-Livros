@@ -24,12 +24,12 @@ namespace GestaoLivrosApi.DAL.Repositories
         {
             PaginatedList<Book> response = new PaginatedList<Book>();
 
-            var query = _context.Books.AsQueryable();
+            var query = _context.Books.Include(a => a.Author).AsQueryable();
             
             if(searchBy!= null)
             {
                 searchBy = searchBy.ToLower().Trim();
-                var search = query.Where(b => b.Name.Contains(searchBy) /*|| b.Author.Contains(searchBy)*/
+                var search = query.Where(b => b.Name.Contains(searchBy) /*|| b.Author.Name.Contains(searchBy*/
                                         || b.Isbn.ToString().Contains(searchBy) || b.Price.ToString().Contains(searchBy));
                 if( search == null)
                 {
