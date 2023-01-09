@@ -13,6 +13,7 @@ namespace GestaoLivrosApi.BLL.Services
 	{
         private readonly AppDbContext _context;
         private readonly IAuthorRepository _authorRepository;
+
         public AuthorsService(AppDbContext context, IAuthorRepository authorRepository)
 		{
             _context = context;

@@ -18,7 +18,7 @@ namespace GestaoLivrosApi.DAL.Repositories
         public async Task<PaginatedList<Author>> GetAllAsync(string? SearchBy, string? orderBy, int currentPage = 1, int pageSize = 6)
         {
             PaginatedList<Author> response = new PaginatedList<Author>();
-            var query = _context.Authors.Include(b => b.Books).AsQueryable();
+            var query = _context.Authors.AsQueryable();
 
             response.TotalRecords = query.Count();
 
