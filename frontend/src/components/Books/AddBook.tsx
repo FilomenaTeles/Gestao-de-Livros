@@ -18,11 +18,11 @@ export function AddBook(){
     const navigate = useNavigate();
     const [newBook,setNewBook]= useState({
         name: '',
-        author: '',
         isbn: 0,
         price: 0.0,
+        authorId:0
     });
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: any) => {
         const {name, value} = e.target;
         setNewBook({
           ...newBook,[name]:value
@@ -37,7 +37,7 @@ export function AddBook(){
 
   const requestCreate = async() => {
     console.log(newBook)
-      if(newBook.author == "" || newBook.author=="" || newBook.isbn==0 ){
+      if(newBook.authorId == 0|| newBook.name=="" || newBook.isbn==0 ){
         Toast.Show("error","Prencha todos os campos para inserir um livro")
   
       }else if(newBook.price == 0){
@@ -69,6 +69,45 @@ export function AddBook(){
 
   const toggle = () => setIsOpen(!isOpen);
 
+  //Lista Autores:
+
+const [getAuthors, setGetAuthors] = useState({
+  currentPage: 1,
+  pageSize: 6,
+  sortingParameter: "",
+  searchParameter: ""
+}
+);
+
+const [allAuthors, setAllAuthors]= useState([{
+  name: '',
+  country:'',
+  image:'',
+  id:0
+}]);
+
+const requestGetAuthors = async() =>{
+  //console.log(getBooks)
+  api.post('api/Authors/getAll',getAuthors).then(response => {
+    setAllAuthors(response.data.items);
+    
+    
+  }).catch(error =>{
+    Toast.Show("error",error)
+    console.log(error);
+  })
+};
+const [updateData, setUpdatedata]= useState(true);
+
+useEffect(()=>{
+  if(updateData)
+  {
+    requestGetAuthors();
+    setUpdatedata(false);
+  } 
+}, [updateData])
+
+
 
     return(
         <div className="add-book-container">
@@ -78,7 +117,12 @@ export function AddBook(){
                 <div className="container col-6">
                     
                         <input className="form-control m-3" type="text" placeholder="Nome" name="name" required onChange={handleChange} />
-                        <input className="form-control m-3"  type="text" placeholder="Autor" name="author" required onChange={handleChange}/>
+                        <select className="form-control m-3" name="authorId" id="authorId" onChange={handleChange}>
+                          <option disabled selected>Selecione um Autor</option>
+                        {allAuthors.map((author: {name:string; id:number;}) => (
+                            <option value={author.id} >{author.name}</option>  
+                        ))}
+                    </select>
                         <input className="form-control m-3"  type="number" placeholder="ISBN" name="isbn" required onChange={handleChange}/>
                         <input className="form-control m-3"  type="number" placeholder="Preço" name="price" min={0} required onChange={handleChange}/>
                         
