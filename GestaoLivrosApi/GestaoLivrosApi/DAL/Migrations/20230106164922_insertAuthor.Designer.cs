@@ -3,6 +3,7 @@ using GestaoLivrosApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestaoLivrosApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230106164922_insertAuthor")]
+    partial class insertAuthor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,78 +49,6 @@ namespace GestaoLivrosApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Authors");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Country = "EUA",
-                            Name = "John Grisham",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Country = "Portugal",
-                            Name = "José Rodrigues dos Santos",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Country = "Alemanha",
-                            Name = "Anne Jacobs",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Country = "Reino Unido",
-                            Name = "Dolly Alderton",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Country = "EUA",
-                            Name = "Colleen Hoover",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Country = "EUA",
-                            Name = "Tracy Deonn",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Country = "França",
-                            Name = "Antoine de Saint-Exupéry",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Country = "EUA",
-                            Name = "Taylor Jenkins Reid",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Country = "EUA",
-                            Name = "Holly Black",
-                            isDeleted = false
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Country = "EUA",
-                            Name = "Nicholas Sparks",
-                            isDeleted = false
-                        });
                 });
 
             modelBuilder.Entity("GestaoLivrosApi.Models.Book", b =>
@@ -128,8 +59,9 @@ namespace GestaoLivrosApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -149,8 +81,6 @@ namespace GestaoLivrosApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("Isbn")
                         .IsUnique();
 
@@ -160,7 +90,7 @@ namespace GestaoLivrosApi.Migrations
                         new
                         {
                             Id = 1,
-                            AuthorId = 1,
+                            Author = "José Rodrigues dos Santos",
                             Image = "https://img.wook.pt/images/a-mulher-do-dragao-vermelho-jose-rodrigues-dos-santos/MXwyNzQyMjE4NXwyMzc4Njg5MHwxNjYzNTc3MzY4MDAwfHdlYnA=/550x",
                             Isbn = 9789897776168L,
                             Name = "A Mulher do Dragão Vermelho",
@@ -170,7 +100,7 @@ namespace GestaoLivrosApi.Migrations
                         new
                         {
                             Id = 2,
-                            AuthorId = 2,
+                            Author = "Anne Jacobs",
                             Image = "https://img.wook.pt/images/as-filhas-da-vila-dos-tecidos-anne-jacobs/MXwyNzc0OTYyNnwyNDEyMzk5MHwxNjY1Mzg3MzI5MDAwfHdlYnA=/550x",
                             Isbn = 9789897776342L,
                             Name = "As Filhas da Vila dos Tecidos",
@@ -180,7 +110,7 @@ namespace GestaoLivrosApi.Migrations
                         new
                         {
                             Id = 3,
-                            AuthorId = 3,
+                            Author = "Nicholas Sparks",
                             Image = "https://img.wook.pt/images/um-sonho-so-nosso-nicholas-sparks/MXwyNzM0ODM4M3wyMzcwMDU2NXwxNjYxNDQyMjQwMDAwfHdlYnA=/550x",
                             Isbn = 9789892355214L,
                             Name = "Um Sonho Só Nosso",
@@ -190,7 +120,7 @@ namespace GestaoLivrosApi.Migrations
                         new
                         {
                             Id = 4,
-                            AuthorId = 4,
+                            Author = "Antoine de Saint-Exupéry",
                             Image = "https://almedinanet.b-cdn.net/media/catalog/product/cache/10f519365b01716ddb90abc57de5a837/9/7/9789723718928_1587465282.jpg",
                             Isbn = 9789723718928L,
                             Name = "O Principezinho",
@@ -200,7 +130,7 @@ namespace GestaoLivrosApi.Migrations
                         new
                         {
                             Id = 5,
-                            AuthorId = 5,
+                            Author = "John Grisham",
                             Image = "https://img.wook.pt/images/a-lista-do-juiz-john-grisham/MXwyNjczODMxOXwyMzAyMTA2MHwxNjY1MTQwMzgyMDAwfHdlYnA=/550x",
                             Isbn = 9789722543606L,
                             Name = "A Lista do Juizes",
@@ -210,29 +140,13 @@ namespace GestaoLivrosApi.Migrations
                         new
                         {
                             Id = 6,
-                            AuthorId = 6,
+                            Author = "Tracy Deonn",
                             Image = "https://img.wook.pt/images/lendarios-tracy-deonn/MXwyNzYxOTY2MHwyMzk5Mjg2M3wxNjY0NzkwODA4MDAwfHdlYnA=/550x",
                             Isbn = 9789898860019L,
                             Name = "Lendários",
                             Price = 22.0,
                             isDeleted = false
                         });
-                });
-
-            modelBuilder.Entity("GestaoLivrosApi.Models.Book", b =>
-                {
-                    b.HasOne("GestaoLivrosApi.Models.Authors.Author", "Author")
-                        .WithMany("Books")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("GestaoLivrosApi.Models.Authors.Author", b =>
-                {
-                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }

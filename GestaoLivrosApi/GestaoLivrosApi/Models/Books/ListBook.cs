@@ -10,7 +10,8 @@ namespace GestaoLivrosApi.Models.Books
 
         public string Name { get; set; } = null!;
 
-        public string Author { get; set; } = null!;
+        public int AuthorId { get; set; }
+        public string AuthorName { get; set; }
 
         public double Price { get; set; }
 
@@ -23,7 +24,8 @@ namespace GestaoLivrosApi.Models.Books
             Id = book.Id;
             Isbn = book.Isbn;
             Name = book.Name;
-            Author = book.Author;
+            AuthorId = book.AuthorId;
+            AuthorName = book.Author.Name;
             Price = book.Price;
             isDeleted = book.isDeleted;
             Image = book.Image;

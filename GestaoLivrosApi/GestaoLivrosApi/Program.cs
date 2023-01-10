@@ -1,4 +1,5 @@
-﻿using GestaoLivrosApi.DAL.Repositories;
+﻿using GestaoLivrosApi.BLL.Services;
+using GestaoLivrosApi.DAL.Repositories;
 using GestaoLivrosApi.Data;
 using GestaoLivrosApi.Interfaces.Repositories;
 using GestaoLivrosApi.Interfaces.Services;
@@ -15,6 +16,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IBookService, BooksService>();
 builder.Services.AddScoped<IBookRepository,BookRepository>();
+
+builder.Services.AddScoped<IAuthorService, AuthorsService>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 builder.Services.AddDbContext<AppDbContext>();
 

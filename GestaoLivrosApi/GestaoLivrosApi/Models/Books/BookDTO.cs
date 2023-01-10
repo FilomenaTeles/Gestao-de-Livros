@@ -9,7 +9,7 @@ namespace GestaoLivrosApi.Models.Books
 
         public string Name { get; set; } = null!;
 
-        public string Author { get; set; } = null!;
+        public int AuthorId { get; set; }
 
         public double Price { get; set; }
         public string? Image { get; set; }
@@ -19,7 +19,7 @@ namespace GestaoLivrosApi.Models.Books
             this.Id = book.Id;
             this.Isbn = book.Isbn;
             this.Name = book.Name;
-            this.Author = book.Author;
+            this.AuthorId = book.AuthorId;
             this.Price = book.Price;
             this.Image = book.Image;
 
