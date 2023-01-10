@@ -9,7 +9,8 @@ namespace GestaoLivrosApi.Interfaces.Repositories
 	{
         Task<PaginatedList<Author>> GetAllAsync(string? SearchBy, string? orderBy, int currentPage = 1, int pageSize = 6);
         Task<Author> Create(Author author);
-
+        Task<Author?> GetById(int id);
+        Task<Author> Edit(Author author);
     }
 }
 

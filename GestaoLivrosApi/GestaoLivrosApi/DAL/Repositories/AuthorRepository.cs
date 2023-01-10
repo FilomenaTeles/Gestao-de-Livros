@@ -2,6 +2,7 @@
 using GestaoLivrosApi.Data;
 using GestaoLivrosApi.Helpers;
 using GestaoLivrosApi.Interfaces.Repositories;
+using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Models.Authors;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,20 @@ namespace GestaoLivrosApi.DAL.Repositories
         public async Task<Author> Create(Author author)
         {
             _context.Authors.Add(author);
+            await _context.SaveChangesAsync();
+            return author;
+        }
+
+        public async Task<Author?> GetById(int id)
+        {
+            return await _context.Authors
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Author> Edit(Author author)
+        {
+            _context.Entry<Author>(author).CurrentValues.SetValues(author);
             await _context.SaveChangesAsync();
             return author;
         }

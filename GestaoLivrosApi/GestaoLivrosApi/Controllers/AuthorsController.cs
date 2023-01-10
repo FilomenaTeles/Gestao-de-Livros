@@ -30,14 +30,28 @@ namespace GestaoLivrosApi.Controllers
             return await _authorService.GetAll(search);
         }
 
-        /*
-         *  [HttpPost("create")]
-        
-        public async Task<MessagingHelper> Create(CreateBookDTO createBook)
+        [HttpPost("create")]
+        public async Task<MessagingHelper> Create(CreateAuthorDTO createAuthor)
         {
-            return await _bookService.Create(createBook);
+            return await _authorService.Create(createAuthor);
+        }
+
+        /*
+         *
+
+        [HttpPost("update")]
+        public async Task<MessagingHelper<BookDTO>> Update(EditBookDTO editBook)
+        {
+            return await _bookService.Update(editBook);
         }
          */
+
+        [HttpGet("{id}")]
+        public async Task<MessagingHelper<AuthorDTO>> GetById(int id)
+         {
+            return await _authorService.GetById(id);
+         }
+
     }
 }
 
