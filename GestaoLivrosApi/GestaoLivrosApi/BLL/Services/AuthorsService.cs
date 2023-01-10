@@ -183,6 +183,20 @@ namespace GestaoLivrosApi.BLL.Services
 
             return result;
         }
+
+        public async Task<Author> GetAuthorById(int id)
+        {
+            var authors = await _context.Authors.FindAsync(id);
+
+
+            return authors;
+        }
+
+        public async Task Delete(Author author)
+        {
+            _context.Entry(author).CurrentValues["isDeleted"] = true;
+            await _context.SaveChangesAsync();
+        }
     }
 }
 

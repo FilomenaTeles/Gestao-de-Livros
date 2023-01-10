@@ -2,7 +2,6 @@
 using GestaoLivrosApi.Helpers;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Models.Authors;
-using GestaoLivrosApi.Models.Books;
 
 namespace GestaoLivrosApi.Interfaces.Services
 {
@@ -15,6 +14,10 @@ namespace GestaoLivrosApi.Interfaces.Services
         Task<MessagingHelper<AuthorDTO>> GetById(int id);
 
         Task<MessagingHelper<AuthorDTO>> Edit (EditAuthorDTO editAuthor);
+
+        Task<Author> GetAuthorById(int id);
+
+        Task Delete(Author author);
     }
 }
 
