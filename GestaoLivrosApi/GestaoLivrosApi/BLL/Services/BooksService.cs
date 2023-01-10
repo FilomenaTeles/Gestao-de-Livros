@@ -53,7 +53,7 @@ namespace GestaoLivrosApi.Services
                 if (responseRepository.Success != true)
                 {
                     result.Success = false;
-                    result.Message = "Erro ao obter a informação das urdissagens";
+                    result.Message = "Erro ao obter a informação dos livros";
                     return result;
                 }
                 result.Items = responseRepository.Items.Select(t => new ListBook(t)).ToList();
