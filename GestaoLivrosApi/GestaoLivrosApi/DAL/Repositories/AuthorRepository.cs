@@ -16,10 +16,23 @@ namespace GestaoLivrosApi.DAL.Repositories
             _context = context;
         }
 
-        public async Task<PaginatedList<Author>> GetAllAsync(string? SearchBy, string? orderBy, int currentPage = 1, int pageSize = 6)
+        public async Task<PaginatedList<Author>> GetAllAsync(string? searchBy, string? orderBy, int currentPage = 1, int pageSize = 6)
         {
             PaginatedList<Author> response = new PaginatedList<Author>();
             var query = _context.Authors.AsQueryable();
+
+            if (searchBy != null)
+            {
+                searchBy = searchBy.ToLower().Trim();
+                var search = query.Where(a => a.Name.Contains(searchBy) || a.Country.Contains(searchBy));
+                if (search == null)
+                {
+                    response.Success = false;
+                    response.Message = "Pesquisa sem resultados";
+                    return response;
+                }
+                query = search;
+            }
 
             response.TotalRecords = query.Count();
 
