@@ -38,7 +38,7 @@ export class BookCard extends React.Component<{edit:any,delete:any,name:string; 
 
 }
 
-export class AuthorCard extends React.Component<{edit:any,delete:any,name:string; country: string; id:number; img:string}>{
+export class AuthorCard extends React.Component<{edit:any,delete:any,name:string; country: string; id:number; img:string; books:[]}>{
  
     render() {
         return(
@@ -56,6 +56,7 @@ export class AuthorCard extends React.Component<{edit:any,delete:any,name:string
                         <p className="card-text">
                             {/*Nome: {this.props.name} <br />*/}
                             País: {this.props.country} <br />
+                            Livros: {this.props.books.length==0? "Sem livros": this.props.books}
                             
                         </p>
                         <div className="card-btn">

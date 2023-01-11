@@ -334,12 +334,9 @@ const requestGetAuthors = async() =>{
                     <input type="number" className='form-control' name='isbn' required onChange={handleChange} value={bookSelected && bookSelected.isbn} />
                     <br/>
                     <label>Nome:</label>
-                    <br/>
-                    <input type="text" className='form-control' name='name'required onChange={handleChange} value={bookSelected && bookSelected.name} />
-                    <label>Autor:</label>
-                    <br/>
-                    <input type="text" className='form-control'  name='author' required onChange={handleChange}  value={bookSelected && bookSelected.authorName}/>
-                    <select name="authorId" id="authorId" onChange={handleChange}>
+                    <input type="text" className='form-control' name='name'required onChange={handleChange} value={bookSelected && bookSelected.name} /><br/>
+                    <label>Autor:</label> <br />
+                    <select className='form-control' name="authorId" id="authorId" onChange={handleChange}>
                         {allAuthors.map((author: {name:string; id:number;}) => (
                           {...bookSelected.authorName == author.name?(
                             <option value={author.id} selected >{author.name}</option>
@@ -348,11 +345,10 @@ const requestGetAuthors = async() =>{
                           )}
                           
                         ))}
-                    </select>
-                      <br />
+                    </select><br/>
                     <label>Preço:</label>
                     <br/>
-                    <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} />
+                    <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} /><br/>
                     <label>Imagem:</label>
                     <br/>
                     <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={bookSelected && bookSelected.image}/>

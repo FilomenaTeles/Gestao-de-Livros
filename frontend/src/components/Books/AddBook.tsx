@@ -118,11 +118,11 @@ useEffect(()=>{
                     
                         <input className="form-control m-3" type="text" placeholder="Nome" name="name" required onChange={handleChange} />
                         <select className="form-control m-3" name="authorId" id="authorId" onChange={handleChange}>
-                          <option disabled selected>Selecione um Autor</option>
-                        {allAuthors.map((author: {name:string; id:number;}) => (
-                            <option value={author.id} >{author.name}</option>  
-                        ))}
-                    </select>
+                            <option disabled selected>Selecione um Autor</option>
+                          {allAuthors.map((author: {name:string; id:number;}) => (
+                              <option value={author.id} >{author.name}</option>  
+                          ))}
+                        </select>
                         <input className="form-control m-3"  type="number" placeholder="ISBN" name="isbn" required onChange={handleChange}/>
                         <input className="form-control m-3"  type="number" placeholder="Preço" name="price" min={0} required onChange={handleChange}/>
                         

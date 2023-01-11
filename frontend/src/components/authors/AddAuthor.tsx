@@ -71,7 +71,7 @@ export function AddAuthor(){
                         </React.StrictMode>
                         <br />
                         <button className="btn btn-success ms-3" onClick={requestCreate} >Adicionar</button>
-                        <Link className="btn btn-danger m-2" to='/books'>Cancelar</Link>
+                        <Link className="btn btn-danger m-2" to='/authors'>Cancelar</Link>
                     
                     </div>
                 </div>

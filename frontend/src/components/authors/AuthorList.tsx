@@ -5,6 +5,7 @@ import { AuthorCard } from "../global/Card";
 import Toast from "../global/Toast";
 import NotFound from '../../assets/nodata.png';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { all } from "axios";
 
 export function AuthorList(){
     //filtro
@@ -25,8 +26,10 @@ export function AuthorList(){
         name: '',
         country:'',
         image:'',
-        id:0
+        id:0,
+        books:[]
       }]);
+      console.log(allAuthors);
     const [authorSelected,setAuthorSelected]= useState({
         name: '',
         country: '',
@@ -214,7 +217,7 @@ export function AuthorList(){
                 </div>
             ):(
                 <ul id='book-ul'>
-                    {allAuthors.map((author: {id:number,name:string; country:string; image:string}) =>(
+                    {allAuthors.map((author: {id:number,name:string; country:string; image:string; books:any}) =>(
                     <li id='book-li' key={author.id}>
                     
                         <AuthorCard 
@@ -224,6 +227,7 @@ export function AuthorList(){
                         country={author.country}
                         id={author.id}
                         img={author.image}
+                        books={author.books.join(", ")}
                     />
                     </li>
                     ))}
