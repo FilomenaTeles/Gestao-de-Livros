@@ -109,6 +109,14 @@ export function AuthorList(){
     const openCloseModalDelete=() =>{
         setModalDelete(!modalDelete);
     }
+
+    function orderBy(e:any){
+        const option=e;
+        setGetAuthors({
+            ...getAuthors, sortingParameter : option
+        })
+        setUpdatedata(true);
+    }; 
   
   
   //PEDIDOS API
@@ -185,31 +193,42 @@ export function AuthorList(){
                         <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>
                     </form>
                 </div>
+
+                <div className='container text-end col-4'>
+                    <select className='' name="orderBy" id="orderBy" onChange={(e)=>orderBy(e.target.value)}>
+                        <option value="name-asc">Nome (ASC)</option>
+                        <option value="country-asc">País (ASC)</option>
+                        <option value="name-desc">Nome (DESC)</option>
+                        <option value="country-desc">País (DESC)</option>
+                    </select>
+                </div>
+
             </div>
 
+            
             {allAuthors.length === 0 ?
-       (
-         <div className='container mt-3 ms-3 mb-0 text-center'>
-             <h5 className='text-start'>Livro não encontrado</h5>
-             <img src={NotFound} alt="not found data" className='not-found-img'/>
-         </div>
-       ):(
-         <ul id='book-ul'>
-             {allAuthors.map((author: {id:number,name:string; country:string; image:string}) =>(
-             <li id='book-li' key={author.id}>
-              
-                 <AuthorCard 
-                 delete={()=>selectAuthor(author,'delete')}
-                   edit={()=>selectAuthor(author,'edit')}
-                   name={author.name} 
-                   country={author.country}
-                   id={author.id}
-                   img={author.image}
-               />
-             </li>
-             ))}
-         </ul>
-       )}
+            (
+                <div className='container mt-3 ms-3 mb-0 text-center'>
+                    <h5 className='text-start'>Livro não encontrado</h5>
+                    <img src={NotFound} alt="not found data" className='not-found-img'/>
+                </div>
+            ):(
+                <ul id='book-ul'>
+                    {allAuthors.map((author: {id:number,name:string; country:string; image:string}) =>(
+                    <li id='book-li' key={author.id}>
+                    
+                        <AuthorCard 
+                        delete={()=>selectAuthor(author,'delete')}
+                        edit={()=>selectAuthor(author,'edit')}
+                        name={author.name} 
+                        country={author.country}
+                        id={author.id}
+                        img={author.image}
+                    />
+                    </li>
+                    ))}
+                </ul>
+            )}
             
             <ReactPaginate 
                 previousLabel={'previous'}
