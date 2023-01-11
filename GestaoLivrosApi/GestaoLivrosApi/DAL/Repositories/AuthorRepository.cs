@@ -38,6 +38,39 @@ namespace GestaoLivrosApi.DAL.Repositories
 
             var numberOfItemsToSkip = pageSize * (currentPage - 1);
 
+            if (orderBy != null)
+            {
+                switch (orderBy)
+                {
+
+                    case "name-desc":
+                        {
+                            query = query.OrderByDescending(a => a.Name);
+                            break;
+                        }
+                    case "country-asc":
+                        {
+                            query = query.OrderBy(a => a.Country);
+                            break;
+                        }
+                    case "country-desc":
+                        {
+                            query = query.OrderByDescending(a => a.Country);
+                            break;
+                        }
+                    default:
+                        {
+                            query = query.OrderBy(a => a.Name);
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                query = query.OrderBy(a => a.Name);
+
+            }
+
 
             query = query.Skip(numberOfItemsToSkip);
             query = query.Take(pageSize);
