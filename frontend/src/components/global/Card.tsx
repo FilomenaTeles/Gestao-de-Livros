@@ -38,3 +38,38 @@ export class BookCard extends React.Component<{edit:any,delete:any,name:string; 
 
 }
 
+export class AuthorCard extends React.Component<{edit:any,delete:any,name:string; country: string; id:number; img:string}>{
+ 
+    render() {
+        return(
+            <div className="container">
+                <div className="card">
+                    {this.props.img==null || this.props.img=="" ? (
+                        <img className="card-img-top" src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=1380&t=st=1673428568~exp=1673429168~hmac=188b7c7e4a5f15ce100e5d68eb643e054a5004a407e6de67a9cc02a09a405d4f" alt="..."/>
+
+                    ):(
+                        <img src={this.props.img} className="card-img-top" alt="..."/>
+                    )}
+                
+                    <div className="card-body">
+                        <h5 className="card-title">{this.props.name}</h5>
+                        <p className="card-text">
+                            {/*Nome: {this.props.name} <br />*/}
+                            País: {this.props.country} <br />
+                            
+                        </p>
+                        <div className="card-btn">
+                        <button id='btn-cancel' className='btn' onClick={this.props.edit}><BiEdit size={25}/></button>
+                        <button id='btn-cancel' className='btn' onClick={this.props.delete}><RiDeleteBinLine size={25}/></button>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+        );
+        
+    }
+
+}
+

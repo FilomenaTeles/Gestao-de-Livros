@@ -149,8 +149,10 @@ function selectBook (book:any, option:string){
       setAllBooks(allBooks.filter((book:any) => book.id !== response.data));
       setUpdatedata(true);
       openCloseModalDelete();
+      Toast.Show("success",response.data.message)
 
     }).catch(error =>{
+      Toast.Show("error",error)
       console.log(error);
     })
   }

@@ -110,7 +110,7 @@ useEffect(()=>{
 
 
     return(
-        <div className="add-book-container">
+        <div className="add-container">
            <div className="container p-3 mt-5">
             <h3 className="text-center"><BsBook size={55}/> Adicionar novo Livro</h3>
             <div className="container row">
