@@ -19,7 +19,7 @@ namespace GestaoLivrosApi.DAL.Repositories
         public async Task<PaginatedList<Author>> GetAllAsync(string? searchBy, string? orderBy, int currentPage = 1, int pageSize = 6)
         {
             PaginatedList<Author> response = new PaginatedList<Author>();
-            var query = _context.Authors.AsQueryable();
+            var query = _context.Authors.Include(b => b.Books).AsQueryable();
 
             if (searchBy != null)
             {
