@@ -1,12 +1,9 @@
 import api from "../../services/api";
 import "./styles.css"
-
 import {BsBook} from "react-icons/bs";
-import { Link, useNavigate, redirect} from "react-router-dom";
-import { ChangeEvent, useEffect, useState } from "react";
-
+import { Link, useNavigate} from "react-router-dom";
+import {useEffect, useState } from "react";
 import Toast from "../global/Toast";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import React from "react";
 import { Collapse } from "reactstrap";
@@ -28,14 +25,8 @@ export function AddBook(){
         setNewBook({
           ...newBook,[name]:value
         });
-        console.log(newBook);
       }
-
-    // <Link to={'/books'}></Link>
-    
-    // redirect('/books');
   
-
   const requestCreate = async() => {
     console.log(newBook)
       if(newBook.authorId == 0|| newBook.name=="" || newBook.isbn==0 ){
@@ -55,15 +46,12 @@ export function AddBook(){
           }else{
             Toast.Show("success","Livro inserido com sucesso")
             navigate(-1);
-            //redirect('/books',)
           }
           
       }).catch(error =>{
           Toast.Show("error",error)
-          console.log(error);
         });
-      }
-      
+      } 
    }
 
   const [isOpen, setIsOpen] = useState(false);
@@ -86,7 +74,7 @@ const [allAuthors, setAllAuthors]= useState([{
 }]);
 
 const requestGetAuthors = async() =>{
-  //console.log(getBooks)
+ 
   api.post('api/Authors/getAll',getAuthors).then(response => {
     setAllAuthors(response.data.items);
     setGetAuthors({
@@ -95,7 +83,6 @@ const requestGetAuthors = async() =>{
     
   }).catch(error =>{
     Toast.Show("error",error)
-    console.log(error);
   })
 };
 const [updateData, setUpdatedata]= useState(true);

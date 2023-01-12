@@ -1,11 +1,10 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import api from "../../services/api";
 import { AuthorCard } from "../global/Card";
 import Toast from "../global/Toast";
 import NotFound from '../../assets/nodata.png';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { all } from "axios";
 
 export function AuthorList(){
     //filtro
@@ -29,7 +28,7 @@ export function AuthorList(){
         id:0,
         books:[]
       }]);
-      console.log(allAuthors);
+      
     const [authorSelected,setAuthorSelected]= useState({
         name: '',
         country: '',
@@ -70,7 +69,6 @@ export function AuthorList(){
         })
         
         setUpdatedata(true);
-
     }
 
   //LIMPAR FILTRO  
@@ -161,7 +159,8 @@ export function AuthorList(){
                 }
             })
             .catch(error =>{
-            console.log(error);
+                Toast.Show("error",error)
+                console.log(error);
             })
         }
     }

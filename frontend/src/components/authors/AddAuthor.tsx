@@ -28,7 +28,7 @@ export function AddAuthor(){
 
       //PEDIDO API 
     const requestCreate = async() => {
-        console.log(newAuthor)
+       
         if(newAuthor.name=="" || newAuthor.country=="" ){
             Toast.Show("error","Prencha todos os campos para inserir um autor")
         }

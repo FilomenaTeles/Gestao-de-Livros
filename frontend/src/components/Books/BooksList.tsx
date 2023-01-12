@@ -1,17 +1,12 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import {useEffect, useState } from 'react';
 import api from '../../services/api';
 import { BookCard } from '../global/Card';
 import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
-import { Collapse, Button, CardBody, Card } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
-import {BsBook} from "react-icons/bs";
-import {BiBookAdd, BiImageAdd} from "react-icons/bi";
 import NotFound from '../../assets/nodata.png';
-
 import Toast from "../global/Toast";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -43,15 +38,15 @@ export function AllBooks(){
      setModalDelete(!modalDelete);
    }
 
-   const [bookSelected,setBookSelected]= useState({
-    name: '',
-    authorName: '',
-    isbn: 0,
-    price: 0.0,
-    id:0,
-    image:'',
-    authorId:0
-});
+  const [bookSelected,setBookSelected]= useState({
+      name: '',
+      authorName: '',
+      isbn: 0,
+      price: 0.0,
+      id:0,
+      image:'',
+      authorId:0
+    });
 
 function selectBook (book:any, option:string){
     setBookSelected(book);
@@ -59,50 +54,46 @@ function selectBook (book:any, option:string){
 };
 
 
-    const handleChange = (e: any) => {
-        const {name, value} = e.target;
-        setBookSelected({
-        ...bookSelected,[name]:value
-        });
-        console.log(bookSelected);
-    }
+const handleChange = (e: any) => {
+    const {name, value} = e.target;
+    setBookSelected({
+    ...bookSelected,[name]:value
+    });
+}
 
-    const [updateData, setUpdatedata]= useState(true);
+const [updateData, setUpdatedata]= useState(true);
 
-    useEffect(()=>{
-      if(updateData)
-      {
-        requestGet();
-        setUpdatedata(false);
-      } 
-    }, [updateData])
+useEffect(()=>{
+  if(updateData)
+  {
+    requestGet();
+    setUpdatedata(false);
+  } 
+}, [updateData])
 
-    const [atualPage,setAtualPage]=useState(1);
-    const [pageCount, setPageCount] = useState(0);
-    const [getBooks, setGetBooks] = useState({
-        currentPage: 1,
-        pageSize: 6,
-        sortingParameter: "name-asc",
-        searchParameter: ""
-    }
-     );
+const [atualPage,setAtualPage]=useState(1);
+const [pageCount, setPageCount] = useState(0);
+const [getBooks, setGetBooks] = useState({
+    currentPage: 1,
+    pageSize: 6,
+    sortingParameter: "name-asc",
+    searchParameter: ""
+  });
 
-    const requestGet = async() =>{
+const requestGet = async() =>{
       
-      api.post('api/Books/getBooks',getBooks).then(response => {
-        setAllBooks(response.data.items);
-        setPageCount(response.data.totalPages);
-        
-      }).catch(error =>{
-        Toast.Show("error",error)
-        console.log(error);
-      });
-
-      
-  };
+  api.post('api/Books/getBooks',getBooks)
+  .then(response => {
+      setAllBooks(response.data.items);
+      setPageCount(response.data.totalPages);     
+  })
+  .catch(error =>{
+      Toast.Show("error",error)
+    });    
+};
 
  
-  const requestUpdate = async()=>{
+const requestUpdate = async()=>{
     
    if(bookSelected.name =="" || bookSelected.authorName=="" || bookSelected.isbn==0  ){
     Toast.Show("error","Todos os campos têm que estar preenchidos para editar o livro")
@@ -137,11 +128,11 @@ function selectBook (book:any, option:string){
       
 
     }).catch(error =>{
-      console.log(error);
+      Toast.Show("error",error)
     })
    }
    
-  }
+}
 
   const requestDelete = async()=>{
 
@@ -154,15 +145,12 @@ function selectBook (book:any, option:string){
 
     }).catch(error =>{
       Toast.Show("error",error)
-      console.log(error);
     })
   }
 
   function orderBy(e:any){
       const option=e;
-      
-      console.log(atualPage);
-
+     
       setGetBooks({
         ...getBooks, sortingParameter : option
       })
@@ -247,7 +235,6 @@ const requestGetAuthors = async() =>{
 
   return (
     <div className='container mt-4'>
-      
       <div className='container row'>
         <div className='col-8'>
           <form className=" mb-3"  onSubmit={requestGetBy}>
@@ -323,55 +310,54 @@ const requestGetAuthors = async() =>{
         activeClassName={'active'}
       />
       <Modal isOpen={modalEdit}>
-                <ModalHeader>Editar Livro</ModalHeader>
+        <ModalHeader>Editar Livro</ModalHeader>
                 
-                <ModalBody>
-                    <div className='form-group'>
-                      <input type="number" hidden name='id' value={bookSelected && bookSelected.id}/>
-                    <label>Isbn:</label>
-                    <input type="number" className='form-control' name='isbn' required onChange={handleChange} value={bookSelected && bookSelected.isbn} />
-                    <br/>
-                    <label>Nome:</label>
-                    <input type="text" className='form-control' name='name'required onChange={handleChange} value={bookSelected && bookSelected.name} /><br/>
-                    <label>Autor:</label> <br />
-                    <select className='form-control' name="authorId" id="authorId" onChange={handleChange}>
-                        {allAuthors.map((author: {name:string; id:number;}) => (
-                          {...bookSelected.authorName == author.name?(
-                            <option value={author.id} selected >{author.name}</option>
-                          ):(
-                            <option value={author.id}>{author.name}</option>
-                          )}
-                          
-                        ))}
-                    </select><br/>
-                    <label>Preço:</label>
-                    <br/>
-                    <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} /><br/>
-                    <label>Imagem:</label>
-                    <br/>
-                    <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={bookSelected && bookSelected.image}/>
-
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestUpdate()}>Editar</button> {"  "}
-                    <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalEdit()}>Cancelar</button>    
-                </ModalFooter>
+        <ModalBody>
+            <div className='form-group'>
+              <input type="number" hidden name='id' value={bookSelected && bookSelected.id}/>
+            <label>Isbn:</label>
+            <input type="number" className='form-control' name='isbn' required onChange={handleChange} value={bookSelected && bookSelected.isbn} />
+            <br/>
+            <label>Nome:</label>
+            <input type="text" className='form-control' name='name'required onChange={handleChange} value={bookSelected && bookSelected.name} /><br/>
+            <label>Autor:</label> <br />
+            <select className='form-control' name="authorId" id="authorId" onChange={handleChange}>
+                {allAuthors.map((author: {name:string; id:number;}) => (
+                  {...bookSelected.authorName == author.name?(
+                    <option value={author.id} selected >{author.name}</option>
+                  ):(
+                    <option value={author.id}>{author.name}</option>
+                  )}
+                  
+                ))}
+            </select><br/>
+            <label>Preço:</label>
+            <br/>
+            <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} /><br/>
+            <label>Imagem:</label>
+            <br/>
+            <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={bookSelected && bookSelected.image}/>
+            </div>
+        </ModalBody>
+        <ModalFooter>
+            <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestUpdate()}>Editar</button> {"  "}
+            <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalEdit()}>Cancelar</button>    
+        </ModalFooter>
       </Modal>
 
-            <Modal isOpen={modalDelete}>
-              <ModalBody>
-                Esta ação vai eliminar o livro: <br />
-                Titulo: {bookSelected && bookSelected.name} <br />
-                Autor: {bookSelected && bookSelected.authorName} <br />
-                ISBN: {bookSelected && bookSelected.isbn} <br />
-                <b>Deseja continuar?</b>
-              </ModalBody>
-              <ModalFooter>
-                <button className='btn btn-danger' onClick={()=>requestDelete()}>Eliminar</button>
-                <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
-              </ModalFooter>
-            </Modal>
+      <Modal isOpen={modalDelete}>
+        <ModalBody>
+          Esta ação vai eliminar o livro: <br />
+          Titulo: {bookSelected && bookSelected.name} <br />
+          Autor: {bookSelected && bookSelected.authorName} <br />
+          ISBN: {bookSelected && bookSelected.isbn} <br />
+          <b>Deseja continuar?</b>
+        </ModalBody>
+        <ModalFooter>
+          <button className='btn btn-danger' onClick={()=>requestDelete()}>Eliminar</button>
+          <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
+        </ModalFooter>
+      </Modal>
 
     </div>
   );
