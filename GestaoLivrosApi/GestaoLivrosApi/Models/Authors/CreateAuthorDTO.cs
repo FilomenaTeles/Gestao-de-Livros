@@ -10,8 +10,6 @@ namespace GestaoLivrosApi.Models.Authors
 
         public string Country { get; set; } = null!;
 
-        //public ICollection<Book> Books { get; set; }
-
         public string? Image { get; set; }
 
         public Author ToEntity()
