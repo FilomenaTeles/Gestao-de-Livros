@@ -32,7 +32,7 @@ export function AllBooks(){
    //metodo para alternar estados do modal
    function openCloseModalEdit(){
      setModalEdit(!modalEdit);
-     requestGetAuthors();
+     requestGetAuthors()
    }
 
    //estado para controlar o modal
@@ -52,8 +52,7 @@ export function AllBooks(){
     image:'',
     authorId:0
 });
-console.log("book select")
-console.log(bookSelected)
+
 function selectBook (book:any, option:string){
     setBookSelected(book);
     (option=='edit') ? openCloseModalEdit(): openCloseModalDelete();
@@ -89,7 +88,7 @@ function selectBook (book:any, option:string){
      );
 
     const requestGet = async() =>{
-      //console.log(getBooks)
+      
       api.post('api/Books/getBooks',getBooks).then(response => {
         setAllBooks(response.data.items);
         setPageCount(response.data.totalPages);
@@ -97,7 +96,9 @@ function selectBook (book:any, option:string){
       }).catch(error =>{
         Toast.Show("error",error)
         console.log(error);
-      })
+      });
+
+      
   };
 
  
@@ -197,8 +198,6 @@ function selectBook (book:any, option:string){
      requestGet();
      setForcePage(0); //dá o highligtht para a pagina 1
      
-     //setUpdatedata(true);
-     console.log(getBooks)
   };
 
   //FILTRO
@@ -222,23 +221,22 @@ function selectBook (book:any, option:string){
 
 const [getAuthors, setGetAuthors] = useState({
   currentPage: 1,
-  pageSize: 6,
-  sortingParameter: "",
-  searchParameter: ""
+  pageSize: 1000
 }
 );
 
 const [allAuthors, setAllAuthors]= useState([{
   name: '',
-  country:'',
-  image:'',
   id:0
 }]);
 
 const requestGetAuthors = async() =>{
-  //console.log(getBooks)
+  
   api.post('api/Authors/getAll',getAuthors).then(response => {
     setAllAuthors(response.data.items);
+    setGetAuthors({
+      ...getAuthors, pageSize : response.data.totalRecords,
+    })
     
     
   }).catch(error =>{
@@ -323,7 +321,7 @@ const requestGetAuthors = async() =>{
         breakClassName={'page-item'}
         breakLinkClassName={'page-link'}
         activeClassName={'active'}
-  />
+      />
       <Modal isOpen={modalEdit}>
                 <ModalHeader>Editar Livro</ModalHeader>
                 
@@ -341,7 +339,7 @@ const requestGetAuthors = async() =>{
                           {...bookSelected.authorName == author.name?(
                             <option value={author.id} selected >{author.name}</option>
                           ):(
-                            <option value={author.id}  >{author.name}</option>
+                            <option value={author.id}>{author.name}</option>
                           )}
                           
                         ))}

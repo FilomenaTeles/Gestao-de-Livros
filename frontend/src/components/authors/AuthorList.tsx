@@ -227,7 +227,7 @@ export function AuthorList(){
                         country={author.country}
                         id={author.id}
                         img={author.image}
-                        books={author.books.join(", ")}
+                        books={author.books.join("; ")}
                     />
                     </li>
                     ))}

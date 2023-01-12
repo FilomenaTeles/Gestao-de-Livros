@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import React from "react";
 import { Collapse } from "reactstrap";
 import { BiImageAdd } from "react-icons/bi";
+import { AiOutlineUserAdd } from "react-icons/ai";
 
 
 export function AddBook(){
@@ -73,9 +74,7 @@ export function AddBook(){
 
 const [getAuthors, setGetAuthors] = useState({
   currentPage: 1,
-  pageSize: 6,
-  sortingParameter: "",
-  searchParameter: ""
+  pageSize: 1000
 }
 );
 
@@ -90,7 +89,9 @@ const requestGetAuthors = async() =>{
   //console.log(getBooks)
   api.post('api/Authors/getAll',getAuthors).then(response => {
     setAllAuthors(response.data.items);
-    
+    setGetAuthors({
+      ...getAuthors, pageSize : response.data.totalRecords,
+    })
     
   }).catch(error =>{
     Toast.Show("error",error)
@@ -133,6 +134,8 @@ useEffect(()=>{
                                 <span className="validity"></span>
                             </Collapse>
                         </React.StrictMode>
+                       
+                        <Link to='/addauthor' className="btn"><AiOutlineUserAdd size={25}/> Novo Autor</Link>
                     <br />
                         <button className="btn btn-success ms-3" onClick={requestCreate} >Adicionar</button>
                         <Link className="btn btn-danger m-2" to='/books'>Cancelar</Link>
