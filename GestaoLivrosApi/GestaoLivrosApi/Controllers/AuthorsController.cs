@@ -37,15 +37,6 @@ namespace GestaoLivrosApi.Controllers
             return await _authorService.Create(createAuthor);
         }
 
-        /*
-         *
-
-        [HttpPost("update")]
-        public async Task<MessagingHelper<BookDTO>> Update(EditBookDTO editBook)
-        {
-            return await _bookService.Update(editBook);
-        }
-         */
 
         [HttpGet("{id}")]
         public async Task<MessagingHelper<AuthorDTO>> GetById(int id)

@@ -1,17 +1,12 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import {useEffect, useState } from 'react';
 import api from '../../services/api';
 import { BookCard } from '../global/Card';
 import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
-import { Collapse, Button, CardBody, Card } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
-import {BsBook} from "react-icons/bs";
-import {BiBookAdd, BiImageAdd} from "react-icons/bi";
 import NotFound from '../../assets/nodata.png';
-
 import Toast from "../global/Toast";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -19,7 +14,7 @@ export function AllBooks(){
  
   const [allBooks, setAllBooks]= useState([{
     name: '',
-    author: '',
+    authorName: '',
     isbn: 0,
     price: 0.0,
     id:0,
@@ -32,6 +27,7 @@ export function AllBooks(){
    //metodo para alternar estados do modal
    function openCloseModalEdit(){
      setModalEdit(!modalEdit);
+     requestGetAuthors()
    }
 
    //estado para controlar o modal
@@ -42,14 +38,15 @@ export function AllBooks(){
      setModalDelete(!modalDelete);
    }
 
-   const [bookSelected,setBookSelected]= useState({
-    name: '',
-    author: '',
-    isbn: 0,
-    price: 0.0,
-    id:0,
-    image:''
-});
+  const [bookSelected,setBookSelected]= useState({
+      name: '',
+      authorName: '',
+      isbn: 0,
+      price: 0.0,
+      id:0,
+      image:'',
+      authorId:0
+    });
 
 function selectBook (book:any, option:string){
     setBookSelected(book);
@@ -57,64 +54,65 @@ function selectBook (book:any, option:string){
 };
 
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        setBookSelected({
-        ...bookSelected,[name]:value
-        });
-        console.log(bookSelected);
-    }
+const handleChange = (e: any) => {
+    const {name, value} = e.target;
+    setBookSelected({
+    ...bookSelected,[name]:value
+    });
+}
 
-    const [updateData, setUpdatedata]= useState(true);
+const [updateData, setUpdatedata]= useState(true);
 
-    useEffect(()=>{
-      if(updateData)
-      {
-        requestGet();
-        setUpdatedata(false);
-      } 
-    }, [updateData])
+useEffect(()=>{
+  if(updateData)
+  {
+    requestGet();
+    setUpdatedata(false);
+  } 
+}, [updateData])
 
-    const [atualPage,setAtualPage]=useState(1);
-    const [pageCount, setPageCount] = useState(0);
-    const [getBooks, setGetBooks] = useState({
-        currentPage: 1,
-        pageSize: 6,
-        sortingParameter: "name-asc",
-        searchParameter: ""
-    }
-     );
+const [atualPage,setAtualPage]=useState(1);
+const [pageCount, setPageCount] = useState(0);
+const [getBooks, setGetBooks] = useState({
+    currentPage: 1,
+    pageSize: 6,
+    sortingParameter: "name-asc",
+    searchParameter: ""
+  });
 
-    const requestGet = async() =>{
-      //console.log(getBooks)
-      api.post('api/Books/getBooks',getBooks).then(response => {
-        setAllBooks(response.data.items);
-        setPageCount(response.data.totalPages);
-        
-      }).catch(error =>{
-        Toast.Show("error",error)
-        console.log(error);
-      })
-  };
+const requestGet = async() =>{
+      
+  api.post('api/Books/getBooks',getBooks)
+  .then(response => {
+      setAllBooks(response.data.items);
+      setPageCount(response.data.totalPages);     
+  })
+  .catch(error =>{
+      Toast.Show("error",error)
+    });    
+};
 
-  const requestUpdate = async()=>{
-    console.log(bookSelected)
-   if(bookSelected.name =="" || bookSelected.author=="" || bookSelected.isbn==0  ){
+ 
+const requestUpdate = async()=>{
+    
+   if(bookSelected.name =="" || bookSelected.authorName=="" || bookSelected.isbn==0  ){
     Toast.Show("error","Todos os campos têm que estar preenchidos para editar o livro")
    }
    else if(bookSelected.price == 0){
     Toast.Show("error","Insira um valor superior a 0")
    }
    else{
+    
+    
     api.post( "api/Books/update", bookSelected)
     .then(response => {
       var resp = response.data;
       var auxiliarData = allBooks;
 
-      auxiliarData.map((book: {id:number; name:string;author:string;price:number; isbn:number; image:string}) => {
+      auxiliarData.map((book: {id:number; name:string;authorName:string;price:number; isbn:number; image:string}) => {
         if(book.id === bookSelected.id){
           book.name = resp.name;
-          book.author = resp.author;
+          book.authorName = resp.authorName;
           book.price = resp.price;
           book.isbn = resp.isbn;
           book.image = resp.image;
@@ -130,12 +128,11 @@ function selectBook (book:any, option:string){
       
 
     }).catch(error =>{
-      console.log(error);
+      Toast.Show("error",error)
     })
    }
-
    
-  }
+}
 
   const requestDelete = async()=>{
 
@@ -144,17 +141,16 @@ function selectBook (book:any, option:string){
       setAllBooks(allBooks.filter((book:any) => book.id !== response.data));
       setUpdatedata(true);
       openCloseModalDelete();
+      Toast.Show("success",response.data.message)
 
     }).catch(error =>{
-      console.log(error);
+      Toast.Show("error",error)
     })
   }
 
   function orderBy(e:any){
       const option=e;
-      
-      console.log(atualPage);
-
+     
       setGetBooks({
         ...getBooks, sortingParameter : option
       })
@@ -190,8 +186,6 @@ function selectBook (book:any, option:string){
      requestGet();
      setForcePage(0); //dá o highligtht para a pagina 1
      
-     //setUpdatedata(true);
-     console.log(getBooks)
   };
 
   //FILTRO
@@ -211,78 +205,36 @@ function selectBook (book:any, option:string){
 
   }
 
+//Lista Autores:
 
-  //teste adicionar:
-
-  //estado para controlar o modal
-  const [modalCreate, setModalCreate]=useState(false);
-
-  //metodo para alternar estados do modal
-  function openCloseModalCreate(){
-    setModalCreate(!modalCreate);
-    setNewBook({
-      ...newBook, name:'',
-      author:'',
-      isbn:0,
-      price:0,
-      image:''
-    });
-    
-  }
-  const [newBook,setNewBook]= useState({
-    name: '',
-    author: '',
-    isbn: 0,
-    price: 0.0,
-    image: ''
-});
-const handleChangeCreate = (e: any) => {
-  const {name, value} = e.target;
-  setNewBook({
-    ...newBook,[name]:value
-  });
-  console.log(newBook);
+const [getAuthors, setGetAuthors] = useState({
+  currentPage: 1,
+  pageSize: 1000
 }
-  const requestCreate = async() => {
-  console.log(newBook)
-    if(newBook.author == "" || newBook.author=="" || newBook.isbn==0 ){
-      Toast.Show("error","Prencha todos os campos para inserir um livro")
+);
 
-    }else if(newBook.price == 0){
-      Toast.Show("error","Insira um valor superior a 0")
-     }
+const [allAuthors, setAllAuthors]= useState([{
+  name: '',
+  id:0
+}]);
+
+const requestGetAuthors = async() =>{
+  
+  api.post('api/Authors/getAll',getAuthors).then(response => {
+    setAllAuthors(response.data.items);
+    setGetAuthors({
+      ...getAuthors, pageSize : response.data.totalRecords,
+    })
     
-    else{
-      await api.post('api/Books/create', newBook).then(response => {
-       
-        
-        if(response.data.success == false){
-        
-            Toast.Show("error",response.data.message)
-        }else{
-          Toast.Show("success","Livro inserido com sucesso")
-          openCloseModalCreate()
-          //toggle()
-          setUpdatedata(true)
-        }
-        
-    }).catch(error =>{
-        Toast.Show("error",error)
-        console.log(error);
-      });
-    }
     
- }
-
- const [isOpen, setIsOpen] = useState(false);
-
-  const toggle = () => setIsOpen(!isOpen);
-
-console.log(allBooks)
+  }).catch(error =>{
+    Toast.Show("error",error)
+    console.log(error);
+  })
+};
 
   return (
     <div className='container mt-4'>
-      
       <div className='container row'>
         <div className='col-8'>
           <form className=" mb-3"  onSubmit={requestGetBy}>
@@ -317,14 +269,14 @@ console.log(allBooks)
          </div>
        ):(
          <ul id='book-ul'>
-             {allBooks.map((book: {id:number,isbn: number;name:string; author:string; price: any; image:string}) =>(
+             {allBooks.map((book: {id:number,isbn: number;name:string; authorName:string; price: any; image:string}) =>(
              <li id='book-li' key={book.id}>
               
                  <BookCard 
                  delete={()=>selectBook(book,'delete')}
                    edit={()=>selectBook(book,'edit')}
                    name={book.name} 
-                   author={book.author} 
+                   author={book.authorName} 
                    price={parseFloat(book.price).toFixed(2).toString().replace(".",",")}
                    isbn={book.isbn}
                    id={book.id}
@@ -356,85 +308,57 @@ console.log(allBooks)
         breakClassName={'page-item'}
         breakLinkClassName={'page-link'}
         activeClassName={'active'}
-  />
+      />
       <Modal isOpen={modalEdit}>
-                <ModalHeader>Editar Livro</ModalHeader>
-                <ModalBody>
-                    <div className='form-group'>
-                      <input type="number" hidden name='id' value={bookSelected && bookSelected.id}/>
-                    <label>Isbn:</label>
-                    <input type="number" className='form-control' name='isbn' required onChange={handleChange} value={bookSelected && bookSelected.isbn} />
-                    <br/>
-                    <label>Nome:</label>
-                    <br/>
-                    <input type="text" className='form-control' name='name'required onChange={handleChange} value={bookSelected && bookSelected.name} />
-                    <label>Autor:</label>
-                    <br/>
-                    <input type="text" className='form-control'  name='author' required onChange={handleChange}  value={bookSelected && bookSelected.author}/>
-                    <label>Preço:</label>
-                    <br/>
-                    <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} />
-                    <label>Imagem:</label>
-                    <br/>
-                    <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={bookSelected && bookSelected.image}/>
-
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestUpdate()}>Editar</button> {"  "}
-                    <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalEdit()}>Cancelar</button>    
-                </ModalFooter>
+        <ModalHeader>Editar Livro</ModalHeader>
+                
+        <ModalBody>
+            <div className='form-group'>
+              <input type="number" hidden name='id' value={bookSelected && bookSelected.id}/>
+            <label>Isbn:</label>
+            <input type="number" className='form-control' name='isbn' required onChange={handleChange} value={bookSelected && bookSelected.isbn} />
+            <br/>
+            <label>Nome:</label>
+            <input type="text" className='form-control' name='name'required onChange={handleChange} value={bookSelected && bookSelected.name} /><br/>
+            <label>Autor:</label> <br />
+            <select className='form-control' name="authorId" id="authorId" onChange={handleChange}>
+                {allAuthors.map((author: {name:string; id:number;}) => (
+                  {...bookSelected.authorName == author.name?(
+                    <option value={author.id} selected >{author.name}</option>
+                  ):(
+                    <option value={author.id}>{author.name}</option>
+                  )}
+                  
+                ))}
+            </select><br/>
+            <label>Preço:</label>
+            <br/>
+            <input type="number" className='form-control'  name='price' required onChange={handleChange} value={bookSelected && bookSelected.price} /><br/>
+            <label>Imagem:</label>
+            <br/>
+            <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={bookSelected && bookSelected.image}/>
+            </div>
+        </ModalBody>
+        <ModalFooter>
+            <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestUpdate()}>Editar</button> {"  "}
+            <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalEdit()}>Cancelar</button>    
+        </ModalFooter>
       </Modal>
 
-            <Modal isOpen={modalDelete}>
-              <ModalBody>
-                Esta ação vai eliminar o livro: <br />
-                Titulo: {bookSelected && bookSelected.name} <br />
-                Autor: {bookSelected && bookSelected.author} <br />
-                ISBN: {bookSelected && bookSelected.isbn} <br />
-                <b>Deseja continuar?</b>
-              </ModalBody>
-              <ModalFooter>
-                <button className='btn btn-danger' onClick={()=>requestDelete()}>Eliminar</button>
-                <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
-              </ModalFooter>
-            </Modal>
-
-            <Modal isOpen={modalCreate}>
-                <ModalHeader><BsBook size={25}/> Novo Livro</ModalHeader>
-                <ModalBody>
-                    <div className='form-group'>
-                      
-                    <label>Isbn:</label>
-                    <input type="number" className='form-control' name='isbn' required onChange={handleChangeCreate} />
-                    <br/>
-                    <label>Nome:</label>
-                    <br/>
-                    <input type="text" className='form-control' name='name' required onChange={handleChangeCreate}  />
-                    <label>Autor:</label>
-                    <br/>
-                    <input type="text" className='form-control'  name='author' required onChange={handleChangeCreate}  />
-                    <label>Preço:</label>
-                    <br/>
-                    <input type="number" className='form-control'  name='price' required onChange={handleChangeCreate}  />
-                    <br />
-                    <React.StrictMode>
-                      <button className='btn' onClick={toggle}><BiImageAdd size={25}/> Associar Imagem</button>
-                      <Collapse isOpen={isOpen} >
-                      <label>Associar o link da imagem</label>
-                        <input type="url" pattern="https://.*"  className='form-control'  name='image'  onChange={handleChangeCreate} />
-                        <span className="validity"></span>
-                      </Collapse>
-                    </React.StrictMode>
-
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestCreate()}>Adicionar</button> {"  "}
-                    <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalCreate()}>Cancelar</button>    
-                </ModalFooter>
+      <Modal isOpen={modalDelete}>
+        <ModalBody>
+          Esta ação vai eliminar o livro: <br />
+          Titulo: {bookSelected && bookSelected.name} <br />
+          Autor: {bookSelected && bookSelected.authorName} <br />
+          ISBN: {bookSelected && bookSelected.isbn} <br />
+          <b>Deseja continuar?</b>
+        </ModalBody>
+        <ModalFooter>
+          <button className='btn btn-danger' onClick={()=>requestDelete()}>Eliminar</button>
+          <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
+        </ModalFooter>
       </Modal>
-      
+
     </div>
   );
 }
