@@ -11,8 +11,7 @@ namespace GestaoLivrosApi.Models.Authors
 
         public string Country { get; set; } = null!;
 
-        //public ICollection<Book> Books { get; set; }
-
+        public string[] Books { get; set; }
         public bool isDeleted { get; set; } = false;
 
         public string? Image { get; set; }
@@ -22,7 +21,7 @@ namespace GestaoLivrosApi.Models.Authors
             Id = author.Id;
             Name = author.Name;
             Country = author.Country;
-            //Books = author.Books;
+            Books = author.Books.Select(b => b.Name).ToArray();
             isDeleted = author.isDeleted;
             Image = author.Image;
 		}

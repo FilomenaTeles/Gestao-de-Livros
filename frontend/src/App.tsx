@@ -1,22 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import {useState } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import {Main} from './Main';
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  NavbarText,
-} from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 
 
@@ -47,14 +33,6 @@ function App() {
           </div>
         </div>
       </nav>
-
-     
- {/*  <Navbar className="my-2" color="secondary" dark>
-    <NavbarBrand href="/">Inicio</NavbarBrand>
-    <NavbarBrand href="/books">Livros</NavbarBrand>
-    <NavbarBrand href="/authors">Autores</NavbarBrand>
-  </Navbar> */}
-  
 
       <Main/>
   
