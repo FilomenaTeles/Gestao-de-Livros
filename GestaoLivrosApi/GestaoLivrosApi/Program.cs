@@ -1,9 +1,8 @@
-﻿using GestaoLivrosApi.BLL.Services;
-using GestaoLivrosApi.DAL.Repositories;
-using GestaoLivrosApi.Data;
-using GestaoLivrosApi.Interfaces.Repositories;
-using GestaoLivrosApi.Interfaces.Services;
-using GestaoLivrosApi.Services;
+﻿using GestaoLivros.BLL.Services;
+using GestaoLivros.DAL.Repositories;
+using GestaoLivros.Data;
+using GestaoLivros.Infrastructure.Interfaces.Repositories;
+using GestaoLivros.Infrastructure.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
