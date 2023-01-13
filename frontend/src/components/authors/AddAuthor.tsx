@@ -41,7 +41,6 @@ export function AddAuthor(){
               }else{
                 Toast.Show("success",response.data.message)
                 navigate(-1);
-                //redirect('/books',)
               }
               
             })

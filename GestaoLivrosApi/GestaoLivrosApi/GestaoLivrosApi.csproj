@@ -34,31 +34,31 @@
     <None Remove="Helpers\" />
     <None Remove="Ardalis.SmartEnum" />
     <None Remove="Ardalis.SmartEnum.SystemTextJson" />
-    <None Remove="DAL\" />
-    <None Remove="DAL\Repositories\" />
     <None Remove="Interfaces\" />
     <None Remove="Interfaces\Repositories\" />
     <None Remove="Interfaces\Services\" />
     <None Remove="Models\Books\" />
     <None Remove="BLL\" />
     <None Remove="BLL\Services\" />
-    <None Remove="DAL\Migrations\" />
     <None Remove="FluentValidation" />
     <None Remove="FluentValidation.AspNetCore" />
+    <None Remove="DAL\" />
+    <None Remove="DAL\Migrations\" />
+    <None Remove="DAL\Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="Data\" />
     <Folder Include="Helpers\" />
-    <Folder Include="DAL\" />
-    <Folder Include="DAL\Repositories\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Interfaces\Repositories\" />
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Models\Books\" />
     <Folder Include="BLL\" />
     <Folder Include="BLL\Services\" />
+    <Folder Include="DAL\" />
     <Folder Include="DAL\Migrations\" />
+    <Folder Include="DAL\Repositories\" />
   </ItemGroup>
 </Project>

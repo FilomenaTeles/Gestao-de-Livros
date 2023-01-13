@@ -40,7 +40,9 @@ namespace GestaoLivrosApi.DAL.Repositories
                 query = search;
             } 
 
-           
+            response.TotalRecords = query.Count();
+
+            var numberOfItemsToSkip = pageSize * (currentPage - 1);
 
             if (orderBy != null)
             {
@@ -74,10 +76,6 @@ namespace GestaoLivrosApi.DAL.Repositories
                 query = query.OrderBy(b => b.Name);
                 
             }
-
-            response.TotalRecords = query.Count();
-
-            var numberOfItemsToSkip = pageSize * (currentPage - 1);
 
             query = query.Skip(numberOfItemsToSkip);
             query = query.Take(pageSize);
