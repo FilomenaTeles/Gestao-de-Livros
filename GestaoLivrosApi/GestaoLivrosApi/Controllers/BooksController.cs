@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GestaoLivros.Infrastructure.Interfaces.Services;
-using GestaoLivrosApi.Models;
+using GestaoLivros.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using GestaoLivros.Infrastructure.Helpers;
-using GestaoLivrosApi.Models.Books;
+using GestaoLivros.Infrastructure.Models.Books;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

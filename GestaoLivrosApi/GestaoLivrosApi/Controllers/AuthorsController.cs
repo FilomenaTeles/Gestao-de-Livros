@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using GestaoLivros.Infrastructure.Helpers;
 using GestaoLivros.Infrastructure.Interfaces.Services;
-using GestaoLivrosApi.Models;
-using GestaoLivrosApi.Models.Authors;
+using GestaoLivros.Infrastructure.Models;
+using GestaoLivros.Infrastructure.Models.Authors;
 using GestaoLivros.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
