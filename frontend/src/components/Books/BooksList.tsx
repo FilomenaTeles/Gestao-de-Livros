@@ -269,7 +269,7 @@ const requestGetAuthors = async() =>{
          </div>
        ):(
          <ul id='book-ul'>
-             {allBooks.map((book: {id:number,isbn: number;name:string; authorName:string; price: any; image:string}) =>(
+             {allBooks.map((book: {id:number,isbn: number;name:string; authorName:string; price: number; image:string}) =>(
              <li id='book-li' key={book.id}>
               
                  <BookCard 
@@ -277,7 +277,7 @@ const requestGetAuthors = async() =>{
                    edit={()=>selectBook(book,'edit')}
                    name={book.name} 
                    author={book.authorName} 
-                   price={parseFloat(book.price).toFixed(2).toString().replace(".",",")}
+                   price={(book.price).toFixed(2).toString().replace(".",",")}
                    isbn={book.isbn}
                    id={book.id}
                    img={book.image}
