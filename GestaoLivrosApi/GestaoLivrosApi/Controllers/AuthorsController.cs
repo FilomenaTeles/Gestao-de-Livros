@@ -15,7 +15,7 @@ namespace GestaoLivrosApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorsController : Controller
+    public class AuthorsController : ControllerBase
     {
         private IAuthorService _authorService;
 

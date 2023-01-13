@@ -16,7 +16,7 @@ namespace GestaoLivrosApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BooksController : Controller
+    public class BooksController : ControllerBase
     {
         private IBookService _bookService;
 
