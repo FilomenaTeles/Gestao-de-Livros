@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GestaoLivrosApi.Helpers;
-using GestaoLivrosApi.Interfaces.Services;
+using GestaoLivros.Infrastructure.Helpers;
+using GestaoLivros.Infrastructure.Interfaces.Services;
 using GestaoLivrosApi.Models;
 using GestaoLivrosApi.Models.Authors;
-using GestaoLivrosApi.Services;
+using GestaoLivros.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -49,7 +49,7 @@ namespace GestaoLivrosApi.Controllers
         {
             return await _authorService.Edit(editAuthor);
         }
-
+/*
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -70,7 +70,7 @@ namespace GestaoLivrosApi.Controllers
             {
                 return BadRequest("Request inválido");
             }
-        }
+        }*/
 
     }
 }

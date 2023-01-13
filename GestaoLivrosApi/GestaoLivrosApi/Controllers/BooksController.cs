@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GestaoLivrosApi.Interfaces.Services;
+using GestaoLivros.Infrastructure.Interfaces.Services;
 using GestaoLivrosApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using GestaoLivrosApi.Helpers;
+using GestaoLivros.Infrastructure.Helpers;
 using GestaoLivrosApi.Models.Books;
 
 
@@ -50,7 +50,7 @@ namespace GestaoLivrosApi.Controllers
         {
             return await _bookService.Update(editBook);
         }
-
+        /*
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -71,7 +71,7 @@ namespace GestaoLivrosApi.Controllers
             {
                 return BadRequest("Request inválido");
             }
-        }
+        }*/
 
     }
 } 
