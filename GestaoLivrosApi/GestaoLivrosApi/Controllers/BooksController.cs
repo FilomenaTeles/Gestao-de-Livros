@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GestaoLivrosApi.Interfaces.Services;
-using GestaoLivrosApi.Models;
+using GestaoLivros.Infrastructure.Interfaces.Services;
+using GestaoLivros.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using GestaoLivrosApi.Helpers;
-using GestaoLivrosApi.Models.Books;
+using GestaoLivros.Infrastructure.Helpers;
+using GestaoLivros.Infrastructure.Models.Books;
+
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,7 +17,7 @@ namespace GestaoLivrosApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BooksController : Controller
+    public class BooksController : ControllerBase
     {
         private IBookService _bookService;
 
@@ -50,7 +51,7 @@ namespace GestaoLivrosApi.Controllers
         {
             return await _bookService.Update(editBook);
         }
-
+        /*
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -71,6 +72,12 @@ namespace GestaoLivrosApi.Controllers
             {
                 return BadRequest("Request inválido");
             }
+        }*/
+
+        [HttpPost("delete")]
+        public async Task<MessagingHelper> Delete(DeleteBookDTO deleteBook)
+        {
+            return await _bookService.Delete(deleteBook);
         }
 
     }
