@@ -10,6 +10,7 @@ using GestaoLivros.Infrastructure.Helpers;
 using GestaoLivros.Infrastructure.Models.Books;
 
 
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GestaoLivrosApi.Controllers
@@ -72,6 +73,12 @@ namespace GestaoLivrosApi.Controllers
                 return BadRequest("Request inválido");
             }
         }*/
+
+        [HttpPost("delete")]
+        public async Task<MessagingHelper> Delete(DeleteBookDTO deleteBook)
+        {
+            return await _bookService.Delete(deleteBook);
+        }
 
     }
 } 

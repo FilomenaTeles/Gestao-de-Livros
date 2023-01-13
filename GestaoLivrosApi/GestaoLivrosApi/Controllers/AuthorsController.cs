@@ -8,6 +8,7 @@ using GestaoLivros.Infrastructure.Models;
 using GestaoLivros.Infrastructure.Models.Authors;
 using GestaoLivros.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
+using GestaoLivros.Infrastructure.Models.Books;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -49,29 +50,12 @@ namespace GestaoLivrosApi.Controllers
         {
             return await _authorService.Edit(editAuthor);
         }
-/*
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            try
-            {
-                var author = await _authorService.GetAuthorById(id);
-                if (author != null)
-                {
-                    await _authorService.Delete(author);
-                    return Ok($"Autor de id={id} eliminado com sucesso");
-                }
-                else
-                {
-                    return NotFound($"Autor de id={id} não encontrado");
-                }
-            }
-            catch
-            {
-                return BadRequest("Request inválido");
-            }
-        }*/
 
+        [HttpPost("delete")]
+        public async Task<MessagingHelper> Delete(DeleteAuthorDTO deleteAuthor)
+        {
+            return await _authorService.Delete(deleteAuthor);
+        }
     }
 }
 
