@@ -10,6 +10,7 @@ import Toast from "../../helpers/Toast";
 import 'react-toastify/dist/ReactToastify.css';
 import { BookService } from '../../services/BookService';
 import { BookListDTO } from '../../models/Books/BookListDTO';
+import { EditBookDTOSchema } from '../../models/Books/EditBookDTO';
 
 
 export function AllBooks(){
@@ -112,48 +113,27 @@ const fetchData = async (currentPage:number, pageSize:number, sortBy:string |nul
  
 const requestUpdate = async()=>{
     
-   if(bookSelected.name =="" || bookSelected.authorName=="" || bookSelected.isbn==0  ){
-    Toast.Show("error","Todos os campos têm que estar preenchidos para editar o livro")
-   }
-   else if(bookSelected.price == 0){
-    Toast.Show("error","Insira um valor superior a 0")
-   }
-   else{
-    
-    
-    api.post( "api/Books/update", bookSelected)
-    .then(response => {
-      var resp = response.data;
-      var auxiliarData = data;
-
-      auxiliarData.map((book: BookListDTO) => {
-        if(book.id === bookSelected.id){
-          book.name = resp.name;
-          book.authorName = resp.authorName;
-          book.price = resp.price;
-          book.isbn = resp.isbn;
-          book.image = resp.image;
-        }
-      });
-      setUpdatedata(true);
-      if(response.data.success){
-        Toast.Show("success","Livro editado com sucesso")
-        openCloseModalEdit();
-      }else{
-        Toast.Show("error",response.data.message)
-      }
-      
-
-    }).catch(error =>{
-      Toast.Show("error",error)
-    })
-   }
+  var responseValidate = EditBookDTOSchema.validate(bookSelected,{
+    allowUnknown: true,
+    });
+  if(responseValidate.error != null){
+    var message = responseValidate.error!.message;
+    console.log(message)
+    Toast.Show("error",message);
+    return
+  }
    
+    var response = await service.Update(bookSelected)
+    if(response.success){
+      setUpdatedata(true);
+      Toast.Show("success","Livro editado com sucesso")
+      openCloseModalEdit();
+    }else{
+      Toast.Show("error",response.message)
+    }
 }
 
   const requestDelete = async()=>{
-
-
 
     api.post("api/Books/delete",bookSelected.id)
     .then(response => {
@@ -343,7 +323,7 @@ const requestGetAuthors = async() =>{
             <label>Autor:</label> <br />
             <select className='form-control' name="authorId" id="authorId" onChange={handleChange}>
                 {allAuthors.map((author: {name:string; id:number;}) => (
-                  {...bookSelected.authorName == author.name?(
+                  {...bookSelected.authorId == author.id?(
                     <option value={author.id} selected >{author.name}</option>
                   ):(
                     <option value={author.id}>{author.name}</option>
