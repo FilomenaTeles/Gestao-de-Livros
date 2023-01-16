@@ -2,7 +2,7 @@ import {useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import api from "../../services/api";
 import { AuthorCard } from "../global/Card";
-import Toast from "../global/Toast";
+import Toast from "../../helpers/Toast";
 import NotFound from '../../assets/nodata.png';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
@@ -166,7 +166,7 @@ export function AuthorList(){
     }
 
     const requestDelete = async()=>{
-        api.delete("api/Authors/"+authorSelected.id)
+        api.post("api/Authors/delete",authorSelected.id)
         .then(response => {
             setAllAuthors(allAuthors.filter((author:any) => author.id !== response.data));
             setUpdatedata(true);

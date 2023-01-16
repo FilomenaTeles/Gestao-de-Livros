@@ -3,7 +3,7 @@ import "./styles.css"
 import {BsBook} from "react-icons/bs";
 import { Link, useNavigate} from "react-router-dom";
 import {useEffect, useState } from "react";
-import Toast from "../global/Toast";
+import Toast from "../../helpers/Toast";
 import 'react-toastify/dist/ReactToastify.css';
 import React from "react";
 import { Collapse } from "reactstrap";

@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Collapse } from "reactstrap";
 import api from "../../services/api";
 import "../books/styles.css"
-import Toast from "../global/Toast";
+import Toast from "../../helpers/Toast";
 
 export function AddAuthor(){
 

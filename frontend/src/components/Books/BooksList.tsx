@@ -6,7 +6,7 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPaginate from 'react-paginate';
 import NotFound from '../../assets/nodata.png';
-import Toast from "../global/Toast";
+import Toast from "../../helpers/Toast";
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -136,7 +136,9 @@ const requestUpdate = async()=>{
 
   const requestDelete = async()=>{
 
-    api.delete("api/Books/"+bookSelected.id)
+
+
+    api.post("api/Books/delete",bookSelected.id)
     .then(response => {
       setAllBooks(allBooks.filter((book:any) => book.id !== response.data));
       setUpdatedata(true);
