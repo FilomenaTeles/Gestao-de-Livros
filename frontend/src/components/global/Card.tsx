@@ -3,7 +3,7 @@ import "./card.css"
 import {BiEdit} from "react-icons/bi";
 import {RiDeleteBinLine} from "react-icons/ri";
 
-export class BookCard extends React.Component<{edit:any,delete:any,name:string; author: string; price:string; isbn:number; id:number; img:string}>{
+export class BookCard extends React.Component<{edit:any,delete:any,name:string; author: string; price:string; isbn:number; id:number; img:string|null}>{
  
     render() {
         return(

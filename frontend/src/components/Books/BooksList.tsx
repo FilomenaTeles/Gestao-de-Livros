@@ -8,18 +8,23 @@ import ReactPaginate from 'react-paginate';
 import NotFound from '../../assets/nodata.png';
 import Toast from "../../helpers/Toast";
 import 'react-toastify/dist/ReactToastify.css';
+import { BookService } from '../../services/BookService';
+import { BookListDTO } from '../../models/Books/BookListDTO';
 
 
 export function AllBooks(){
+
+  const [data, setData] = useState<BookListDTO[]>([]);
+  const [pageCount, setPageCount] = useState(1);
+
+  const service = new BookService();
+
+  const [currentPage, setCurrentPage]= useState<number>();
+  const [pageSize, setPageSize]= useState(6);
+  const [currentSorting, setCurrentSorting] = useState<string>("");
+  const [inputSearch, setInputSearch] = useState<string>("");
+  
  
-  const [allBooks, setAllBooks]= useState([{
-    name: '',
-    authorName: '',
-    isbn: 0,
-    price: 0.0,
-    id:0,
-    image:''
-  }]);
   
    //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
@@ -66,31 +71,43 @@ const [updateData, setUpdatedata]= useState(true);
 useEffect(()=>{
   if(updateData)
   {
-    requestGet();
+    
+    fetchData(currentPage ?? 1, pageSize?? 6, currentSorting, inputSearch)
     setUpdatedata(false);
   } 
 }, [updateData])
 
 const [atualPage,setAtualPage]=useState(1);
-const [pageCount, setPageCount] = useState(0);
+
 const [getBooks, setGetBooks] = useState({
     currentPage: 1,
     pageSize: 6,
     sortingParameter: "name-asc",
     searchParameter: ""
-  });
+  }); 
 
-const requestGet = async() =>{
-      
-  api.post('api/Books/getBooks',getBooks)
-  .then(response => {
-      setAllBooks(response.data.items);
-      setPageCount(response.data.totalPages);     
-  })
-  .catch(error =>{
-      Toast.Show("error",error)
-    });    
-};
+
+
+const fetchData = async (currentPage:number, pageSize:number, sortBy:string |null, searchBy:string |null) =>{
+
+  var response = await service.GetAll(
+    currentPage,
+    pageSize,
+    sortBy,
+    searchBy
+  );
+
+  if(response.success != true){
+    setData([]);
+    setPageCount(0);
+    Toast.Show("error",response.message);
+    return;
+  }
+
+  setData(response.items);
+  setPageCount(response.totalPages);
+  setCurrentPage(currentPage);
+}
 
  
 const requestUpdate = async()=>{
@@ -107,9 +124,9 @@ const requestUpdate = async()=>{
     api.post( "api/Books/update", bookSelected)
     .then(response => {
       var resp = response.data;
-      var auxiliarData = allBooks;
+      var auxiliarData = data;
 
-      auxiliarData.map((book: {id:number; name:string;authorName:string;price:number; isbn:number; image:string}) => {
+      auxiliarData.map((book: BookListDTO) => {
         if(book.id === bookSelected.id){
           book.name = resp.name;
           book.authorName = resp.authorName;
@@ -140,7 +157,7 @@ const requestUpdate = async()=>{
 
     api.post("api/Books/delete",bookSelected.id)
     .then(response => {
-      setAllBooks(allBooks.filter((book:any) => book.id !== response.data));
+      setData(data.filter((book:any) => book.id !== response.data));
       setUpdatedata(true);
       openCloseModalDelete();
       Toast.Show("success",response.data.message)
@@ -156,6 +173,7 @@ const requestUpdate = async()=>{
       setGetBooks({
         ...getBooks, sortingParameter : option
       })
+      setCurrentSorting(option);
 
       setUpdatedata(true);
      
@@ -175,7 +193,7 @@ const requestUpdate = async()=>{
  
 
    //LIMPAR FILTRO  
-  const [inputSearch, setInputSearch] = useState('');
+ 
 
   const searchReset = () => {
     setInputSearch("");
@@ -185,7 +203,7 @@ const requestUpdate = async()=>{
       currentPage : 1
      
      })
-     requestGet();
+     setUpdatedata(true)
      setForcePage(0); //dá o highligtht para a pagina 1
      
   };
@@ -263,7 +281,7 @@ const requestGetAuthors = async() =>{
         </div>
       </div>
 
-       {allBooks.length === 0 ?
+       {data.length === 0 ?
        (
          <div className='container mt-3 ms-3 mb-0 text-center'>
              <h5 className='text-start'>Livro não encontrado</h5>
@@ -271,18 +289,18 @@ const requestGetAuthors = async() =>{
          </div>
        ):(
          <ul id='book-ul'>
-             {allBooks.map((book: {id:number,isbn: number;name:string; authorName:string; price: number; image:string}) =>(
+             {data.map((book: BookListDTO) =>(
              <li id='book-li' key={book.id}>
               
                  <BookCard 
-                 delete={()=>selectBook(book,'delete')}
-                   edit={()=>selectBook(book,'edit')}
-                   name={book.name} 
-                   author={book.authorName} 
-                   price={(book.price).toFixed(2).toString().replace(".",",")}
-                   isbn={book.isbn}
-                   id={book.id}
-                   img={book.image}
+                  delete={()=>selectBook(book,'delete')}
+                  edit={()=>selectBook(book,'edit')}
+                  name={book.name} 
+                  author={book.authorName} 
+                  price={(book.price).toFixed(2).toString().replace(".",",")}
+                  isbn={book.isbn}
+                  id={book.id}
+                  img={book.image}
                />
              </li>
              ))}
