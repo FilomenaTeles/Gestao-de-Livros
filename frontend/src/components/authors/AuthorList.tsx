@@ -8,6 +8,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { AuthorService } from "../../services/AuthorService";
 import { AuthorListDTO } from "../../models/Authors/AuthorListDTO";
 import { AuthorDTO } from "../../models/Authors/AuthorDTO";
+import { EditAuthorDTOSchema } from "../../models/Authors/EditAuthorDTO";
 
 export function AuthorList(){
     
@@ -50,9 +51,9 @@ export function AuthorList(){
   const requestGetBy = async(e:any) => {
         
         e.preventDefault();
-    
         const input = inputSearch.toLowerCase().trim();
         setInputSearch(input);
+        setCurrentPage(1);
         setForcePage(0);  //dá o highligtht para a pagina 1
         setUpdatedata(true);
     }
@@ -122,47 +123,36 @@ export function AuthorList(){
 
   const requestEdit = async()=>{
     
-        if(authorSelected.name =="" || authorSelected.country==""   ){
-            Toast.Show("error","Todos os campos têm que estar preenchidos para editar o livro")
+    var responseValidate = EditAuthorDTOSchema.validate(authorSelected,{
+        allowUnknown: true,
+        });
+      if(responseValidate.error != null){
+        var message = responseValidate.error!.message;
+        Toast.Show("error",message);
+        return
+      }
+        var response = await service.Edit(authorSelected)
+    
+        if(response.success){
+          setUpdatedata(true);
+          Toast.Show("success","Autor editado com sucesso")
+          openCloseModalEdit();
+    
+        }else{
+          Toast.Show("error",response.message)
         }
-        else{
-            api.post( "api/Authors/edit", authorSelected)
-            .then(response => {
-                var resp = response.data;
-            
-                data.map((author: AuthorDTO) => {
-                    if(author.id === authorSelected.id){
-                        author.name = resp.name;
-                        author.country = resp.country
-                        author.image = resp.image;
-                    }
-                });
-                setUpdatedata(true);
-                if(response.data.success){
-                    Toast.Show("success","Livro editado com sucesso")
-                    openCloseModalEdit();
-                }else{
-                    Toast.Show("error",response.data.message)
-                }
-            })
-            .catch(error =>{
-                Toast.Show("error",error)
-                console.log(error);
-            })
-        }
-    }
+}
 
-    const requestDelete = async()=>{
-        api.post("api/Authors/delete",authorSelected.id)
-        .then(response => {
-            setUpdatedata(true);
-            openCloseModalDelete();
-            Toast.Show("success",response.data.message)
-        })
-        .catch(error =>{
-            Toast.Show("error",error)
-        })
+const requestDelete = async()=>{
+    var response = await service.Delete(authorSelected)
+     if(response.success){
+        setUpdatedata(true);
+        Toast.Show("success","Autor eliminado com sucesso")
+        openCloseModalDelete();
+     }else{
+      Toast.Show("error",response.message)
     }
+}
 
     return(
         <div className="container mt-4">

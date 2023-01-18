@@ -162,6 +162,7 @@ const requestUpdate = async()=>{
   
     const input = inputSearch.toLowerCase().trim();
     setInputSearch(input);
+    setCurrentPage(1);
     setUpdatedata(true);
     setForcePage(0);  //dá o highligtht para a pagina 1
    
