@@ -63,7 +63,7 @@ const handleChange = (e: any) => {
 useEffect(()=>{
   if(updateData)
   {
-    fetchData(currentPage ?? 1, pageSize?? 6, currentSorting, inputSearch)
+    fetchData(currentPage ?? 1, pageSize?? 6, currentSorting, inputSearch);
     setUpdatedata(false);
   } 
 }, [updateData])

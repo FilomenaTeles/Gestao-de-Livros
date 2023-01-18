@@ -5,36 +5,27 @@ import { AuthorCard } from "../global/Card";
 import Toast from "../../helpers/Toast";
 import NotFound from '../../assets/nodata.png';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { AuthorService } from "../../services/AuthorService";
+import { AuthorListDTO } from "../../models/Authors/AuthorListDTO";
+import { AuthorDTO } from "../../models/Authors/AuthorDTO";
 
 export function AuthorList(){
-    //filtro
-    const [inputSearch, setInputSearch] = useState('');
-    //dá o highligtht na paginação
-    const [forcePage, setForcePage]=useState(0);
-    const [updateData, setUpdatedata]= useState(true);
-    const [atualPage,setAtualPage]=useState(1);
+    
+    const [data, setData] = useState<AuthorListDTO[]>([]);
     const [pageCount, setPageCount] = useState(0);
-    const [getAuthors, setGetAuthors] = useState({
-        currentPage: 1,
-        pageSize: 6,
-        sortingParameter: "",
-        searchParameter: ""
-      }
-      );
-    const [allAuthors, setAllAuthors]= useState([{
-        name: '',
-        country:'',
-        image:'',
-        id:0,
-        books:[]
-      }]);
-      
-    const [authorSelected,setAuthorSelected]= useState({
-        name: '',
-        country: '',
-        id:0,
-        image:''
-    });
+    const [updateData, setUpdatedata]= useState(true);
+    
+    const service = new AuthorService;
+
+    const [currentPage, setCurrentPage]= useState<number>();
+    const [pageSize, setPageSize]= useState(6);
+    const [currentSorting, setCurrentSorting] = useState<string>("");
+    const [inputSearch, setInputSearch] = useState(''); //filtro
+    const [forcePage, setForcePage]=useState(0);    //dá o highligtht na paginação
+    
+    const [authorSelected,setAuthorSelected]= useState<AuthorDTO>(new AuthorDTO());
+
+    
     //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
    const [modalDelete, setModalDelete]=useState(false);
@@ -43,7 +34,7 @@ export function AuthorList(){
     useEffect(()=>{
         if(updateData)
         {
-            requestGet();
+            fetchData(currentPage ?? 1, pageSize?? 6, currentSorting, inputSearch);
             setUpdatedata(false);
         } 
     }, [updateData])
@@ -57,17 +48,12 @@ export function AuthorList(){
 
     //FILTRO
   const requestGetBy = async(e:any) => {
-        setAtualPage(1);
+        
         e.preventDefault();
     
         const input = inputSearch.toLowerCase().trim();
-    
+        setInputSearch(input);
         setForcePage(0);  //dá o highligtht para a pagina 1
-        setGetAuthors({
-        ... getAuthors, searchParameter  : input,
-        currentPage : 1
-        })
-        
         setUpdatedata(true);
     }
 
@@ -75,13 +61,7 @@ export function AuthorList(){
   
   const searchReset = () => {
         setInputSearch("");
-        
-        setGetAuthors({
-        ... getAuthors, searchParameter  : "",
-        currentPage : 1
-        
-        })
-        requestGet();
+        fetchData(currentPage ?? 1, pageSize?? 6, currentSorting, inputSearch);
         setForcePage(0); //dá o highligtht para a pagina 1
      
     };
@@ -89,9 +69,7 @@ export function AuthorList(){
   //CLIQUE NA PAGINAÇÃO
   const handlePageClick = async (data:any)=>{
         let currentPag = data.selected +1
-        setGetAuthors({
-        ... getAuthors, currentPage : currentPag
-        })
+        setCurrentPage(currentPag);
         setForcePage(data.selected); //dá o highligtht na pagina selecionada
         setUpdatedata(true);
     }
@@ -113,24 +91,34 @@ export function AuthorList(){
 
     function orderBy(e:any){
         const option=e;
-        setGetAuthors({
-            ...getAuthors, sortingParameter : option
-        })
+        setCurrentSorting(option);
         setUpdatedata(true);
     }; 
   
   
   //PEDIDOS API
-  const requestGet = async() =>{
-    
-    api.post('api/Authors/getAll',getAuthors).then(response => {
-        setAllAuthors(response.data.items);
-        setPageCount(response.data.totalPages);
-    }).catch(error =>{
-      Toast.Show("error",error)
-      console.log(error);
-    })
-  };
+
+  const fetchData = async (currentPage:number, pageSize:number, sortBy:string |null, searchBy:string |null) =>{
+
+    var response = await service.GetAll(
+      currentPage,
+      pageSize,
+      sortBy,
+      searchBy
+    );
+  
+    if(response.success != true){
+      setData([]);
+      setPageCount(0);
+      Toast.Show("error",response.message);
+      return;
+    }
+  
+    setData(response.items);
+    setPageCount(response.totalPages);
+    setCurrentPage(currentPage);
+  }
+
 
   const requestEdit = async()=>{
     
@@ -141,9 +129,8 @@ export function AuthorList(){
             api.post( "api/Authors/edit", authorSelected)
             .then(response => {
                 var resp = response.data;
-                var auxiliarData = allAuthors;
             
-                auxiliarData.map((author: {id:number; name:string;country:string; image:string}) => {
+                data.map((author: AuthorDTO) => {
                     if(author.id === authorSelected.id){
                         author.name = resp.name;
                         author.country = resp.country
@@ -168,7 +155,6 @@ export function AuthorList(){
     const requestDelete = async()=>{
         api.post("api/Authors/delete",authorSelected.id)
         .then(response => {
-            setAllAuthors(allAuthors.filter((author:any) => author.id !== response.data));
             setUpdatedata(true);
             openCloseModalDelete();
             Toast.Show("success",response.data.message)
@@ -208,7 +194,7 @@ export function AuthorList(){
             </div>
 
             
-            {allAuthors.length === 0 ?
+            {data.length === 0 ?
             (
                 <div className='container mt-3 ms-3 mb-0 text-center'>
                     <h5 className='text-start'>Livro não encontrado</h5>
@@ -216,7 +202,7 @@ export function AuthorList(){
                 </div>
             ):(
                 <ul id='book-ul'>
-                    {allAuthors.map((author: {id:number,name:string; country:string; image:string; books:any}) =>(
+                    {data.map((author: AuthorDTO) =>(
                     <li id='book-li' key={author.id}>
                     
                         <AuthorCard 

@@ -3,6 +3,7 @@ import Joi from "joi";
 export class CreateAuthorDTO{
     name:string = "";
     country:string = "";
+    image:string = "";
     books:[] =[];
 }
 

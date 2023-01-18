@@ -4,6 +4,7 @@ export class EditAuthorDTO{
     id:number = 0;
     name:string = "";
     country:string = "";
+    image:string = "";
     books:[] = [];
 }
 
