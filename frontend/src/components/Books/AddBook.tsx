@@ -9,50 +9,44 @@ import React from "react";
 import { Collapse } from "reactstrap";
 import { BiImageAdd } from "react-icons/bi";
 import { AiOutlineUserAdd } from "react-icons/ai";
+import { CreateBookDTO, CreateBookDTOSchema } from "../../models/Books/CreateBookDTO";
+import { BookService } from "../../services/BookService";
 
 
 export function AddBook(){
 
-    const navigate = useNavigate();
-    const [newBook,setNewBook]= useState({
-        name: '',
-        isbn: 0,
-        price: 0.0,
-        authorId:0
+  const service = new BookService();
+
+  const navigate = useNavigate();
+  const [addBook, setAddBook]= useState<CreateBookDTO>(new CreateBookDTO);
+
+  const handleChange = (e: any) => {
+    const {name, value} = e.target;
+    setAddBook({
+      ...addBook,[name]:value
     });
-    const handleChange = (e: any) => {
-        const {name, value} = e.target;
-        setNewBook({
-          ...newBook,[name]:value
-        });
-      }
+  }
   
   const requestCreate = async() => {
-    console.log(newBook)
-      if(newBook.authorId == 0|| newBook.name=="" || newBook.isbn==0 ){
-        Toast.Show("error","Prencha todos os campos para inserir um livro")
-  
-      }else if(newBook.price == 0){
-        Toast.Show("error","Insira um valor superior a 0")
-       }
-      
-      else{
-        await api.post('api/Books/create', newBook).then(response => {
-         
-          
-          if(response.data.success == false){
-          
-              Toast.Show("error",response.data.message)
-          }else{
-            Toast.Show("success","Livro inserido com sucesso")
-            navigate(-1);
-          }
-          
-      }).catch(error =>{
-          Toast.Show("error",error)
-        });
-      } 
-   }
+    
+    var responseValidate = CreateBookDTOSchema.validate(addBook,{
+      allowUnknown: true,
+      })
+      if(responseValidate.error != null){
+        var message = responseValidate.error!.message;
+        Toast.Show("error",message);
+        return
+      }
+
+    var response = await service.Create(addBook);
+      if(response.success!=true){
+        Toast.Show("error",response.message);
+        return;
+      }
+
+    Toast.Show("success",response.message);
+    navigate(-1)
+  }
 
   const [isOpen, setIsOpen] = useState(false);
 

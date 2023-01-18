@@ -11,12 +11,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BookService } from '../../services/BookService';
 import { BookListDTO } from '../../models/Books/BookListDTO';
 import { EditBookDTOSchema } from '../../models/Books/EditBookDTO';
+import { BookDTO } from '../../models/Books/BookDTO';
 
 
 export function AllBooks(){
 
   const [data, setData] = useState<BookListDTO[]>([]);
   const [pageCount, setPageCount] = useState(1);
+  const [updateData, setUpdatedata]= useState(true);
 
   const service = new BookService();
 
@@ -24,8 +26,9 @@ export function AllBooks(){
   const [pageSize, setPageSize]= useState(6);
   const [currentSorting, setCurrentSorting] = useState<string>("");
   const [inputSearch, setInputSearch] = useState<string>("");
+  const [forcePage, setForcePage]=useState(0);   //dá o highligtht na paginação
   
- 
+  const [bookSelected,setBookSelected] = useState<BookDTO>(new BookDTO());
   
    //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
@@ -44,16 +47,6 @@ export function AllBooks(){
      setModalDelete(!modalDelete);
    }
 
-  const [bookSelected,setBookSelected]= useState({
-      name: '',
-      authorName: '',
-      isbn: 0,
-      price: 0.0,
-      id:0,
-      image:'',
-      authorId:0
-    });
-
 function selectBook (book:any, option:string){
     setBookSelected(book);
     (option=='edit') ? openCloseModalEdit(): openCloseModalDelete();
@@ -67,26 +60,15 @@ const handleChange = (e: any) => {
     });
 }
 
-const [updateData, setUpdatedata]= useState(true);
+
 
 useEffect(()=>{
   if(updateData)
   {
-    
     fetchData(currentPage ?? 1, pageSize?? 6, currentSorting, inputSearch)
     setUpdatedata(false);
   } 
 }, [updateData])
-
-const [atualPage,setAtualPage]=useState(1);
-
-const [getBooks, setGetBooks] = useState({
-    currentPage: 1,
-    pageSize: 6,
-    sortingParameter: "name-asc",
-    searchParameter: ""
-  }); 
-
 
 
 const fetchData = async (currentPage:number, pageSize:number, sortBy:string |null, searchBy:string |null) =>{
@@ -118,91 +100,73 @@ const requestUpdate = async()=>{
     });
   if(responseValidate.error != null){
     var message = responseValidate.error!.message;
-    console.log(message)
     Toast.Show("error",message);
     return
   }
-   
     var response = await service.Update(bookSelected)
+
     if(response.success){
       setUpdatedata(true);
       Toast.Show("success","Livro editado com sucesso")
       openCloseModalEdit();
+
     }else{
       Toast.Show("error",response.message)
     }
 }
 
   const requestDelete = async()=>{
+    var response = await service.Delete(bookSelected)
 
-    api.post("api/Books/delete",bookSelected.id)
-    .then(response => {
-      setData(data.filter((book:any) => book.id !== response.data));
+   if(response.success){
       setUpdatedata(true);
+      Toast.Show("success","Livro eliminado com sucesso")
       openCloseModalDelete();
-      Toast.Show("success",response.data.message)
 
-    }).catch(error =>{
-      Toast.Show("error",error)
-    })
+   }else{
+
+    Toast.Show("error",response.message)
+  }
   }
 
   function orderBy(e:any){
-      const option=e;
+    const option=e;
      
-      setGetBooks({
-        ...getBooks, sortingParameter : option
-      })
-      setCurrentSorting(option);
+    setCurrentSorting(option);
 
-      setUpdatedata(true);
+    setUpdatedata(true);
      
   }; 
-  //dá o highligtht na paginação
-  const [forcePage, setForcePage]=useState(0);
+ 
 
   const handlePageClick = async (data:any)=>{
   
-    let currentPag = data.selected +1
-    setGetBooks({
-      ... getBooks, currentPage : currentPag
-     })
-     setForcePage(data.selected); //dá o highligtht na pagina selecionada
+    let currentPag = data.selected +1;
+    setCurrentPage(currentPag);
+    setForcePage(data.selected); //dá o highligtht na pagina selecionada
     setUpdatedata(true);
   }
  
 
    //LIMPAR FILTRO  
- 
 
   const searchReset = () => {
     setInputSearch("");
-    
-    setGetBooks({
-      ... getBooks, searchParameter  : "",
-      currentPage : 1
-     
-     })
-     setUpdatedata(true)
-     setForcePage(0); //dá o highligtht para a pagina 1
+    fetchData(currentPage ?? 1, pageSize?? 6,currentSorting,inputSearch);
+    setForcePage(0); //dá o highligtht para a pagina 1
      
   };
 
   //FILTRO
   const requestGetBy = async(e:any) => {
-    setAtualPage(1);
+   
     e.preventDefault();
   
     const input = inputSearch.toLowerCase().trim();
-  
+    setInputSearch(input);
+    setUpdatedata(true);
     setForcePage(0);  //dá o highligtht para a pagina 1
-    setGetBooks({
-      ... getBooks, searchParameter  : input,
-      currentPage : 1
-     })
-     
-     setUpdatedata(true);
-
+   
   }
 
 //Lista Autores:
@@ -229,7 +193,6 @@ const requestGetAuthors = async() =>{
     
   }).catch(error =>{
     Toast.Show("error",error)
-    console.log(error);
   })
 };
 
@@ -269,7 +232,7 @@ const requestGetAuthors = async() =>{
          </div>
        ):(
          <ul id='book-ul'>
-             {data.map((book: BookListDTO) =>(
+             {data.map((book: BookDTO) =>(
              <li id='book-li' key={book.id}>
               
                  <BookCard 

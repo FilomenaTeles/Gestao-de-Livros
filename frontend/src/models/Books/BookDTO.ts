@@ -4,6 +4,8 @@ export class BookDTO{
         isbn: number = 0;
         name: string = "";
         authorId: number = 0;
-        price: string = "";
-        image: string | null = null;
+        authorName: string = "";
+        price: number = 0;
+        image: string = "";
+       
 }

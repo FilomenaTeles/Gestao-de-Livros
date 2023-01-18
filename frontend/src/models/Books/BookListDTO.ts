@@ -5,5 +5,5 @@ export interface BookListDTO{
     authorId: number;
     authorName: string;
     price: number;
-    image: string | null;
+    image: string ;
 }

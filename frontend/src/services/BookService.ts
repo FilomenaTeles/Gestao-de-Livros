@@ -2,6 +2,7 @@ import { MessagingHelper } from "../helpers/MessagingHelper";
 import { PaginatedList } from "../helpers/PaginatedList";
 import { BookDTO } from "../models/Books/BookDTO";
 import { BookListDTO } from "../models/Books/BookListDTO";
+import { CreateBookDTO } from "../models/Books/CreateBookDTO";
 import { EditBookDTO } from "../models/Books/EditBookDTO";
 import api from "./api";
 
@@ -52,4 +53,41 @@ export class BookService {
                 )
             }
         }
+
+    async Create(
+        book:CreateBookDTO
+        ): Promise<MessagingHelper<null>> {
+            try{
+                var response = await api.post(
+                    'api/Books/create',
+                    {...book}
+                );
+                return response.data;
+                
+            }catch(error){
+                return new MessagingHelper(
+                    false,
+                    "Erro ao ligar ao servidor para criar novo livro",
+                    null,
+                )
+            }
+        }
+
+    async Delete(
+        deleteBook: BookDTO
+    ): Promise<MessagingHelper<null>>{
+        try{
+            var response = await api.post(
+                "api/Books/delete",
+                deleteBook
+            );
+            return response.data;
+        }catch(error){
+            return new MessagingHelper(
+                false,
+                "Erro ao ligar ao servidor para eliminar livro: "+error,
+                null,
+            )
+        }
+    }
 }
