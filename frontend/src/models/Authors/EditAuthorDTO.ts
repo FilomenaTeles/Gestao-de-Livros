@@ -9,6 +9,6 @@ export class EditAuthorDTO{
 }
 
 export const EditAuthorDTOSchema = Joi.object({
-    name: Joi.string().min(0).messages({"string":"Nome do autor deve ser preenchido"}),
-    country: Joi.string().min(0).messages({"string":"País do autor deve ser preenchido"})
+    name: Joi.string().messages({"string.empty":"Nome do autor deve ser preenchido"}),
+    country: Joi.string().messages({"string.empty":"País do autor deve ser preenchido"})
 })
