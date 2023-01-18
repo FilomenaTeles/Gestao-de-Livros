@@ -1,4 +1,4 @@
-import api from "../../services/api";
+import api from "../../services/APIService";
 import "./styles.css"
 import {BsBook} from "react-icons/bs";
 import { Link, useNavigate} from "react-router-dom";

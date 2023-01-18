@@ -4,7 +4,7 @@ import { BookDTO } from "../models/Books/BookDTO";
 import { BookListDTO } from "../models/Books/BookListDTO";
 import { CreateBookDTO } from "../models/Books/CreateBookDTO";
 import { EditBookDTO } from "../models/Books/EditBookDTO";
-import api from "./api";
+import { APIService } from "./APIService";
 
 export class BookService {
     async GetAll(
@@ -14,8 +14,8 @@ export class BookService {
         searchParameter: string|null
     ): Promise<PaginatedList<BookListDTO>> {
         try{
-            var response = await api.post(
-                'api/Books/getBooks',
+            var response = await APIService.Axios().post(
+                `${APIService.GetURL()}/Books/getBooks`,
                 {
                     currentPage,
                     pageSize,
@@ -40,8 +40,8 @@ export class BookService {
         book: EditBookDTO
         ): Promise<MessagingHelper<BookDTO | null>> {
             try{
-                var response = await api.post(
-                    "api/Books/update",
+                var response = await APIService.Axios().post(
+                    `${APIService.GetURL()}/Books/update`,
                     {...book},
                 );
                 return response.data;
@@ -58,8 +58,8 @@ export class BookService {
         book:CreateBookDTO
         ): Promise<MessagingHelper<null>> {
             try{
-                var response = await api.post(
-                    'api/Books/create',
+                var response = await APIService.Axios().post(
+                    `${APIService.GetURL()}/Books/create`,
                     {...book}
                 );
                 return response.data;
@@ -77,8 +77,8 @@ export class BookService {
         deleteBook: BookDTO
     ): Promise<MessagingHelper<null>>{
         try{
-            var response = await api.post(
-                "api/Books/delete",
+            var response = await APIService.Axios().post(
+                `${APIService.GetURL()}/Books/delete`,
                 deleteBook
             );
             return response.data;

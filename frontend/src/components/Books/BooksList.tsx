@@ -1,5 +1,5 @@
 import {useEffect, useState } from 'react';
-import api from '../../services/api';
+import api from '../../services/APIService';
 import { BookCard } from '../global/Card';
 import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
@@ -59,8 +59,6 @@ const handleChange = (e: any) => {
     ...bookSelected,[name]:value
     });
 }
-
-
 
 useEffect(()=>{
   if(updateData)

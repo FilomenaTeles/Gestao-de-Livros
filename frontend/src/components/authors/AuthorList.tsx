@@ -1,6 +1,6 @@
 import {useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
-import api from "../../services/api";
+import api from "../../services/APIService";
 import { AuthorCard } from "../global/Card";
 import Toast from "../../helpers/Toast";
 import NotFound from '../../assets/nodata.png';
