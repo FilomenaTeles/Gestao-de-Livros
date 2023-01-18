@@ -21,7 +21,7 @@ export class BookCard extends React.Component<{edit:any,delete:any,name:string; 
                         <p className="card-text">
                             Autor: {this.props.author} <br />
                             ISBN: {this.props.isbn} <br />
-                            Price: {(this.props.price)}€
+                            Price: {this.props.price}€
                         </p>
                         <div className="card-btn">
                         <button id='btn-cancel' className='btn' onClick={this.props.edit}><BiEdit size={25}/></button>
