@@ -36,6 +36,24 @@ export class BookService {
         }
     }
 
+    async GetById(
+        bookId:number
+    ):Promise<MessagingHelper<CreateBookDTO | null>>{
+        try{
+            var response = await APIService.Axios().get(
+                `${APIService.GetURL()}/Books/${bookId}`,
+            );
+            return response.data;
+
+        }catch(error){
+            return new MessagingHelper<CreateBookDTO | null>(
+                false,
+                "Erro ao ligar ao servidor para encontrar livro",
+                null,
+            )
+        }
+    }
+
     async Update(
         book: EditBookDTO
         ): Promise<MessagingHelper<BookDTO | null>> {

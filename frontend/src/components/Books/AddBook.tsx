@@ -11,6 +11,7 @@ import { BiImageAdd } from "react-icons/bi";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { CreateBookDTO, CreateBookDTOSchema } from "../../models/Books/CreateBookDTO";
 import { BookService } from "../../services/BookService";
+import { AuthorsSelect } from "../global/AuthorsDropdown";
 
 
 export function AddBook(){
@@ -52,44 +53,6 @@ export function AddBook(){
 
   const toggle = () => setIsOpen(!isOpen);
 
-  //Lista Autores:
-
-const [getAuthors, setGetAuthors] = useState({
-  currentPage: 1,
-  pageSize: 1000
-}
-);
-
-const [allAuthors, setAllAuthors]= useState([{
-  name: '',
-  country:'',
-  image:'',
-  id:0
-}]);
-
-const requestGetAuthors = async() =>{
- 
-  api.post('api/Authors/getAll',getAuthors).then(response => {
-    setAllAuthors(response.data.items);
-    setGetAuthors({
-      ...getAuthors, pageSize : response.data.totalRecords,
-    })
-    
-  }).catch(error =>{
-    Toast.Show("error",error)
-  })
-};
-const [updateData, setUpdatedata]= useState(true);
-
-useEffect(()=>{
-  if(updateData)
-  {
-    requestGetAuthors();
-    setUpdatedata(false);
-  } 
-}, [updateData])
-
-
 
     return(
         <div className="add-container">
@@ -99,12 +62,10 @@ useEffect(()=>{
                 <div className="container col-6">
                     
                         <input className="form-control m-3" type="text" placeholder="Nome" name="name" required onChange={handleChange} />
-                        <select className="form-control m-3" name="authorId" id="authorId" onChange={handleChange}>
-                            <option disabled selected>Selecione um Autor</option>
-                          {allAuthors.map((author: {name:string; id:number;}) => (
-                              <option value={author.id} >{author.name}</option>  
-                          ))}
-                        </select>
+                        <AuthorsSelect 
+                        onChange={handleChange}
+                        />
+                        
                         <input className="form-control m-3"  type="number" placeholder="ISBN" name="isbn" required onChange={handleChange}/>
                         <input className="form-control m-3"  type="number" placeholder="Preço" name="price" min={0} required onChange={handleChange}/>
                         

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { AllBooks} from "../components/books/BooksList";
+import { AllBooks} from "../../components/books/BooksList";
 
 
 import {BiBookAdd} from "react-icons/bi";

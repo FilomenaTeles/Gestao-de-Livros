@@ -8,6 +8,7 @@ export class EditBookDTO{
     authorName: string ="";
     price: number = 0;
     image: string | null = null;
+    
 }
 
 export const EditBookDTOSchema = Joi.object({

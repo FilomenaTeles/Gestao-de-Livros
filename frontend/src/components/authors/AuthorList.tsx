@@ -1,7 +1,7 @@
 import {useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import api from "../../services/APIService";
-import { AuthorCard } from "../global/Card";
+import {Card } from "../global/Card";
 import Toast from "../../helpers/Toast";
 import NotFound from '../../assets/nodata.png';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
@@ -9,6 +9,8 @@ import { AuthorService } from "../../services/AuthorService";
 import { AuthorListDTO } from "../../models/Authors/AuthorListDTO";
 import { AuthorDTO } from "../../models/Authors/AuthorDTO";
 import { EditAuthorDTOSchema } from "../../models/Authors/EditAuthorDTO";
+import { OrderBy } from "../global/OrderBy";
+import { SeacrhBy } from "../global/Search";
 
 export function AuthorList(){
     
@@ -26,6 +28,7 @@ export function AuthorList(){
     
     const [authorSelected,setAuthorSelected]= useState<AuthorDTO>(new AuthorDTO());
 
+    const[totalRecords,setTotalRecords] = useState<number>(0);
     
     //estado para controlar o modal
    const [modalEdit, setModalEdit]=useState(false);
@@ -91,7 +94,7 @@ export function AuthorList(){
     }
 
     function orderBy(e:any){
-        const option=e;
+        const option=e.target.value;
         setCurrentSorting(option);
         setUpdatedata(true);
     }; 
@@ -118,6 +121,7 @@ export function AuthorList(){
     setData(response.items);
     setPageCount(response.totalPages);
     setCurrentPage(currentPage);
+    setTotalRecords(response.totalRecords);
   }
 
 
@@ -153,33 +157,24 @@ const requestDelete = async()=>{
       Toast.Show("error",response.message)
     }
 }
+const setSearch = (e:any)=>{
+    setInputSearch(e.target.value)
+  }
 
     return(
         <div className="container mt-4">
 
             <div className='container row'>
-                <div className='col-8'>
-                    <form className=" mb-3"  onSubmit={requestGetBy}>
-                        <input type="text" name='search' value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
-                        {inputSearch.length< 3 
-                        ? (
-                        <button className='btn ms-2' disabled type='submit' >Pesquisar</button>
-                        
-                        )
-                        :(<button className='btn ms-2' type='submit' >Pesquisar</button>)} 
-                        
-                        <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>
-                    </form>
-                </div>
-
-                <div className='container text-end col-4'>
-                    <select className='' name="orderBy" id="orderBy" onChange={(e)=>orderBy(e.target.value)}>
-                        <option value="name-asc">Nome (ASC)</option>
-                        <option value="country-asc">País (ASC)</option>
-                        <option value="name-desc">Nome (DESC)</option>
-                        <option value="country-desc">País (DESC)</option>
-                    </select>
-                </div>
+            <SeacrhBy
+                setSearch = {setSearch}
+                inputSearch = {inputSearch}
+                requestGetBy = {requestGetBy}
+                searchReset = {searchReset}
+            />
+            <OrderBy
+                onChange = {orderBy}
+            />
+               
 
             </div>
 
@@ -195,7 +190,7 @@ const requestDelete = async()=>{
                     {data.map((author: AuthorDTO) =>(
                     <li id='book-li' key={author.id}>
                     
-                        <AuthorCard 
+                        <Card 
                         delete={()=>selectAuthor(author,'delete')}
                         edit={()=>selectAuthor(author,'edit')}
                         name={author.name} 

@@ -1,6 +1,6 @@
 import {useEffect, useState } from 'react';
 import api from '../../services/APIService';
-import { BookCard } from '../global/Card';
+import {Card } from '../global/Card';
 import "./booklist.css"
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,6 +12,9 @@ import { BookService } from '../../services/BookService';
 import { BookListDTO } from '../../models/Books/BookListDTO';
 import { EditBookDTOSchema } from '../../models/Books/EditBookDTO';
 import { BookDTO } from '../../models/Books/BookDTO';
+import { useNavigate } from 'react-router-dom';
+import { SeacrhBy } from '../global/Search';
+import { OrderBy } from '../global/OrderBy';
 
 
 export function AllBooks(){
@@ -19,6 +22,7 @@ export function AllBooks(){
   const [data, setData] = useState<BookListDTO[]>([]);
   const [pageCount, setPageCount] = useState(1);
   const [updateData, setUpdatedata]= useState(true);
+  const navigate = useNavigate();
 
   const service = new BookService();
 
@@ -92,7 +96,6 @@ const fetchData = async (currentPage:number, pageSize:number, sortBy:string |nul
 
  
 const requestUpdate = async()=>{
-    
   var responseValidate = EditBookDTOSchema.validate(bookSelected,{
     allowUnknown: true,
     });
@@ -127,8 +130,8 @@ const requestUpdate = async()=>{
   }
   }
 
-  function orderBy(e:any){
-    const option=e;
+  const orderBy =(e:any) => {
+    const option=e.target.value;
      
     setCurrentSorting(option);
 
@@ -194,33 +197,32 @@ const requestGetAuthors = async() =>{
     Toast.Show("error",error)
   })
 };
+const setSearch = (e:any)=>{
+  setInputSearch(e.target.value)
+}
 
   return (
     <div className='container mt-4'>
       <div className='container row'>
-        <div className='col-8'>
-          <form className=" mb-3"  onSubmit={requestGetBy}>
-            <input type="text" name='search' value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
-            {inputSearch.length< 3 
-            ? (
-              <button className='btn ms-2' disabled type='submit' >Pesquisar</button>
-              
-            )
-            :(<button className='btn ms-2' type='submit' >Pesquisar</button>)} 
-            
-            <button className="btn md-2" onClick={() => searchReset()}>Limpar</button>
-          </form>
-        </div>
-
-        <div className='container text-end col-4'>
+      <SeacrhBy
+      setSearch = {setSearch}
+      inputSearch = {inputSearch}
+      requestGetBy = {requestGetBy}
+      searchReset = {searchReset}
+      />
+     
+      <OrderBy
+      isBook = {true}
+      onChange = {orderBy}/>
+      
+       {/*  <div className='container text-end col-4'>
           <select className='' name="orderBy" id="orderBy" onChange={(e)=>orderBy(e.target.value)}>
-            {/* <option defaultValue="" selected disabled>Ordenar por:</option> */}
             <option value="name-asc">Nome (ASC)</option>
             <option value="price-asc">Preço (ASC)</option>
             <option value="name-desc">Nome (DESC)</option>
             <option value="price-desc">Preço (DESC)</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
        {data.length === 0 ?
@@ -234,9 +236,10 @@ const requestGetAuthors = async() =>{
              {data.map((book: BookDTO) =>(
              <li id='book-li' key={book.id}>
               
-                 <BookCard 
+                 <Card 
+                  isBook ={true}
                   delete={()=>selectBook(book,'delete')}
-                  edit={()=>selectBook(book,'edit')}
+                  detail={()=>navigate(`/book/detail/${book.id}`)}
                   name={book.name} 
                   author={book.authorName} 
                   price={(book.price).toFixed(2).toString().replace(".",",")}
@@ -320,6 +323,8 @@ const requestGetAuthors = async() =>{
           <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
         </ModalFooter>
       </Modal>
+
+     
 
     </div>
   );
