@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import {AiOutlineUserAdd} from "react-icons/ai"
-import { AuthorList } from "../components/authors/AuthorList";
+import { AuthorList } from "../../components/authors/AuthorList";
 
 export function Author(){
     return (
