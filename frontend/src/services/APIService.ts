@@ -13,9 +13,3 @@ import axios, { AxiosInstance } from 'axios';
 }
 
 export const APIService = new APIServiceClass();
-
-const api = axios.create({
-    baseURL: "https://localhost:7124/",
-})
-
-export default api;

@@ -1,4 +1,4 @@
-import api from "../../services/APIService";
+
 import "./styles.css"
 import {BsBook} from "react-icons/bs";
 import { Link, useNavigate} from "react-router-dom";
@@ -39,6 +39,7 @@ export function AddBook(){
         return
       }
 
+      console.log(responseValidate)
     var response = await service.Create(addBook);
       if(response.success!=true){
         Toast.Show("error",response.message);

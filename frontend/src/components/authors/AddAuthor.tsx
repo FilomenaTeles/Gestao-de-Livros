@@ -3,7 +3,6 @@ import { AiOutlineUser } from "react-icons/ai";
 import { BiImageAdd } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { Collapse } from "reactstrap";
-import api from "../../services/APIService";
 import "../books/styles.css"
 import Toast from "../../helpers/Toast";
 import { CreateAuthorDTO, CreateAuthorDTOSchema } from "../../models/Authors/CreateAuthorDTO";

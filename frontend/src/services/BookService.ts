@@ -103,7 +103,7 @@ export class BookService {
         }catch(error){
             return new MessagingHelper(
                 false,
-                "Erro ao ligar ao servidor para eliminar livro: "+error,
+                "Erro ao ligar ao servidor para eliminar livro",
                 null,
             )
         }

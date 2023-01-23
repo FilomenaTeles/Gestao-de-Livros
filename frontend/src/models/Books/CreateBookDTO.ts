@@ -10,7 +10,7 @@ export class CreateBookDTO{
 
 export const CreateBookDTOSchema = Joi.object({
     isbn: Joi.number().min(0).messages({"number.base": "Isbn do livro deve ser preenchido", "number.min":"Isbn deve ser superior a 0"}),
-    name: Joi.string().min(0).messages({"string.empty":"Nome do livro deve ser preenchido"}),
-    authorId: Joi.number().min(0).messages({"number.base":"Autor de ser selecionado"}),
+    name: Joi.string().required().messages({"string.empty":"Nome do livro deve ser preenchido"}),
+    authorId: Joi.number().min(1).messages({"number.min":"Autor deve ser selecionado"}),
     price: Joi.number().min(0).messages({"number.base":"Preço deve ser preenchido", "number.min":"Preço deve ser superior a 0"})
 })
