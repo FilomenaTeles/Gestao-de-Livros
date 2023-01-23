@@ -60,19 +60,20 @@ export function AddBook(){
             <h3 className="text-center"><BsBook size={55}/> Adicionar novo Livro</h3>
             <div className="container row">
                 <div className="container col-6">
-                    
-                        <input className="form-control m-3" type="text" placeholder="Nome" name="name" required onChange={handleChange} />
-                        <AuthorsSelect 
+                    <br />
+                        <input className="form-control" type="text" placeholder="Nome" name="name" required onChange={handleChange} />
+                        <br />
+                        <AuthorsSelect className ="m-3"
                         onChange={handleChange}
                         />
-                        
-                        <input className="form-control m-3"  type="number" placeholder="ISBN" name="isbn" required onChange={handleChange}/>
-                        <input className="form-control m-3"  type="number" placeholder="Preço" name="price" min={0} required onChange={handleChange}/>
+                        <br />
+                        <input className="form-control"  type="number" placeholder="ISBN" name="isbn" required onChange={handleChange}/> <br />
+                        <input className="form-control"  type="number" placeholder="Preço" name="price" min={0} required onChange={handleChange}/><br />
                         
                         <React.StrictMode>
                             <button className='btn' onClick={toggle}><BiImageAdd size={25}/> Associar Imagem</button>
                             <Collapse isOpen={isOpen} >
-                                <input type="url" pattern="https://.*"  className='form-control m-3' placeholder="Associar o link da imagem"  name='image'  onChange={handleChange} />
+                                <input type="url" pattern="https://.*"  className='form-control' placeholder="Associar o link da imagem"  name='image'  onChange={handleChange} />
                                 <span className="validity"></span>
                             </Collapse>
                         </React.StrictMode>

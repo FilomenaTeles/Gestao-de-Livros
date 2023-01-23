@@ -1,16 +1,15 @@
 import {useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
-import api from "../../services/APIService";
 import {Card } from "../global/Card";
 import Toast from "../../helpers/Toast";
 import NotFound from '../../assets/nodata.png';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { AuthorService } from "../../services/AuthorService";
 import { AuthorListDTO } from "../../models/Authors/AuthorListDTO";
 import { AuthorDTO } from "../../models/Authors/AuthorDTO";
 import { EditAuthorDTOSchema } from "../../models/Authors/EditAuthorDTO";
 import { OrderBy } from "../global/OrderBy";
 import { SeacrhBy } from "../global/Search";
+import { AuthorDeleteModal, AuthorModal } from "../global/Modal";
+import { Pagination } from "../global/Pagination";
 
 export function AuthorList(){
     
@@ -27,11 +26,8 @@ export function AuthorList(){
     const [forcePage, setForcePage]=useState(0);    //dá o highligtht na paginação
     
     const [authorSelected,setAuthorSelected]= useState<AuthorDTO>(new AuthorDTO());
-
-    const[totalRecords,setTotalRecords] = useState<number>(0);
     
-    //estado para controlar o modal
-   const [modalEdit, setModalEdit]=useState(false);
+   const [modalEdit, setModalEdit]=useState(false); //estado para controlar o modal
    const [modalDelete, setModalDelete]=useState(false);
       
 
@@ -98,7 +94,10 @@ export function AuthorList(){
         setCurrentSorting(option);
         setUpdatedata(true);
     }; 
-  
+
+    const setSearch = (e:any)=>{
+        setInputSearch(e.target.value)
+      }
   
   //PEDIDOS API
 
@@ -121,7 +120,6 @@ export function AuthorList(){
     setData(response.items);
     setPageCount(response.totalPages);
     setCurrentPage(currentPage);
-    setTotalRecords(response.totalRecords);
   }
 
 
@@ -157,27 +155,20 @@ const requestDelete = async()=>{
       Toast.Show("error",response.message)
     }
 }
-const setSearch = (e:any)=>{
-    setInputSearch(e.target.value)
-  }
+
 
     return(
         <div className="container mt-4">
 
             <div className='container row'>
-            <SeacrhBy
-                setSearch = {setSearch}
-                inputSearch = {inputSearch}
-                requestGetBy = {requestGetBy}
-                searchReset = {searchReset}
-            />
-            <OrderBy
-                onChange = {orderBy}
-            />
-               
-
+                <SeacrhBy
+                    setSearch = {setSearch}
+                    inputSearch = {inputSearch}
+                    requestGetBy = {requestGetBy}
+                    searchReset = {searchReset}
+                />
+                <OrderBy onChange = {orderBy}/>
             </div>
-
             
             {data.length === 0 ?
             (
@@ -203,66 +194,28 @@ const setSearch = (e:any)=>{
                     ))}
                 </ul>
             )}
-            
-            <ReactPaginate 
-                previousLabel={'previous'}
-                nextLabel={'next'}
-                breakLabel={'...'} 
-                forcePage={forcePage}
-                pageCount={pageCount}
-                marginPagesDisplayed={3}
-                pageRangeDisplayed={4}
-                onPageChange={handlePageClick}
-                containerClassName={'pagination justify-content-center'}
-                pageClassName={'page-item'}
-                pageLinkClassName={'page-link'}
-                previousClassName={'page-item'}
-                previousLinkClassName={'page-link'}
-                nextClassName={'page-item'}
-                nextLinkClassName={'page-link'}
-                breakClassName={'page-item'}
-                breakLinkClassName={'page-link'}
-                activeClassName={'active'}
+
+            <AuthorModal
+                modalEdit = {modalEdit}
+                authorSelected = {authorSelected}
+                handleChange = {handleChange}
+                requestEdit = {requestEdit}
+                openCloseModalEdit = {openCloseModalEdit}
             />
 
-            <Modal isOpen={modalEdit}>
-                <ModalHeader>Editar Livro</ModalHeader>
-                
-                <ModalBody>
-                    <div className='form-group'>
-                        <input type="number" hidden name='id' value={authorSelected && authorSelected.id}/>
-                    
-                        <label>Nome:</label>
-                        <br/>
-                        <input type="text" className='form-control' name='name'required onChange={handleChange} value={authorSelected && authorSelected.name} />
-                        <label>País:</label>
-                        <br/>
-                        <input type="text" className='form-control'  name='country' required onChange={handleChange}  value={authorSelected && authorSelected.country}/>
-                        
-                        <label>Imagem:</label>
-                        <br/>
-                        <input type="url" className='form-control' pattern="https://.*"  name='image'  onChange={handleChange}  value={authorSelected && authorSelected.image}/>
+            <AuthorDeleteModal
+                modalDelete = {modalDelete}
+                authorSelected = {authorSelected}
+                requestDelete = {requestDelete}
+                openCloseModalDelete ={openCloseModalDelete}
+            />
 
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button id='btn-edit' className='btn btn-primary 'onClick={()=>requestEdit()}>Editar</button> {"  "}
-                    <button id='btn-cancel' className='btn btn-danger' onClick={()=>openCloseModalEdit()}>Cancelar</button>    
-                </ModalFooter>
-            </Modal>
-
-            <Modal isOpen={modalDelete}>
-                <ModalBody>
-                    Esta ação vai eliminar o autor: <br />
-                    Nome: {authorSelected && authorSelected.name} <br />
-                    País: {authorSelected && authorSelected.country} <br />
-                    <b>Deseja continuar?</b>
-                </ModalBody>
-                <ModalFooter>
-                    <button className='btn btn-danger' onClick={()=>requestDelete()}>Eliminar</button>
-                    <button className='btn btn-secondary' onClick={()=>openCloseModalDelete()}>Cancelar</button>
-                </ModalFooter>
-            </Modal>
+            <Pagination
+                forcePage = {forcePage}
+                pageCount = {pageCount}
+                handlePageClick = {handlePageClick}
+            />
+           
 
         </div>
     )

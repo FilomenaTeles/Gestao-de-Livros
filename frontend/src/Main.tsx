@@ -5,7 +5,6 @@ import { Home } from './pages/Home';
 import { AddBook } from './components/books/AddBook';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { AddAuthor } from './components/authors/AddAuthor';
-import { BookDetail } from './components/books/BookDetail';
 
 export function Main(){
     return(
@@ -13,7 +12,6 @@ export function Main(){
             <Route path='/' element={<Home/>}></Route>
             <Route path='/books' element={<Books/>}></Route>
             <Route path='/addbook' element={<AddBook/>}></Route>
-            <Route path='/book/detail/:id' element={<BookDetail/>}></Route>
             <Route path='/authors' element={<Author/>}></Route>
             <Route path='/addauthor' element={<AddAuthor/>}></Route>
             <Route path="*" element={<NotFoundPage/>}></Route>

@@ -25,6 +25,7 @@ export function Card(props:any){
                     {props.isBook == true ? (//texto relativo ao livro
                         <p className="card-text">
                             Autor: {props.author} <br />
+                            ISBN: {props.isbn} <br />
                             Price: {props.price}€
                         </p>
                         ):(//texto relativo ao autor
@@ -34,11 +35,9 @@ export function Card(props:any){
                         </p>
                     )}
                     <div className="card-btn">
-                        {props.isBook == true ? (//os livros têm botão de ver detailhes
-                            <button id='btn-cancel' className='btn' onClick={props.detail}><AiOutlineEye size={25}/></button>
-                        ):(//os autores têm botão de editar
-                            <button id='btn-cancel' className='btn' onClick={props.edit}><BiEdit size={25}/></button>
-                        )}
+                      
+                        <button id='btn-cancel' className='btn' onClick={props.edit}><BiEdit size={25}/></button>
+                        
                         <button id='btn-cancel' className='btn' onClick={props.delete}><RiDeleteBinLine size={25}/></button>
                     </div>
                     
