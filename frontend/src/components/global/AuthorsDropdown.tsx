@@ -37,9 +37,6 @@ export function AuthorsSelect(props:any){
                 ):(
                     <option value={author.id} >{author.name}</option>  
                 )
-            
-                
-                
             ))}
         </select>
     )
