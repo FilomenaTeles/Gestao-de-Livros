@@ -39,7 +39,6 @@ export function AddBook(){
         return
       }
 
-      console.log(responseValidate)
     var response = await service.Create(addBook);
       if(response.success!=true){
         Toast.Show("error",response.message);
